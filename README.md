@@ -34,3 +34,24 @@ This uses all logical CPU cores by default. You can override the number of jobs:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Jobs 8
 ```
+
+## Build Android
+
+Build both Android targets:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build-android.ps1
+```
+
+Build one target only:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build-android.ps1 -Target Android32
+powershell -ExecutionPolicy Bypass -File .\scripts\build-android.ps1 -Target Android64
+```
+
+Optional explicit NDK path:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build-android.ps1 -Ndk "C:\Android\Sdk\ndk\27.1.12297006"
+```

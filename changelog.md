@@ -1,6 +1,7 @@
 # v2.5.0-alpha.1
 
 * Added support for Geometry Dash 2.2081 and Geode 5.0.
+* disable click bewteen steps before using it because checks for it haveint been implemented yet.
 
 # v2.4.1
 
