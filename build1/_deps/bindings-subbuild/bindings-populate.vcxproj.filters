@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\45fcf555947fb3ed716d3da4a84ef694\bindings-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\45fcf555947fb3ed716d3da4a84ef694\bindings-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\45fcf555947fb3ed716d3da4a84ef694\bindings-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\45fcf555947fb3ed716d3da4a84ef694\bindings-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\45fcf555947fb3ed716d3da4a84ef694\bindings-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\45fcf555947fb3ed716d3da4a84ef694\bindings-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\45fcf555947fb3ed716d3da4a84ef694\bindings-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\45fcf555947fb3ed716d3da4a84ef694\bindings-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\a0dc3fb335204da047331ad769c92acd\bindings-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\ee7091692beb661780c09323235e0df6\bindings-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-subbuild\CMakeFiles\bindings-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{165133BA-F754-3F13-835C-AA353CE3939D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

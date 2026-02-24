@@ -1,0 +1,601 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FF9A5BE5-2293-3A82-A7CF-96C65B4CADB9}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>xdBot2</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Benno111\Documents\GitHub\xdBot\build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">xdBot2.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Benno111.xdbot</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Benno111\Documents\GitHub\xdBot\build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">xdBot2.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Benno111.xdbot</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Benno111\Documents\GitHub\xdBot\build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">xdBot2.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Benno111.xdbot</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Benno111\Documents\GitHub\xdBot\build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">xdBot2.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Benno111.xdbot</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/bindings/bindings" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/bindings-src/bindings/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/tuliphook-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/result-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/json-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/nontype_functional-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/arc-src/include" /bigobj /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/xdBot2.dir/Debug//cmake_pch.pch</PrecompiledHeaderOutputFile>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;GEODE_MOD_ID="Benno111.xdbot";PROJECT_NAME=xdBot2;NOMINMAX;GEODE_GD_VERSION=2.2081;GEODE_COMP_GD_VERSION=22081;GEODE_GD_VERSION_STRING="2.2081";_HAS_ITERATOR_DEBUGGING=0;MAT_JSON_DYNAMIC=1;ARC_FEATURE_TIME=1;CMAKE_INTDIR="Debug";xdBot2_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;GEODE_MOD_ID=\"Benno111.xdbot\";PROJECT_NAME=xdBot2;NOMINMAX;GEODE_GD_VERSION=2.2081;GEODE_COMP_GD_VERSION=22081;GEODE_GD_VERSION_STRING=\"2.2081\";_HAS_ITERATOR_DEBUGGING=0;MAT_JSON_DYNAMIC=1;ARC_FEATURE_TIME=1;CMAKE_INTDIR=\"Debug\";xdBot2_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;C:\Users\Benno111\Documents\GitHub\xdBot\build\bindings\bindings;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-src\bindings\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\fmt-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\json-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\arc-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;C:\Users\Benno111\Documents\GitHub\xdBot\build\bindings\bindings;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-src\bindings\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\fmt-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\json-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\arc-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>geode-deps\geode.custom-keybinds\geode.custom-keybinds.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcocos2d.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libExtensions.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\glew32.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\fmod.lib;opengl32.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\cares.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcurl.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\nghttp2.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcrypto.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libssl.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\zs.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\zstd_static.lib;secur32.lib;ntdll.lib;userenv.lib;delayimp.lib;ws2_32.lib;bindings\Debug\GeodeBindings.lib;_deps\arc-build\Debug\arc.lib;_deps\asp2-build\Debug\asp.lib;_deps\fmt-build\Debug\fmtd.lib;C:\Users\Benno111\Documents\Geode\bin\5.0.0\Geode.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Users/Benno111/Documents/Geode/loader/include/link;C:/Users/Benno111/Documents/Geode/loader/include/link/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/Benno111/Documents/GitHub/xdBot/build/Debug/Benno111.xdbot.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/Debug/Benno111.xdbot.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/bindings/bindings" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/bindings-src/bindings/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/tuliphook-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/result-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/json-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/nontype_functional-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/arc-src/include" /bigobj /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/xdBot2.dir/Release//cmake_pch.pch</PrecompiledHeaderOutputFile>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;GEODE_MOD_ID="Benno111.xdbot";PROJECT_NAME=xdBot2;NOMINMAX;GEODE_GD_VERSION=2.2081;GEODE_COMP_GD_VERSION=22081;GEODE_GD_VERSION_STRING="2.2081";_HAS_ITERATOR_DEBUGGING=0;MAT_JSON_DYNAMIC=1;ARC_FEATURE_TIME=1;CMAKE_INTDIR="Release";xdBot2_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;GEODE_MOD_ID=\"Benno111.xdbot\";PROJECT_NAME=xdBot2;NOMINMAX;GEODE_GD_VERSION=2.2081;GEODE_COMP_GD_VERSION=22081;GEODE_GD_VERSION_STRING=\"2.2081\";_HAS_ITERATOR_DEBUGGING=0;MAT_JSON_DYNAMIC=1;ARC_FEATURE_TIME=1;CMAKE_INTDIR=\"Release\";xdBot2_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;C:\Users\Benno111\Documents\GitHub\xdBot\build\bindings\bindings;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-src\bindings\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\fmt-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\json-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\arc-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;C:\Users\Benno111\Documents\GitHub\xdBot\build\bindings\bindings;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-src\bindings\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\fmt-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\json-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\arc-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>geode-deps\geode.custom-keybinds\geode.custom-keybinds.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcocos2d.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libExtensions.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\glew32.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\fmod.lib;opengl32.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\cares.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcurl.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\nghttp2.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcrypto.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libssl.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\zs.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\zstd_static.lib;secur32.lib;ntdll.lib;userenv.lib;delayimp.lib;ws2_32.lib;bindings\Release\GeodeBindings.lib;_deps\arc-build\Release\arc.lib;_deps\asp2-build\Release\asp.lib;_deps\fmt-build\Release\fmt.lib;C:\Users\Benno111\Documents\Geode\bin\5.0.0\Geode.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Users/Benno111/Documents/Geode/loader/include/link;C:/Users/Benno111/Documents/Geode/loader/include/link/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/Benno111/Documents/GitHub/xdBot/build/Release/Benno111.xdbot.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/Release/Benno111.xdbot.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/bindings/bindings" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/bindings-src/bindings/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/tuliphook-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/result-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/json-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/nontype_functional-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/arc-src/include" /bigobj /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/xdBot2.dir/MinSizeRel//cmake_pch.pch</PrecompiledHeaderOutputFile>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;GEODE_MOD_ID="Benno111.xdbot";PROJECT_NAME=xdBot2;NOMINMAX;GEODE_GD_VERSION=2.2081;GEODE_COMP_GD_VERSION=22081;GEODE_GD_VERSION_STRING="2.2081";_HAS_ITERATOR_DEBUGGING=0;MAT_JSON_DYNAMIC=1;ARC_FEATURE_TIME=1;CMAKE_INTDIR="MinSizeRel";xdBot2_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;GEODE_MOD_ID=\"Benno111.xdbot\";PROJECT_NAME=xdBot2;NOMINMAX;GEODE_GD_VERSION=2.2081;GEODE_COMP_GD_VERSION=22081;GEODE_GD_VERSION_STRING=\"2.2081\";_HAS_ITERATOR_DEBUGGING=0;MAT_JSON_DYNAMIC=1;ARC_FEATURE_TIME=1;CMAKE_INTDIR=\"MinSizeRel\";xdBot2_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;C:\Users\Benno111\Documents\GitHub\xdBot\build\bindings\bindings;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-src\bindings\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\fmt-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\json-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\arc-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;C:\Users\Benno111\Documents\GitHub\xdBot\build\bindings\bindings;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-src\bindings\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\fmt-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\json-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\arc-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>geode-deps\geode.custom-keybinds\geode.custom-keybinds.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcocos2d.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libExtensions.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\glew32.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\fmod.lib;opengl32.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\cares.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcurl.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\nghttp2.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcrypto.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libssl.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\zs.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\zstd_static.lib;secur32.lib;ntdll.lib;userenv.lib;delayimp.lib;ws2_32.lib;bindings\MinSizeRel\GeodeBindings.lib;_deps\arc-build\MinSizeRel\arc.lib;_deps\asp2-build\MinSizeRel\asp.lib;_deps\fmt-build\MinSizeRel\fmt.lib;C:\Users\Benno111\Documents\Geode\bin\5.0.0\Geode.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Users/Benno111/Documents/Geode/loader/include/link;C:/Users/Benno111/Documents/Geode/loader/include/link/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/Benno111/Documents/GitHub/xdBot/build/MinSizeRel/Benno111.xdbot.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/MinSizeRel/Benno111.xdbot.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/bindings/bindings" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/bindings-src/bindings/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/tuliphook-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/result-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/json-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/nontype_functional-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/arc-src/include" /bigobj /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/xdBot2.dir/RelWithDebInfo//cmake_pch.pch</PrecompiledHeaderOutputFile>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;GEODE_MOD_ID="Benno111.xdbot";PROJECT_NAME=xdBot2;NOMINMAX;GEODE_GD_VERSION=2.2081;GEODE_COMP_GD_VERSION=22081;GEODE_GD_VERSION_STRING="2.2081";_HAS_ITERATOR_DEBUGGING=0;MAT_JSON_DYNAMIC=1;ARC_FEATURE_TIME=1;CMAKE_INTDIR="RelWithDebInfo";xdBot2_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;GEODE_MOD_ID=\"Benno111.xdbot\";PROJECT_NAME=xdBot2;NOMINMAX;GEODE_GD_VERSION=2.2081;GEODE_COMP_GD_VERSION=22081;GEODE_GD_VERSION_STRING=\"2.2081\";_HAS_ITERATOR_DEBUGGING=0;MAT_JSON_DYNAMIC=1;ARC_FEATURE_TIME=1;CMAKE_INTDIR=\"RelWithDebInfo\";xdBot2_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;C:\Users\Benno111\Documents\GitHub\xdBot\build\bindings\bindings;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-src\bindings\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\fmt-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\json-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\arc-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\xdBot\build\geode-deps;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\include;C:\Users\Benno111\Documents\Geode\loader\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\include;C:\Users\Benno111\Documents\Geode\loader\include\Geode\cocos\extensions;C:\Users\Benno111\Documents\Geode\loader\include\Geode\fmod;C:\Users\Benno111\Documents\GitHub\xdBot\build\bindings\bindings;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\bindings-src\bindings\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\fmt-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\json-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\arc-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>geode-deps\geode.custom-keybinds\geode.custom-keybinds.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcocos2d.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libExtensions.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\glew32.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\fmod.lib;opengl32.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\cares.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcurl.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\nghttp2.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libcrypto.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\libssl.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\zs.lib;C:\Users\Benno111\Documents\Geode\loader\include\link\win64\zstd_static.lib;secur32.lib;ntdll.lib;userenv.lib;delayimp.lib;ws2_32.lib;bindings\RelWithDebInfo\GeodeBindings.lib;_deps\arc-build\RelWithDebInfo\arc.lib;_deps\asp2-build\RelWithDebInfo\asp.lib;_deps\fmt-build\RelWithDebInfo\fmt.lib;C:\Users\Benno111\Documents\Geode\bin\5.0.0\Geode.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:/Users/Benno111/Documents/Geode/loader/include/link;C:/Users/Benno111/Documents/Geode/loader/include/link/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <DataExecutionPrevention></DataExecutionPrevention>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers></ImageHasSafeExceptionHandlers>
+      <ImportLibrary>C:/Users/Benno111/Documents/GitHub/xdBot/build/RelWithDebInfo/Benno111.xdbot.lib</ImportLibrary>
+      <LinkErrorReporting></LinkErrorReporting>
+      <ProgramDataBaseFile>C:/Users/Benno111/Documents/GitHub/xdBot/build/RelWithDebInfo/Benno111.xdbot.pdb</ProgramDataBaseFile>
+      <RandomizedBaseAddress></RandomizedBaseAddress>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/Benno111/Documents/GitHub/xdBot/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/xdBot -BC:/Users/Benno111/Documents/GitHub/xdBot/build --check-stamp-file C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\WindowsPaths.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeCCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeCXXCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeRCCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeSystem.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\cmake.verify_globs;C:\Users\Benno111\Documents\GitHub\xdBot\mod.json;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/Benno111/Documents/GitHub/xdBot/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/xdBot -BC:/Users/Benno111/Documents/GitHub/xdBot/build --check-stamp-file C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\WindowsPaths.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeCCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeCXXCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeRCCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeSystem.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\cmake.verify_globs;C:\Users\Benno111\Documents\GitHub\xdBot\mod.json;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/Benno111/Documents/GitHub/xdBot/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/xdBot -BC:/Users/Benno111/Documents/GitHub/xdBot/build --check-stamp-file C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\WindowsPaths.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeCCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeCXXCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeRCCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeSystem.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\cmake.verify_globs;C:\Users\Benno111\Documents\GitHub\xdBot\mod.json;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/Benno111/Documents/GitHub/xdBot/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/xdBot -BC:/Users/Benno111/Documents/GitHub/xdBot/build --check-stamp-file C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCXXLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Internal\CMakeCommonLinkerInformation.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Linker\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Linker\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-Initialize.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-4.2\Modules\Platform\WindowsPaths.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeCCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeCXXCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeRCCompiler.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\4.2.3\CMakeSystem.cmake;C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\cmake.verify_globs;C:\Users\Benno111\Documents\GitHub\xdBot\mod.json;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\xdBot2.dir\cmake_pch.cxx">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/xdBot2.dir/Debug//cmake_pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/xdBot2.dir/Release//cmake_pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/xdBot2.dir/MinSizeRel//cmake_pch.pch</PrecompiledHeaderOutputFile>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/xdBot2.dir/RelWithDebInfo//cmake_pch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\main.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\global.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\macro.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\keybinds.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\utils\utils.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\gdr\gdr.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\renderer\renderer.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\hacks\other.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\hacks\tps_bypass.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\hacks\frame_stepper.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\hacks\layout_mode.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\hacks\show_trajectory.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\hacks\coin_finder.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\hacks\clickbot.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\hacks\autoclicker.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\ui\macro_editor.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\ui\button_edit_layer.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\ui\game_ui.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\ui\record_layer.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\ui\render_settings_layer.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\ui\load_macro_layer.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\ui\clickbot_layer.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\ui\button_setting.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\practice_fixes\input.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\practice_fixes\player.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\src\practice_fixes\play_layer.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\xdBot2.dir\Debug\cmake_pch.hxx" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\xdBot2.dir\Release\cmake_pch.hxx" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\xdBot2.dir\MinSizeRel\cmake_pch.hxx" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\CMakeFiles\xdBot2.dir\RelWithDebInfo\cmake_pch.hxx" />
+    <ClCompile Include="C:\Users\Benno111\Documents\Geode\entry.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/MinSizeRel/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/Users/Benno111/Documents/GitHub/xdBot/build/CMakeFiles/xdBot2.dir/RelWithDebInfo/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include\std23\function_ref.h" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include\std23\function.h" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include\std23\move_only_function.h" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-src\include\std23\__functional_base.h" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\ZERO_CHECK.vcxproj">
+      <Project>{1AB9491D-7748-38B5-9CBE-DD033EE8B1E7}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\bindings\GeodeBindings.vcxproj">
+      <Project>{126A94CD-4CEB-3C6A-BD59-72DE1E043052}</Project>
+      <Name>GeodeBindings</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\arc-build\arc.vcxproj">
+      <Project>{A2082886-B641-35BF-AF43-AFD63921D2F3}</Project>
+      <Name>arc</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-build\asp.vcxproj">
+      <Project>{A1C7A22A-074F-3827-8BDD-40865783015E}</Project>
+      <Name>asp</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\fmt-build\fmt.vcxproj">
+      <Project>{29855311-03E0-3813-9A6B-DAABBB9B0666}</Project>
+      <Name>fmt</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

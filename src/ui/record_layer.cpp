@@ -11,6 +11,7 @@
 #include "../hacks/show_trajectory.hpp"
 
 #include <Geode/modify/PauseLayer.hpp>
+#include <Geode/modify/EditorPauseLayer.hpp>
 #include <Geode/utils/web.hpp>
 
 const std::vector<std::vector<RecordSetting>> settings {
@@ -63,38 +64,55 @@ const std::vector<std::vector<RecordSetting>> settings {
     }
 };
 
+namespace {
+void addXdBotPauseButton(cocos2d::CCLayer* layer) {
+#ifdef GEODE_IS_WINDOWS
+    if (!Mod::get()->getSavedValue<bool>("menu_show_button")) return;
+#endif
+
+    CCSprite* sprite = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
+    sprite->setScale(0.35f);
+
+    CCMenuItemSpriteExtra* btn = CCMenuItemSpriteExtra::create(
+        sprite,
+        layer,
+        menu_selector(RecordLayer::openMenu2)
+    );
+
+    if (!Loader::get()->isModLoaded("geode.node-ids")) {
+        CCMenu* menu = CCMenu::create();
+        menu->setID("button"_spr);
+        layer->addChild(menu);
+        btn->setPosition({214, 88});
+        menu->addChild(btn);
+        return;
+    }
+
+    if (CCNode* menu = layer->getChildByID("right-button-menu")) {
+        menu->addChild(btn);
+        menu->updateLayout();
+        return;
+    }
+
+    CCMenu* fallbackMenu = CCMenu::create();
+    fallbackMenu->setID("button"_spr);
+    layer->addChild(fallbackMenu);
+    btn->setPosition({214, 88});
+    fallbackMenu->addChild(btn);
+}
+}
+
 class $modify(PauseLayer) {
     void customSetup() {
         PauseLayer::customSetup();
+        addXdBotPauseButton(this);
+    }
+};
 
-        #ifdef GEODE_IS_WINDOWS
-
-        if (!Mod::get()->getSavedValue<bool>("menu_show_button")) return;
-
-        #endif
-
-        CCSprite* sprite = nullptr;
-
-        sprite = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
-        sprite->setScale(0.35f);
-
-
-        CCMenuItemSpriteExtra* btn = CCMenuItemSpriteExtra::create(sprite,
-            this,
-            menu_selector(RecordLayer::openMenu2));
-        
-        if (!Loader::get()->isModLoaded("geode.node-ids")) {
-            CCMenu* menu = CCMenu::create();
-            menu->setID("button"_spr);
-            addChild(menu);
-            btn->setPosition({214, 88});
-            menu->addChild(btn);
-            return;
-        }
-
-        CCNode* menu = this->getChildByID("right-button-menu");
-        menu->addChild(btn);
-        menu->updateLayout();
+class $modify(EditorPauseLayer) {
+    void customSetup() {
+        EditorPauseLayer::customSetup();
+        addXdBotPauseButton(this);
     }
 };
 

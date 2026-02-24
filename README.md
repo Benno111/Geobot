@@ -35,6 +35,18 @@ This uses all logical CPU cores by default. You can override the number of jobs:
 powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1 -Jobs 8
 ```
 
+Fast incremental desktop build through Geode + Ninja (skips reconfigure):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1 -UseGeode -Ninja -BuildOnly -Jobs 12
+```
+
+Optional Windows GPU preference utility (helps only for tools that actually use GPU):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1 -UseGeode -Ninja -BuildOnly -Jobs 12 -EnableHighPerformanceGpu
+```
+
 ## Build Android
 
 Build both Android targets:
@@ -54,4 +66,22 @@ Optional explicit NDK path:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\build-android.ps1 -Ndk "C:\Android\Sdk\ndk\27.1.12297006"
+```
+
+Speed up repeated Android builds (skip SDK/binary sync, force Ninja, set parallel jobs):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build-android.ps1 -SkipSdkSync -SkipBinarySync -Ninja -Jobs 12
+```
+
+Fastest Android incremental loop:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build-android.ps1 -Fast -Target Both -Jobs 12
+```
+
+With optional Windows GPU preference utility:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build-android.ps1 -Fast -Target Both -Jobs 12 -EnableHighPerformanceGpu
 ```

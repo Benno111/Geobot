@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/asp2-populate"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/44787ee74f4068c2f36402e8c881621b/asp2-populate.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/61c4bd45d8ed39cf76ea2dd61a0131a5/asp2-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/91529282acca58552ac96ed1616970a0/asp2-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/91529282acca58552ac96ed1616970a0/asp2-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/91529282acca58552ac96ed1616970a0/asp2-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/91529282acca58552ac96ed1616970a0/asp2-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/91529282acca58552ac96ed1616970a0/asp2-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/91529282acca58552ac96ed1616970a0/asp2-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/91529282acca58552ac96ed1616970a0/asp2-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/asp2-subbuild/CMakeFiles/91529282acca58552ac96ed1616970a0/asp2-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"asp2-populate"
+		],
+		"name" : "asp2-populate"
+	}
+}

@@ -1,0 +1,10 @@
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\XDBOT\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\3641D35859B6D147E3C874F2328B26D1\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/nontype_functional-subbuild -BC:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/nontype_functional-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/nontype_functional-subbuild/nontype_functional-populate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
