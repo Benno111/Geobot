@@ -177,7 +177,14 @@ endif()
 if (WIN32)
     # bindings 2.2081 misses <sys/timeb.h> in a couple of inline files that use _ftime64_s.
     # Re-apply this fix on configure so Codegen updates don't reintroduce build breaks.
-    set(_bindings_inline_dir "${CMAKE_CURRENT_BINARY_DIR}/_deps/bindings-src/bindings/2.2081/inline")
+    # When GEODE_BINDINGS_REPO_PATH is set (by geode-sdk/build-geode-mod when bindings-ref is
+    # specified), the bindings are already cloned there before CMake runs.  Fall back to the CPM
+    # download location for local development builds.
+    if (DEFINED ENV{GEODE_BINDINGS_REPO_PATH})
+        set(_bindings_inline_dir "$ENV{GEODE_BINDINGS_REPO_PATH}/bindings/2.2081/inline")
+    else()
+        set(_bindings_inline_dir "${CMAKE_CURRENT_BINARY_DIR}/_deps/bindings-src/bindings/2.2081/inline")
+    endif()
     foreach(_inline_file DialogLayer.cpp GameStatsManager.cpp)
         set(_inline_path "${_bindings_inline_dir}/${_inline_file}")
         if (EXISTS "${_inline_path}")
