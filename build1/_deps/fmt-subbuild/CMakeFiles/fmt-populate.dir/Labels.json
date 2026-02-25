@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/fmt-populate"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/b1c6ba5219327c93149f4359c787a377/fmt-populate.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/3724f742a964c992adb46b6b44e1e27d/fmt-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"fmt-populate"
+		],
+		"name" : "fmt-populate"
+	}
+}

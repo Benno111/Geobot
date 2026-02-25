@@ -1,0 +1,398 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A1C7A22A-074F-3827-8BDD-40865783015E}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>asp</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">asp.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">asp</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">asp.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">asp</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">asp.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">asp</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">asp.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">asp</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/result-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-src/include" /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_HAS_ITERATOR_DEBUGGING=0;NOMINMAX=1;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;_HAS_ITERATOR_DEBUGGING=0;NOMINMAX=1;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/result-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-src/include" /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_HAS_ITERATOR_DEBUGGING=0;NOMINMAX=1;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_HAS_ITERATOR_DEBUGGING=0;NOMINMAX=1;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/result-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-src/include" /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_HAS_ITERATOR_DEBUGGING=0;NOMINMAX=1;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_HAS_ITERATOR_DEBUGGING=0;NOMINMAX=1;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/result-src/include" /external:I "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-src/include" /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_HAS_ITERATOR_DEBUGGING=0;NOMINMAX=1;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_HAS_ITERATOR_DEBUGGING=0;NOMINMAX=1;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\result-src\include;C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/geobot -BC:/Users/Benno111/Documents/GitHub/geobot/build --check-stamp-file C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/geobot -BC:/Users/Benno111/Documents/GitHub/geobot/build --check-stamp-file C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/geobot -BC:/Users/Benno111/Documents/GitHub/geobot/build --check-stamp-file C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/geobot -BC:/Users/Benno111/Documents/GitHub/geobot/build --check-stamp-file C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <PropertyGroup>
+    <EnableUnitySupport>true</EnableUnitySupport>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build\CMakeFiles\asp.dir\Unity\unity_0_cxx.cxx" IncludeInUnityFile="false" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\Log.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\collections.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\collections\SmallVec.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\data.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\data\Cow.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\data\nums.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\data\util.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\detail\Result.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\detail\config.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\format.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\fs.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\fs\Error.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\fs\fs.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\ArrayChunks.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Chain.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Copied.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Cycle.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Filter.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\FilterMap.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Inspect.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Iter.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Map.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Skip.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Split.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Take.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\Zip.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\iter\std.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\math.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\math\NumberCycle.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\misc.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\misc\traits.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\net.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\ptr.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\ptr\BoxedString.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\ptr\PtrSwap.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\ptr\SharedPtr.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\simd.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\simd\CPUFeatures.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\simd\base.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\sync.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\sync\Channel.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\sync\Mutex.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\sync\Notify.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\sync\SpinLock.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\thread.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\thread\Thread.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\thread\ThreadPool.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\time.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\time\DateTime.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\time\Duration.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\time\Instant.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\time\SystemTime.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\time\chrono.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\time\detail.hpp" />
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\include\asp\time\sleep.hpp" />
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\src\Log.cpp" IncludeInUnityFile="true" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\src\assert.cpp" IncludeInUnityFile="true" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\src\fs\fs.cpp" IncludeInUnityFile="true" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\src\platform\windows\Notify.cpp" IncludeInUnityFile="true" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\src\simd\x86\CPUFeaturesX86.cpp" IncludeInUnityFile="true" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\src\thread\Thread.cpp" IncludeInUnityFile="true" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\src\thread\ThreadPool.cpp" IncludeInUnityFile="true" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\src\time\Duration.cpp" IncludeInUnityFile="true" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\src\time\Instant.cpp" IncludeInUnityFile="true" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src\src\time\SystemTime.cpp" IncludeInUnityFile="true" CustomUnityFile="true" UnityFilesDirectory="C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-build/CMakeFiles/asp.dir/Unity" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\Benno111\Documents\GitHub\geobot\build\ZERO_CHECK.vcxproj">
+      <Project>{1AB9491D-7748-38B5-9CBE-DD033EE8B1E7}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-build\fmt.vcxproj">
+      <Project>{29855311-03E0-3813-9A6B-DAABBB9B0666}</Project>
+      <Name>fmt</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

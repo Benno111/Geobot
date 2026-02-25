@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\d950463ab4593942b7629b5c7d299adc\tuliphook-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\d950463ab4593942b7629b5c7d299adc\tuliphook-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\d950463ab4593942b7629b5c7d299adc\tuliphook-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\d950463ab4593942b7629b5c7d299adc\tuliphook-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\d950463ab4593942b7629b5c7d299adc\tuliphook-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\d950463ab4593942b7629b5c7d299adc\tuliphook-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\d950463ab4593942b7629b5c7d299adc\tuliphook-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\d950463ab4593942b7629b5c7d299adc\tuliphook-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\98e7652e8be82eeac3cb3aae689072d5\tuliphook-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\ca8e2bc6d3b589a58197f114e717e303\tuliphook-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\tuliphook-subbuild\CMakeFiles\tuliphook-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{1202C940-F104-375E-8327-12C52F8B8939}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

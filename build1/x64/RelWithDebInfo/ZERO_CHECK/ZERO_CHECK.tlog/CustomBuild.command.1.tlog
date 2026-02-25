@@ -1,0 +1,10 @@
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\CMAKEFILES\A14C39B7ED5D271F90A7984E646CB94D\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/geobot -BC:/Users/Benno111/Documents/GitHub/geobot/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Benno111/Documents/GitHub/geobot/build/geobot2.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

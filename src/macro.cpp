@@ -109,9 +109,9 @@ void Macro::updateInfo(PlayLayer* pl) {
     if (g.macro.author == "")
         g.macro.author = "N/A";
 
-    g.macro.botInfo.name = "xdBot";
-    g.macro.botInfo.version = xdBotVersion;
-    g.macro.xdBotMacro = true;
+    g.macro.botInfo.name = "geobot";
+    g.macro.botInfo.version = geobotVersion;
+    g.macro.geobotMacro = true;
 }
 
 void Macro::updateTPS() {

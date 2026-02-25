@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\CMakeFiles\geobot2.dir\cmake_pch.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\macro.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\keybinds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\utils\utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\gdr\gdr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\renderer\renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\hacks\other.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\hacks\tps_bypass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\hacks\frame_stepper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\hacks\layout_mode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\hacks\show_trajectory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\hacks\coin_finder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\hacks\clickbot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\hacks\autoclicker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\ui\macro_editor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\ui\button_edit_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\ui\game_ui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\ui\record_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\ui\render_settings_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\ui\load_macro_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\ui\clickbot_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\ui\button_setting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\practice_fixes\input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\practice_fixes\player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\src\practice_fixes\play_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\Geode\entry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\CMakeFiles\geobot2.dir\Debug\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\CMakeFiles\geobot2.dir\Release\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\CMakeFiles\geobot2.dir\MinSizeRel\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\CMakeFiles\geobot2.dir\RelWithDebInfo\cmake_pch.hxx">
+      <Filter>Precompile Header File</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-src\include\std23\function_ref.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-src\include\std23\function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-src\include\std23\move_only_function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-src\include\std23\__functional_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{41A6473D-8968-34CA-83A9-D67C2B76FF90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Precompile Header File">
+      <UniqueIdentifier>{71469D4B-3CA0-3064-BCF2-17AE76B53861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9F5D84F2-6E38-3910-8304-DB09AA594497}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

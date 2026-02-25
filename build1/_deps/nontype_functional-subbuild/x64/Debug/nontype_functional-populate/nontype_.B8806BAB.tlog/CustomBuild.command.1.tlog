@@ -1,0 +1,150 @@
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\E79B451FC08A64F5C49C3760B11429D0\NONTYPE_FUNCTIONAL-POPULATE-MKDIR.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/tmp/nontype_functional-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/src/nontype_functional-populate-stamp/Debug/nontype_functional-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\E79B451FC08A64F5C49C3760B11429D0\NONTYPE_FUNCTIONAL-POPULATE-DOWNLOAD.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/tmp/nontype_functional-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/src/nontype_functional-populate-stamp/Debug/nontype_functional-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\E79B451FC08A64F5C49C3760B11429D0\NONTYPE_FUNCTIONAL-POPULATE-UPDATE.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/tmp/nontype_functional-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\E79B451FC08A64F5C49C3760B11429D0\NONTYPE_FUNCTIONAL-POPULATE-PATCH.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/src/nontype_functional-populate-stamp/Debug/nontype_functional-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\E79B451FC08A64F5C49C3760B11429D0\NONTYPE_FUNCTIONAL-POPULATE-CONFIGURE.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/src/nontype_functional-populate-stamp/Debug/nontype_functional-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\E79B451FC08A64F5C49C3760B11429D0\NONTYPE_FUNCTIONAL-POPULATE-BUILD.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/src/nontype_functional-populate-stamp/Debug/nontype_functional-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\E79B451FC08A64F5C49C3760B11429D0\NONTYPE_FUNCTIONAL-POPULATE-INSTALL.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/src/nontype_functional-populate-stamp/Debug/nontype_functional-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\E79B451FC08A64F5C49C3760B11429D0\NONTYPE_FUNCTIONAL-POPULATE-TEST.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/src/nontype_functional-populate-stamp/Debug/nontype_functional-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\67EFA53106167D1B0400ECE95421E377\NONTYPE_FUNCTIONAL-POPULATE-COMPLETE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/CMakeFiles/Debug/nontype_functional-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/nontype_functional-populate-prefix/src/nontype_functional-populate-stamp/Debug/nontype_functional-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKEFILES\3641D35859B6D147E3C874F2328B26D1\NONTYPE_FUNCTIONAL-POPULATE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\NONTYPE_FUNCTIONAL-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild -BC:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild --check-stamp-file C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/nontype_functional-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

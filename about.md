@@ -1,6 +1,6 @@
-# xdBot
+# geobot
 
-<cl>xdBot</c> is a simple botting tool designed to be easy for anyone to use; intended for <cg>showcases</c>.
+<cl>geobot</c> is a simple botting tool designed to be easy for anyone to use; intended for <cg>showcases</c>.
 
 # Features
 

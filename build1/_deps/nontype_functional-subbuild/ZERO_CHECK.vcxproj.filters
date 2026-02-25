@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-subbuild\CMakeFiles\3641d35859b6d147e3c874f2328b26d1\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{613CC74C-5503-35FF-98F2-376AD38891D6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

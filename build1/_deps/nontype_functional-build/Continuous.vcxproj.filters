@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\CMakeFiles\536f8211f1c2e3061c10b83b5c61937a\Continuous.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-build\CMakeFiles\Continuous" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B0B8782A-6A3C-31B5-AC02-99B2C3ED6461}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

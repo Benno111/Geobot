@@ -280,11 +280,19 @@ class $modify(GameLevelOptionsLayer) {
 		    ret,
 		    menu_selector(RecordLayer::openMenu2)
         );
+        btn->setID("geobot-button"_spr);
 		btn->setPosition({-174, -114});
 
-        if (CCLayer* layer = ret->getChildByType<CCLayer>(0))
+        if (CCLayer* layer = ret->getChildByType<CCLayer>(0)) {
+            if (CCNode* settingsBtn = layer->getChildByID("settings-button"))
+                if (CCMenu* menu = typeinfo_cast<CCMenu*>(settingsBtn->getParent())) {
+                    menu->addChild(btn);
+                    menu->updateLayout();
+                    return ret;
+                }
             if (CCMenu* menu = layer->getChildByType<CCMenu>(1))
                 menu->addChild(btn);
+        }
 
         return ret;
     }

@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-build\CMakeFiles\asp.dir\Unity\unity_0_cxx.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\src\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\src\assert.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\src\fs\fs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\src\platform\windows\Notify.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\src\simd\x86\CPUFeaturesX86.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\src\thread\Thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\src\thread\ThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\src\time\Duration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\src\time\Instant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\src\time\SystemTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\Log.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\collections.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\collections\SmallVec.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\data.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\data\Cow.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\data\nums.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\data\util.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\detail\Result.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\detail\config.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\format.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\fs.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\fs\Error.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\fs\fs.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\ArrayChunks.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Chain.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Copied.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Cycle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Filter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\FilterMap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Inspect.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Iter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Map.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Skip.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Split.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Take.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\Zip.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\iter\std.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\math.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\math\NumberCycle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\misc.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\misc\traits.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\net.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\ptr.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\ptr\BoxedString.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\ptr\PtrSwap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\ptr\SharedPtr.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\simd.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\simd\CPUFeatures.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\simd\base.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\sync.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\sync\Channel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\sync\Mutex.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\sync\Notify.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\sync\SpinLock.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\thread.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\thread\Thread.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\thread\ThreadPool.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\time.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\time\DateTime.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\time\Duration.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\time\Instant.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\time\SystemTime.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\time\chrono.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\time\detail.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\include\asp\time\sleep.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\asp2-src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{41A6473D-8968-34CA-83A9-D67C2B76FF90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9F5D84F2-6E38-3910-8304-DB09AA594497}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

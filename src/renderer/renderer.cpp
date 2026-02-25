@@ -146,12 +146,57 @@ class $modify(CCScheduler) {
 
 };
 
+static bool isValidFFmpegExePath(std::filesystem::path const& path) {
+    return std::filesystem::exists(path) && path.filename().string() == "ffmpeg.exe";
+}
+
+static std::filesystem::path resolveFFmpegPath() {
+    std::filesystem::path settingPath = Mod::get()->getSettingValue<std::filesystem::path>("ffmpeg_path");
+    if (isValidFFmpegExePath(settingPath))
+        return settingPath;
+
+    std::filesystem::path bundledPath = Mod::get()->getResourcesDir() / "ffmpeg.exe";
+    if (isValidFFmpegExePath(bundledPath))
+        return bundledPath;
+
+    std::filesystem::path gameDirPath = geode::dirs::getGameDir() / "ffmpeg.exe";
+    if (isValidFFmpegExePath(gameDirPath))
+        return gameDirPath;
+
+    return settingPath;
+}
+
+static std::string resolveHardwareAccelMode() {
+    std::string mode = Mod::get()->getSavedValue<std::string>("render_hardware_accel");
+    if (mode.empty())
+        mode = "Off";
+    return mode;
+}
+
+static std::string getHardwareCodecForMode(std::string const& mode) {
+    if (mode == "NVIDIA NVENC")
+        return "h264_nvenc";
+    if (mode == "AMD AMF")
+        return "h264_amf";
+    if (mode == "Intel QSV")
+        return "h264_qsv";
+    return "";
+}
+
+static ffmpeg::HardwareAccelerationType getApiHardwareAccelerationForMode(std::string const& mode) {
+    if (mode == "NVIDIA NVENC")
+        return ffmpeg::HardwareAccelerationType::CUDA;
+    if (mode == "AMD AMF" || mode == "Intel QSV")
+        return ffmpeg::HardwareAccelerationType::D3D11VA;
+    return ffmpeg::HardwareAccelerationType::NONE;
+}
+
 bool Renderer::shouldUseAPI() {
     #ifdef GEODE_IS_WINDOWS
 
     bool foundApi = Loader::get()->isModLoaded("eclipse.ffmpeg-api");
-    std::filesystem::path ffmpegPath = Mod::get()->getSettingValue<std::filesystem::path>("ffmpeg_path");
-    bool foundExe = std::filesystem::exists(ffmpegPath) && ffmpegPath.filename().string() == "ffmpeg.exe";
+    std::filesystem::path ffmpegPath = resolveFFmpegPath();
+    bool foundExe = isValidFFmpegExePath(ffmpegPath);
 
     return !foundExe && foundApi;
 
@@ -171,8 +216,8 @@ bool Renderer::toggle() {
     }
 
     bool foundApi = Loader::get()->isModLoaded("eclipse.ffmpeg-api");
-    std::filesystem::path ffmpegPath = Mod::get()->getSettingValue<std::filesystem::path>("ffmpeg_path");
-    bool foundExe = std::filesystem::exists(ffmpegPath) && ffmpegPath.filename().string() == "ffmpeg.exe";
+    std::filesystem::path ffmpegPath = resolveFFmpegPath();
+    bool foundExe = isValidFFmpegExePath(ffmpegPath);
 
     g.renderer.usingApi = Renderer::shouldUseAPI();
 
@@ -295,6 +340,10 @@ void Renderer::start() {
     bool fadeIn = pl->m_levelSettings->m_fadeIn;
     bool fadeOut = pl->m_levelSettings->m_fadeOut;
     int bitrateApi = geode::utils::numFromString<int64_t>(mod->getSavedValue<std::string>("render_bitrate")).unwrapOr(30) * 1000000;
+    std::string hardwareAccelMode = resolveHardwareAccelMode();
+    std::string hardwareCodec = getHardwareCodecForMode(hardwareAccelMode);
+    if (!usingApi && !hardwareCodec.empty() && (codec.empty() || codec == "libx264"))
+        codec = hardwareCodec;
 
     currentFrame.resize(width * height * 3, 0);
     renderedFrames.clear();
@@ -310,6 +359,7 @@ void Renderer::start() {
     settings.m_fps = fps;
     settings.m_outputFile = path;
     settings.m_colorspaceFilters = videoArgs;
+    settings.m_hardwareAccelerationType = getApiHardwareAccelerationForMode(hardwareAccelMode);
 
     if (!Mod::get()->setSavedValue("first_render_", true)) {
         FLAlertLayer::create(
@@ -563,11 +613,11 @@ void Renderer::start() {
         }
 
         std::error_code ec;
-        std::filesystem::remove(Utils::widen(path), ec);
+        std::filesystem::remove(path, ec);
         if (ec) log::warn("Failed to remove old render file.");
         else {
             ec.clear();
-            std::filesystem::rename(tempPath, Utils::widen(path), ec);
+            std::filesystem::rename(tempPath, path, ec);
             if (ec) log::warn("Failed to rename temp render file.");
         }
 
@@ -603,8 +653,8 @@ void Renderer::stop(int frame) {
         if (pl->m_isPaused && audioMode == AudioMode::Record) {
             if (PauseLayer* layer = Global::getPauseLayer()) {
                 CCScene* scene = CCDirector::sharedDirector()->getRunningScene();
-                if (RecordLayer* xdbot = scene->getChildByType<RecordLayer>(0))
-                    xdbot->onClose(nullptr);
+                if (RecordLayer* geobot = scene->getChildByType<RecordLayer>(0))
+                    geobot->onClose(nullptr);
                 
                 layer->onResume(nullptr);
             }

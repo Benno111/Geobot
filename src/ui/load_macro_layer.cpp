@@ -637,7 +637,7 @@ void MacroCell::handleLoad() {
 	g.restart = true;
 	g.macro.canChangeFPS = false;
 
-    g.macro.xdBotMacro = g.macro.botInfo.name == "xdBot";
+    g.macro.geobotMacro = g.macro.botInfo.name == "geobot";
 
 	loadLayer->keyBackClicked();
 

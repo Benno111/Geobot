@@ -1,0 +1,14 @@
+# Target labels
+ fmt-populate
+# Source files and their labels
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/fmt-populate
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/b1c6ba5219327c93149f4359c787a377/fmt-populate.rule
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/3724f742a964c992adb46b6b44e1e27d/fmt-populate-complete.rule
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-build.rule
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-configure.rule
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-download.rule
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-install.rule
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-mkdir.rule
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-patch.rule
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-test.rule
+C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/fmt-subbuild/CMakeFiles/ce73a824b09393d40a5b3fc3621df08a/fmt-populate-update.rule

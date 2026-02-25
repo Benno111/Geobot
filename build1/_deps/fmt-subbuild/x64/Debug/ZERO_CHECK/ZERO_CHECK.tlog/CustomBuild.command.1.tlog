@@ -1,0 +1,10 @@
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\B1C6BA5219327C93149F4359C787A377\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild -BC:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,150 @@
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\CE73A824B09393D40A5B3FC3621DF08A\FMT-POPULATE-MKDIR.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/tmp/fmt-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/Debug/fmt-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\CE73A824B09393D40A5B3FC3621DF08A\FMT-POPULATE-DOWNLOAD.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/tmp/fmt-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/Debug/fmt-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\CE73A824B09393D40A5B3FC3621DF08A\FMT-POPULATE-UPDATE.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/tmp/fmt-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\CE73A824B09393D40A5B3FC3621DF08A\FMT-POPULATE-PATCH.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/Debug/fmt-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\CE73A824B09393D40A5B3FC3621DF08A\FMT-POPULATE-CONFIGURE.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/Debug/fmt-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\CE73A824B09393D40A5B3FC3621DF08A\FMT-POPULATE-BUILD.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/Debug/fmt-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\CE73A824B09393D40A5B3FC3621DF08A\FMT-POPULATE-INSTALL.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/Debug/fmt-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\CE73A824B09393D40A5B3FC3621DF08A\FMT-POPULATE-TEST.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/Debug/fmt-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\3724F742A964C992ADB46B6B44E1E27D\FMT-POPULATE-COMPLETE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/Debug/fmt-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/fmt-populate-prefix/src/fmt-populate-stamp/Debug/fmt-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKEFILES\B1C6BA5219327C93149F4359C787A377\FMT-POPULATE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\FMT-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild -BC:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild --check-stamp-file C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/fmt-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\e79b451fc08a64f5c49c3760b11429d0\nontype_functional-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\e79b451fc08a64f5c49c3760b11429d0\nontype_functional-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\e79b451fc08a64f5c49c3760b11429d0\nontype_functional-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\e79b451fc08a64f5c49c3760b11429d0\nontype_functional-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\e79b451fc08a64f5c49c3760b11429d0\nontype_functional-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\e79b451fc08a64f5c49c3760b11429d0\nontype_functional-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\e79b451fc08a64f5c49c3760b11429d0\nontype_functional-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\e79b451fc08a64f5c49c3760b11429d0\nontype_functional-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\67efa53106167d1b0400ece95421e377\nontype_functional-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\3641d35859b6d147e3c874f2328b26d1\nontype_functional-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Benno111\Documents\GitHub\xdBot\build\_deps\nontype_functional-subbuild\CMakeFiles\nontype_functional-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{613CC74C-5503-35FF-98F2-376AD38891D6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

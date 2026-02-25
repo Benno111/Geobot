@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\ce73a824b09393d40a5b3fc3621df08a\fmt-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\ce73a824b09393d40a5b3fc3621df08a\fmt-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\ce73a824b09393d40a5b3fc3621df08a\fmt-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\ce73a824b09393d40a5b3fc3621df08a\fmt-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\ce73a824b09393d40a5b3fc3621df08a\fmt-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\ce73a824b09393d40a5b3fc3621df08a\fmt-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\ce73a824b09393d40a5b3fc3621df08a\fmt-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\ce73a824b09393d40a5b3fc3621df08a\fmt-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\3724f742a964c992adb46b6b44e1e27d\fmt-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\b1c6ba5219327c93149f4359c787a377\fmt-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\fmt-subbuild\CMakeFiles\fmt-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B7775E35-3996-3255-8B4C-CFCADCF83071}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

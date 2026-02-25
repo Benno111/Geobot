@@ -1,0 +1,173 @@
+{
+    "geode": "5.0.1",
+    "gd": {
+        "win": "2.2081",
+        "android": "2.2081"
+    },
+    "version": "2.5.0-alpha.1",
+    "id": "benno111.geobot",
+    "name": "geobot",
+    "developer": "Benno111",
+    "description": "A macro bot and utility toolkit for Geometry Dash 2.2081 on Geode 5.",
+    "repository": "https://github.com/Benno111/geobot",
+    "links": {
+        "source": "https://github.com/Benno111/geobot",
+        "homepage": "https://github.com/Benno111/geobot",
+        "community": "https://discord.gg/w6yvdzVzBd"
+    },
+    "issues": {
+        "info": "Report bugs and feature requests on the GitHub issue tracker.",
+        "url": "https://github.com/Benno111/geobot/issues/new"
+    },
+    "dependencies": {
+        "geode.node-ids": {
+            "version": ">=1.23.0"
+        }
+    },
+    "settings": {
+        "button-setting": {
+            "type": "custom:button",
+            "name": "Open Menu"
+        },
+        "macro_accuracy": {
+            "type": "string",
+            "name": "Accuracy",
+            "default": "Frame Fixes",
+            "one-of": [
+                "Vanilla",
+                "Input Fixes",
+                "Frame Fixes"
+            ]
+        },
+        "frame_offset": {
+            "name": "Frame Offset",
+            "description": "Adds a frame offset when recording or playing macros",
+            "type": "int",
+            "default": 0,
+            "min": -8,
+            "max": 8
+        },
+        "endscreen_button": {
+            "name": "Button at Endscreen",
+            "description": "Shows the menu button at the endscreen.",
+            "type": "bool",
+            "default": false
+        },
+        "ffmpeg_path": {
+            "name": "ffmpeg.exe Path",
+            "description": "The path for ffmpeg.exe, needed to use render.",
+            "type": "file",
+            "default": "",
+            "platforms": [
+                "win"
+            ]
+        },
+        "macros_folder": {
+            "name": "Macro Save Location",
+            "type": "folder",
+            "default": "{gd_dir}/macros"
+        },
+        "autosaves_folder": {
+            "name": "Auto Saves Location",
+            "type": "folder",
+            "default": "{gd_dir}/autosaves"
+        },
+        "render_folder": {
+            "name": "Render Save Location",
+            "type": "folder",
+            "default": "{gd_dir}/renders"
+        },
+        "background_color": {
+            "name": "Menu background color",
+            "type": "color",
+            "default": "#334499"
+        },
+        "editor_keybinds": {
+            "name": "Keybinds on editor",
+            "description": "Enables keybinds while on the level editor.",
+            "type": "bool",
+            "default": false,
+            "platforms": [
+                "win"
+            ]
+        },
+        "disable_keybinds": {
+            "name": "Disable keybinds",
+            "description": "Disables all keybinds.",
+            "type": "bool",
+            "default": false,
+            "platforms": [
+                "win"
+            ]
+        },
+        "recording_only_keybinds": {
+            "name": "Keybinds only while recording",
+            "description": "Keybinds only work while recording a macro.",
+            "type": "bool",
+            "default": false,
+            "platforms": [
+                "win"
+            ]
+        },
+        "level_settings_button": {
+            "name": "Show Button At Settings",
+            "description": "Shows the geobot button in the level settings layer.",
+            "type": "bool",
+            "default": false
+        },
+        "restore_page": {
+            "name": "Restore Settings Page",
+            "description": "Saves the page you were in when you closed the menu.",
+            "type": "bool",
+            "default": true
+        },
+        "disable_speedhack": {
+            "name": "Auto Disable Speedhack",
+            "description": "Disables Speedhack when exiting a level.",
+            "type": "bool",
+            "default": true
+        },
+        "frame_fixes_limit": {
+            "name": "Frame Fixes Limit in FPS",
+            "description": "Limits how many frame fixes per second there will be.",
+            "type": "int",
+            "default": 240,
+            "min": 1
+        },
+        "auto_stop_playing": {
+            "name": "Auto Stop Playing",
+            "description": "Stops playing the macro when it ends.",
+            "type": "bool",
+            "default": true
+        },
+        "lock_delta": {
+            "name": "Lock Delta",
+            "description": "Locks the delta.",
+            "type": "bool",
+            "default": false
+        }
+    },
+    "resources": {
+        "sprites": [
+            "resources/GJ_commentSide2_001_White.png",
+            "resources/GJ_commentTop2_001_White.png"
+        ],
+        "files": [
+            "about.md",
+            "changelog.md",
+            "support.md",
+            "logo.png",
+            "resources/default_hold_click.mp3",
+            "resources/default_release_click.mp3",
+            "resources/default_hold_left.mp3",
+            "resources/default_release_left.mp3",
+            "resources/default_hold_right.mp3",
+            "resources/default_release_right.mp3"
+        ]
+    },
+    "tags": [
+        "gameplay",
+        "utility",
+        "cheat"
+    ]
+}

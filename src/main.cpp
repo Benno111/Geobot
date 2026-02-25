@@ -201,12 +201,6 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
     PlayLayer* pl = PlayLayer::get();
 
-    if (!pl) {
-      // handlePlaying(Global::getCurrentFrame(true));
-      // log::debug("{}", Global::getCurrentFrame(true));
-      return GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
-    }
-
     Global::updateSeed();
 
     bool rendering = g.renderer.recording || g.renderer.recordingAudio;
@@ -218,17 +212,19 @@ class $modify(BGLHook, GJBaseGameLayer) {
         g.renderer.dontRecordAudio = false;
       }
 
-      int frame = Global::getCurrentFrame();
-      if (frame > 2 && g.firstAttempt && g.macro.xdBotMacro) {
+      int frame = Global::getCurrentFrame(!pl);
+      if (frame > 2 && g.firstAttempt && g.macro.geobotMacro) {
         g.firstAttempt = false;
 
-        if ((m_levelSettings->m_platformerMode || rendering) && !m_levelEndAnimationStarted)
-          return pl->resetLevelFromStart();
-        else if (!m_levelEndAnimationStarted)
-          return pl->resetLevel();
+        if (pl && !m_levelEndAnimationStarted) {
+          if (m_levelSettings->m_platformerMode || rendering)
+            return pl->resetLevelFromStart();
+          else
+            return pl->resetLevel();
+        }
       }
 
-      if (g.previousFrame == frame && frame != 0 && g.macro.xdBotMacro)
+      if (g.previousFrame == frame && frame != 0 && g.macro.geobotMacro)
         return GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
 
     }
@@ -238,10 +234,10 @@ class $modify(BGLHook, GJBaseGameLayer) {
     if (g.state == state::none)
       return;
 
-    int frame = Global::getCurrentFrame();
+    int frame = Global::getCurrentFrame(!pl);
     g.previousFrame = frame;
 
-    if (g.macro.xdBotMacro && g.restart && !m_levelEndAnimationStarted) {
+    if (pl && g.macro.geobotMacro && g.restart && !m_levelEndAnimationStarted) {
       if ((m_levelSettings->m_platformerMode && g.state != state::none) || g.renderer.recording || g.renderer.recordingAudio)
         return pl->resetLevelFromStart();
       else
@@ -252,7 +248,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
       handleRecording(frame);
 
     if (g.state == state::playing)
-      handlePlaying(Global::getCurrentFrame());
+      handlePlaying(frame);
 
   }
 
@@ -348,7 +344,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
       }
     }
 
-    if ((!g.frameFixes && !g.inputFixes) || !PlayLayer::get()) return;
+    if (!g.frameFixes && !g.inputFixes) return;
 
     while (g.currentFrameFix < g.macro.frameFixes.size() && frame >= g.macro.frameFixes[g.currentFrameFix].frame) {
       auto& fix = g.macro.frameFixes[g.currentFrameFix];

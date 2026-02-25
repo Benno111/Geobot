@@ -1,0 +1,150 @@
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKEFILES\91529282ACCA58552AC96ED1616970A0\ASP2-POPULATE-MKDIR.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/tmp/asp2-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/src/asp2-populate-stamp/Debug/asp2-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKEFILES\91529282ACCA58552AC96ED1616970A0\ASP2-POPULATE-DOWNLOAD.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/tmp/asp2-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/src/asp2-populate-stamp/Debug/asp2-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKEFILES\91529282ACCA58552AC96ED1616970A0\ASP2-POPULATE-UPDATE.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/tmp/asp2-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKEFILES\91529282ACCA58552AC96ED1616970A0\ASP2-POPULATE-PATCH.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/src/asp2-populate-stamp/Debug/asp2-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKEFILES\91529282ACCA58552AC96ED1616970A0\ASP2-POPULATE-CONFIGURE.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/src/asp2-populate-stamp/Debug/asp2-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKEFILES\91529282ACCA58552AC96ED1616970A0\ASP2-POPULATE-BUILD.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/src/asp2-populate-stamp/Debug/asp2-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKEFILES\91529282ACCA58552AC96ED1616970A0\ASP2-POPULATE-INSTALL.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/src/asp2-populate-stamp/Debug/asp2-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKEFILES\91529282ACCA58552AC96ED1616970A0\ASP2-POPULATE-TEST.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\asp2-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/src/asp2-populate-stamp/Debug/asp2-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKEFILES\61C4BD45D8ED39CF76EA2DD61A0131A5\ASP2-POPULATE-COMPLETE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/CMakeFiles/Debug/asp2-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/asp2-populate-prefix/src/asp2-populate-stamp/Debug/asp2-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKEFILES\44787EE74F4068C2F36402E8C881621B\ASP2-POPULATE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\ASP2-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild -BC:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild --check-stamp-file C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/asp2-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-build\CMakeFiles\arc.dir\Unity\unity_0_cxx.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\Util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\future\Context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\future\Pollable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\runtime\Runtime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\sync\Notify.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\sync\Semaphore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\task\Task.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\task\Waker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\time\Interval.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\time\Sleep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\src\runtime\TimeDriver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-src\include\std23\function_ref.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-src\include\std23\function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-src\include\std23\move_only_function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\nontype_functional-src\include\std23\__functional_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{41A6473D-8968-34CA-83A9-D67C2B76FF90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9F5D84F2-6E38-3910-8304-DB09AA594497}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -61,6 +61,8 @@ public:
 	CCTextInputNode* speedhackInput = nullptr;
 	CCTextInputNode* respawnInput = nullptr;
 	CCTextInputNode* tpsInput = nullptr;
+	Slider* pageSlider = nullptr;
+	CCLabelBMFont* pageLabel = nullptr;
 
 	std::vector<CCNode*> nodes;
 	std::vector<CCSprite*> dots;
@@ -70,6 +72,7 @@ public:
 	Mod* mod = nullptr;
 
 	bool cursorWasHidden = false;
+	bool updatingPageSlider = false;
 
 protected:
 
@@ -131,6 +134,7 @@ public:
 	void macroInfo(CCObject*);
 
 	void updatePage(CCObject* obj);
+	void onPageSlider(CCObject*);
 
 	void toggleSetting(CCObject* obj);
 

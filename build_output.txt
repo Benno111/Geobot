@@ -2,11 +2,11 @@ ninja: warning: premature end of file; recovering
 [0/2] Re-checking globbed directories...
 [1/29] Building CXX object bindings/CMakeFiles/GeodeBindings.dir/bindings/2.2081/inline/GameStatsManager.cpp.obj
 [2/29] Building CXX object bindings/CMakeFiles/GeodeBindings.dir/bindings/2.2081/inline/DialogLayer.cpp.obj
-[3/29] Building CXX object CMakeFiles/xdBot2.dir/src/global.cpp.obj
-[4/29] Building CXX object CMakeFiles/xdBot2.dir/src/hacks/other.cpp.obj
-[5/29] Building CXX object CMakeFiles/xdBot2.dir/src/macro.cpp.obj
-[6/29] Building CXX object CMakeFiles/xdBot2.dir/src/keybinds.cpp.obj
-[7/29] Building CXX object CMakeFiles/xdBot2.dir/src/hacks/layout_mode.cpp.obj
-[8/29] Building CXX object CMakeFiles/xdBot2.dir/src/hacks/frame_stepper.cpp.obj
-[9/29] Building CXX object CMakeFiles/xdBot2.dir/src/renderer/renderer.cpp.obj
-[10/29] Building CXX object CMakeFiles/xdBot2.dir/src/main.cpp.obj
+[3/29] Building CXX object CMakeFiles/geobot2.dir/src/global.cpp.obj
+[4/29] Building CXX object CMakeFiles/geobot2.dir/src/hacks/other.cpp.obj
+[5/29] Building CXX object CMakeFiles/geobot2.dir/src/macro.cpp.obj
+[6/29] Building CXX object CMakeFiles/geobot2.dir/src/keybinds.cpp.obj
+[7/29] Building CXX object CMakeFiles/geobot2.dir/src/hacks/layout_mode.cpp.obj
+[8/29] Building CXX object CMakeFiles/geobot2.dir/src/hacks/frame_stepper.cpp.obj
+[9/29] Building CXX object CMakeFiles/geobot2.dir/src/renderer/renderer.cpp.obj
+[10/29] Building CXX object CMakeFiles/geobot2.dir/src/main.cpp.obj

@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/arc-populate"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/908b769f1e22fa25b50ce616a7958ba5/arc-populate.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/1d4d4c16c7756804910576a5c96de6e3/arc-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/59882516f6a49bf173c151810c9e5ea8/arc-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/59882516f6a49bf173c151810c9e5ea8/arc-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/59882516f6a49bf173c151810c9e5ea8/arc-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/59882516f6a49bf173c151810c9e5ea8/arc-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/59882516f6a49bf173c151810c9e5ea8/arc-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/59882516f6a49bf173c151810c9e5ea8/arc-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/59882516f6a49bf173c151810c9e5ea8/arc-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/arc-subbuild/CMakeFiles/59882516f6a49bf173c151810c9e5ea8/arc-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"arc-populate"
+		],
+		"name" : "arc-populate"
+	}
+}

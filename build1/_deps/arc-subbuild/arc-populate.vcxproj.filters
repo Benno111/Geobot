@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\59882516f6a49bf173c151810c9e5ea8\arc-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\59882516f6a49bf173c151810c9e5ea8\arc-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\59882516f6a49bf173c151810c9e5ea8\arc-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\59882516f6a49bf173c151810c9e5ea8\arc-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\59882516f6a49bf173c151810c9e5ea8\arc-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\59882516f6a49bf173c151810c9e5ea8\arc-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\59882516f6a49bf173c151810c9e5ea8\arc-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\59882516f6a49bf173c151810c9e5ea8\arc-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\1d4d4c16c7756804910576a5c96de6e3\arc-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\908b769f1e22fa25b50ce616a7958ba5\arc-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\arc-subbuild\CMakeFiles\arc-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{61E67938-A7E0-393B-9779-8DE23EF50683}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

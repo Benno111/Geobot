@@ -1,0 +1,150 @@
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKEFILES\45FCF555947FB3ED716D3DA4A84EF694\BINDINGS-POPULATE-MKDIR.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/tmp/bindings-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/src/bindings-populate-stamp/Debug/bindings-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKEFILES\45FCF555947FB3ED716D3DA4A84EF694\BINDINGS-POPULATE-DOWNLOAD.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/tmp/bindings-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/src/bindings-populate-stamp/Debug/bindings-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKEFILES\45FCF555947FB3ED716D3DA4A84EF694\BINDINGS-POPULATE-UPDATE.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\bindings-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/tmp/bindings-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKEFILES\45FCF555947FB3ED716D3DA4A84EF694\BINDINGS-POPULATE-PATCH.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/src/bindings-populate-stamp/Debug/bindings-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKEFILES\45FCF555947FB3ED716D3DA4A84EF694\BINDINGS-POPULATE-CONFIGURE.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\bindings-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/src/bindings-populate-stamp/Debug/bindings-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKEFILES\45FCF555947FB3ED716D3DA4A84EF694\BINDINGS-POPULATE-BUILD.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\bindings-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/src/bindings-populate-stamp/Debug/bindings-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKEFILES\45FCF555947FB3ED716D3DA4A84EF694\BINDINGS-POPULATE-INSTALL.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\bindings-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/src/bindings-populate-stamp/Debug/bindings-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKEFILES\45FCF555947FB3ED716D3DA4A84EF694\BINDINGS-POPULATE-TEST.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\geobot\build\_deps\bindings-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/src/bindings-populate-stamp/Debug/bindings-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKEFILES\A0DC3FB335204DA047331AD769C92ACD\BINDINGS-POPULATE-COMPLETE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/CMakeFiles/Debug/bindings-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/bindings-populate-prefix/src/bindings-populate-stamp/Debug/bindings-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKEFILES\EE7091692BEB661780C09323235E0DF6\BINDINGS-POPULATE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\geobot\BUILD\_DEPS\BINDINGS-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild -BC:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild --check-stamp-file C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/bindings-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

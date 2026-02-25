@@ -1,0 +1,3 @@
+C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/json-subbuild/CMakeFiles/json-populate.dir
+C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/json-subbuild/CMakeFiles/ALL_BUILD.dir
+C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/json-subbuild/CMakeFiles/ZERO_CHECK.dir

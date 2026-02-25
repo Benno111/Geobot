@@ -1,0 +1,24 @@
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\XDBOT\BUILD\CMAKEFILES\A6222A86D50C84F8F0993F99426B1482\CODEGENDATA.TXT.RULE
+setlocal
+cd C:\Users\Benno111\Documents\GitHub\xdBot\build\bindings\codegen
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+.\Codegen Win64 C:/Users/Benno111/Documents/GitHub/xdBot/build/_deps/bindings-src/bindings/2.2081 C:/Users/Benno111/Documents/GitHub/xdBot/build/bindings/bindings
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\BENNO111\DOCUMENTS\GITHUB\XDBOT\BUILD\_DEPS\BINDINGS-SRC\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Benno111/Documents/GitHub/xdBot -BC:/Users/Benno111/Documents/GitHub/xdBot/build --check-stamp-file C:/Users/Benno111/Documents/GitHub/xdBot/build/bindings/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

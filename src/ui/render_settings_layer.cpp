@@ -10,6 +10,13 @@ class $modify(SliderTouchLogic) {
     }
 };
 
+static const std::vector<std::string> kHardwareAccelModes = {
+    "Off",
+    "NVIDIA NVENC",
+    "AMD AMF",
+    "Intel QSV"
+};
+
 void RenderSettingsLayer::textChanged(CCTextInputNode* node) {
 
     if (secondsInput->getString() != "" && node == secondsInput) {
@@ -63,6 +70,7 @@ void RenderSettingsLayer::onDefaults(CCObject*) {
             g.mod->setSavedValue("render_fade_out_time", std::to_string(2));
             g.mod->setSavedValue("render_hide_endscreen", false);
             g.mod->setSavedValue("render_hide_levelcomplete", false);
+            g.mod->setSavedValue("render_hardware_accel", std::string("Off"));
 
             for (CCNode* child : CCDirector::sharedDirector()->getRunningScene()->getChildrenExt()) {
                 if (RecordLayer* layer = typeinfo_cast<RecordLayer*>(child)) {
@@ -92,6 +100,9 @@ bool RenderSettingsLayer::setup() {
     m_title->setPosition(m_title->getPosition() + offset);
     
     mod = Mod::get();
+
+    if (mod->getSavedValue<std::string>("render_hardware_accel").empty())
+        mod->setSavedValue("render_hardware_accel", std::string("Off"));
     
     Utils::setBackgroundColor(m_bgSprite);
 
@@ -398,6 +409,39 @@ bool RenderSettingsLayer::setup() {
     toggle->setID("render_hide_levelcomplete");
     menu->addChild(toggle);
 
+    lbl = CCLabelBMFont::create("Hardware Accel", "goldFont.fnt");
+    lbl->setScale(0.36f);
+    lbl->setPosition({188, -71});
+    menu->addChild(lbl);
+
+    CCScale9Sprite* accelBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    accelBg->setColor({ 0, 0, 0 });
+    accelBg->setOpacity(90);
+    accelBg->setScale(0.3125f);
+    accelBg->setPosition({188, -87});
+    accelBg->setAnchorPoint({ 0.5f, 0.5f });
+    accelBg->setContentSize({ 255, 60 });
+    menu->addChild(accelBg);
+
+    CCSprite* spr3 = CCSprite::createWithSpriteFrameName("edit_leftBtn_001.png");
+    spr3->setScale(0.55f);
+    CCMenuItemSpriteExtra* accelBtn = CCMenuItemSpriteExtra::create(spr3, this, menu_selector(RenderSettingsLayer::onSwitchHardwareAccel));
+    accelBtn->setPosition({140, -87});
+    accelBtn->setID("left");
+    menu->addChild(accelBtn);
+
+    spr3 = CCSprite::createWithSpriteFrameName("edit_rightBtn_001.png");
+    spr3->setScale(0.55f);
+    accelBtn = CCMenuItemSpriteExtra::create(spr3, this, menu_selector(RenderSettingsLayer::onSwitchHardwareAccel));
+    accelBtn->setPosition({236, -87});
+    menu->addChild(accelBtn);
+
+    hardwareAccelLabel = CCLabelBMFont::create("Off", "bigFont.fnt");
+    hardwareAccelLabel->setScale(0.29f);
+    hardwareAccelLabel->setPosition({188, -87});
+    menu->addChild(hardwareAccelLabel);
+    updateHardwareAccelLabel();
+
     lbl = CCLabelBMFont::create("SFX Volume", "goldFont.fnt");
     lbl->setScale(0.475f);
     lbl->setPosition({188, 42});
@@ -513,3 +557,32 @@ void RenderSettingsLayer::showInfoPopup(CCObject* obj) {
         "Ok"
     )->show();
 };
+
+void RenderSettingsLayer::onSwitchHardwareAccel(CCObject* obj) {
+    std::string current = Mod::get()->getSavedValue<std::string>("render_hardware_accel");
+    size_t index = 0;
+    for (size_t i = 0; i < kHardwareAccelModes.size(); i++) {
+        if (kHardwareAccelModes[i] == current) {
+            index = i;
+            break;
+        }
+    }
+
+    bool left = static_cast<CCNode*>(obj)->getID() == "left";
+    if (left)
+        index = (index + kHardwareAccelModes.size() - 1) % kHardwareAccelModes.size();
+    else
+        index = (index + 1) % kHardwareAccelModes.size();
+
+    Mod::get()->setSavedValue("render_hardware_accel", kHardwareAccelModes[index]);
+    updateHardwareAccelLabel();
+}
+
+void RenderSettingsLayer::updateHardwareAccelLabel() {
+    if (!hardwareAccelLabel) return;
+
+    std::string current = Mod::get()->getSavedValue<std::string>("render_hardware_accel");
+    if (current.empty())
+        current = "Off";
+    hardwareAccelLabel->setString(current.c_str());
+}

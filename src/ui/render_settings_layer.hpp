@@ -16,6 +16,7 @@ public:
 	CCTextInputNode* audioArgsInput = nullptr;
 	CCTextInputNode* secondsInput = nullptr;
 	CCTextInputNode* videoArgsInput = nullptr;
+    CCLabelBMFont* hardwareAccelLabel = nullptr;
 
 	CCMenuItemToggler* onlySongToggle = nullptr;
 	CCMenuItemToggler* recordAudioToggle = nullptr;
@@ -45,4 +46,7 @@ public:
 	void onDefaults(CCObject*);
 
 	void showInfoPopup(CCObject*);
+
+    void onSwitchHardwareAccel(CCObject*);
+    void updateHardwareAccelLabel();
 };

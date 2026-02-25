@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/tuliphook-populate"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/ca8e2bc6d3b589a58197f114e717e303/tuliphook-populate.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/98e7652e8be82eeac3cb3aae689072d5/tuliphook-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/d950463ab4593942b7629b5c7d299adc/tuliphook-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/d950463ab4593942b7629b5c7d299adc/tuliphook-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/d950463ab4593942b7629b5c7d299adc/tuliphook-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/d950463ab4593942b7629b5c7d299adc/tuliphook-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/d950463ab4593942b7629b5c7d299adc/tuliphook-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/d950463ab4593942b7629b5c7d299adc/tuliphook-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/d950463ab4593942b7629b5c7d299adc/tuliphook-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/Benno111/Documents/GitHub/geobot/build/_deps/tuliphook-subbuild/CMakeFiles/d950463ab4593942b7629b5c7d299adc/tuliphook-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"tuliphook-populate"
+		],
+		"name" : "tuliphook-populate"
+	}
+}

@@ -127,6 +127,12 @@ private:
         m->setSavedValue("render_bitrate", json["bitrate"].asString().unwrapOrDefault());
         m->setSavedValue("render_fps", json["fps"].asString().unwrapOrDefault());
         m->setSavedValue("render_codec", json["codec"].asString().unwrapOrDefault());
+        {
+            std::string accel = json["hardware_accel"].asString().unwrapOrDefault();
+            if (accel.empty())
+                accel = "Off";
+            m->setSavedValue("render_hardware_accel", accel);
+        }
         m->setSavedValue("render_args", json["args"].asString().unwrapOrDefault());
         m->setSavedValue("render_video_args", json["video_args"].asString().unwrapOrDefault());
         m->setSavedValue("render_audio_args", json["audio_args"].asString().unwrapOrDefault());
@@ -157,6 +163,7 @@ private:
         json["bitrate"] = m->getSavedValue<std::string>("render_bitrate");
         json["fps"] = m->getSavedValue<std::string>("render_fps");
         json["codec"] = m->getSavedValue<std::string>("render_codec");
+        json["hardware_accel"] = m->getSavedValue<std::string>("render_hardware_accel");
         json["args"] = m->getSavedValue<std::string>("render_args");
         json["video_args"] = m->getSavedValue<std::string>("render_video_args");
         json["audio_args"] = m->getSavedValue<std::string>("render_audio_args");
