@@ -293,7 +293,7 @@ void RecordLayer::togglePlaying(CCObject*) {
 
         if (pl) {
             if (!pl->m_isPaused && !pl->m_levelEndAnimationStarted)
-                pl->m_levelSettings->m_platformerMode ? pl->resetLevelFromStart() : pl->resetLevel();
+                pl->resetLevelFromStart();
             else
                 g.restart = true;
         }

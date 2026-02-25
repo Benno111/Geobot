@@ -217,10 +217,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
         g.firstAttempt = false;
 
         if (pl && !m_levelEndAnimationStarted) {
-          if (m_levelSettings->m_platformerMode || rendering)
-            return pl->resetLevelFromStart();
-          else
-            return pl->resetLevel();
+          return pl->resetLevelFromStart();
         }
       }
 
@@ -238,10 +235,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
     g.previousFrame = frame;
 
     if (pl && g.macro.geobotMacro && g.restart && !m_levelEndAnimationStarted) {
-      if ((m_levelSettings->m_platformerMode && g.state != state::none) || g.renderer.recording || g.renderer.recordingAudio)
-        return pl->resetLevelFromStart();
-      else
-        return pl->resetLevel();
+      return pl->resetLevelFromStart();
     }
 
     if (g.state == state::recording)
