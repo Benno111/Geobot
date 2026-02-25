@@ -167,6 +167,7 @@ int Macro::save(std::string author, std::string desc, std::string path, bool jso
     g.macro.description = desc;
     g.macro.duration = g.macro.inputs.back().frame / g.macro.framerate;
 
+#ifdef GEODE_IS_WINDOWS
     std::wstring widePath = Utils::widen(path);
 
     if (widePath == L"Widen Error")
@@ -176,6 +177,9 @@ int Macro::save(std::string author, std::string desc, std::string path, bool jso
 
     if (!f)
         f.open(path, std::ios::binary);
+#else
+    std::ofstream f(path, std::ios::binary);
+#endif
 
     if (!f)
         return 20;
@@ -216,7 +220,13 @@ Macro Macro::XDtoGDR(std::filesystem::path path) {
     newMacro.description = "N/A";
     newMacro.gameVersion = GEODE_GD_VERSION;
 
-    std::ifstream file(Utils::widen(path.string()));
+    std::ifstream file(
+#ifdef GEODE_IS_WINDOWS
+        Utils::widen(path.string())
+#else
+        path.string()
+#endif
+    );
     std::string line;
 
     if (!file.is_open()) {

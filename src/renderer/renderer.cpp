@@ -613,11 +613,11 @@ void Renderer::start() {
         }
 
         std::error_code ec;
-        std::filesystem::remove(Utils::widen(path), ec);
+        std::filesystem::remove(path, ec);
         if (ec) log::warn("Failed to remove old render file.");
         else {
             ec.clear();
-            std::filesystem::rename(tempPath, Utils::widen(path), ec);
+            std::filesystem::rename(tempPath, path, ec);
             if (ec) log::warn("Failed to rename temp render file.");
         }
 
