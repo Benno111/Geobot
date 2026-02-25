@@ -72,7 +72,10 @@ CCNode* findNodeByIDRecursive(CCNode* root, const char* id) {
     CCArray* children = root->getChildren();
     if (!children) return nullptr;
 
-
+    for (int i = 0; i < children->count(); i++) {
+        CCNode* child = dynamic_cast<CCNode*>(children->objectAtIndex(i));
+        if (CCNode* found = findNodeByIDRecursive(child, id))
+            return found;
     }
     return nullptr;
 }
@@ -101,6 +104,8 @@ void addgeobotPauseButton(cocos2d::CCLayer* layer) {
 
     CCSprite* sprite = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
     sprite->setScale(0.35f);
+
+    CCMenuItemSpriteExtra* btn = CCMenuItemSpriteExtra::create(sprite, layer, menu_selector(RecordLayer::openMenu2));
 
     if (auto settingsMenu = findSettingsMenu(layer)) {
         settingsMenu->addChild(btn);
