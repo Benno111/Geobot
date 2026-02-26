@@ -21,7 +21,8 @@ enum InputType {
 	Tps,
 	FrameOffset,
 	FrameFixesLimit,
-	Accuracy
+	Accuracy,
+	FramePerfectMode
 };
 
 struct RecordSetting {
@@ -147,6 +148,7 @@ public:
 
 	void onDiscord(CCObject*);
 	void onCycleAccuracy(CCObject*);
+	void onCycleFramePerfectMode(CCObject*);
 
 	void updateTPS();
 

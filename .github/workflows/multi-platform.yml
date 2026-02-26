@@ -33,6 +33,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Bundle FFmpeg
+        shell: pwsh
+        env:
+          BUILD_TARGET: ${{ matrix.config.target || 'Windows' }}
+          FFMPEG_ANDROID32_URL: ${{ vars.FFMPEG_ANDROID32_URL }}
+          FFMPEG_ANDROID64_URL: ${{ vars.FFMPEG_ANDROID64_URL }}
+        run: |
+          ./scripts/fetch_ffmpeg.ps1 -Target "$env:BUILD_TARGET"
+
       - name: Build the mod
         uses: geode-sdk/build-geode-mod@main
         with:

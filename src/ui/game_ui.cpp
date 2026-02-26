@@ -7,6 +7,7 @@ class $modify(PlayLayer) {
 
     struct Fields {
         CCLabelBMFont* frameLabel = nullptr;
+        CCLabelBMFont* framePerfectLabel = nullptr;
     };
 
     void postUpdate(float dt) {
@@ -15,6 +16,36 @@ class $modify(PlayLayer) {
 
         if (g.state != state::none && g.frameLabel && !g.renderer.recording)
             m_fields->frameLabel->setString(("Frame: " + std::to_string(Global::getCurrentFrame())).c_str());
+
+        if (m_fields->framePerfectLabel) {
+            std::string mode = g.mod->getSavedValue<std::string>("frame_perfect_overlay_mode");
+            if (mode != "Never" && mode != "When" && mode != "Always")
+                mode = "When";
+
+            bool labelAllowed = !g.renderer.recording &&
+                                !g.mod->getSavedValue<bool>("macro_hide_labels") &&
+                                !(g.renderer.recording && g.mod->getSavedValue<bool>("render_hide_labels"));
+
+            bool canShow = false;
+            if (mode == "Always")
+                canShow = labelAllowed;
+            else if (mode == "When")
+                canShow = labelAllowed && g.framePerfectOverlayFrames > 0;
+
+            if (canShow && mode == "When") {
+                m_fields->framePerfectLabel->setVisible(true);
+                m_fields->framePerfectLabel->setString(g.framePerfectOverlayText.c_str());
+                g.framePerfectOverlayFrames--;
+            } else if (canShow && mode == "Always") {
+                m_fields->framePerfectLabel->setVisible(true);
+                if (g.framePerfectOverlayText.empty())
+                    m_fields->framePerfectLabel->setString("Frame Perfect Overlay");
+                else
+                    m_fields->framePerfectLabel->setString(g.framePerfectOverlayText.c_str());
+            } else {
+                m_fields->framePerfectLabel->setVisible(false);
+            }
+        }
     }
 
     bool init(GJGameLevel * level, bool b1, bool b2) {
@@ -24,6 +55,7 @@ class $modify(PlayLayer) {
         Interface::addButtons(this);
 
         m_fields->frameLabel = static_cast<CCLabelBMFont*>(getChildByID("frame-label"_spr));
+        m_fields->framePerfectLabel = static_cast<CCLabelBMFont*>(getChildByID("frame-perfect-label"_spr));
 
         return true;
     }
@@ -51,6 +83,15 @@ void Interface::addLabels(PlayLayer* pl) {
     lbl->setID("recording-audio-label"_spr);
     lbl->setZOrder(300);
     lbl->setOpacity(75);
+    lbl->setVisible(false);
+    pl->addChild(lbl);
+
+    lbl = CCLabelBMFont::create("", "chatFont.fnt");
+    lbl->setPosition({ CCDirector::sharedDirector()->getWinSize().width / 2.f, 30.f });
+    lbl->setAnchorPoint({ 0.5f, 0.5f });
+    lbl->setID("frame-perfect-label"_spr);
+    lbl->setZOrder(301);
+    lbl->setScale(0.7f);
     lbl->setVisible(false);
     pl->addChild(lbl);
 

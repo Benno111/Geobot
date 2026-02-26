@@ -19,6 +19,7 @@
 const std::vector<std::vector<RecordSetting>> settings {
 	{
 		{ "Accuracy:", "macro_accuracy", InputType::Accuracy, 0.4f },
+		{ "FP Overlay:", "frame_perfect_overlay_mode", InputType::FramePerfectMode, 0.4f },
 		{ "Frame Offset:", "frame_offset", InputType::FrameOffset, 0.4f },
 		{ "Frame Fix Limit:", "frame_fixes_limit", InputType::FrameFixesLimit, 0.4f },
 		{ "Lock Delta:", "lock_delta", InputType::None },
@@ -80,6 +81,12 @@ const std::vector<std::string> kAccuracyModes = {
     "Frame Fixes"
 };
 
+const std::vector<std::string> kFramePerfectOverlayModes = {
+    "Never",
+    "When",
+    "Always"
+};
+
 std::string getSavedAccuracyMode(Mod* mod) {
     std::string value = mod->getSavedValue<std::string>("macro_accuracy");
     for (auto const& mode : kAccuracyModes) {
@@ -93,6 +100,15 @@ void applyAccuracyMode(std::string const& value) {
     auto& g = Global::get();
     g.frameFixes = value == "Frame Fixes";
     g.inputFixes = value == "Input Fixes";
+}
+
+std::string getSavedFramePerfectOverlayMode(Mod* mod) {
+    std::string value = mod->getSavedValue<std::string>("frame_perfect_overlay_mode");
+    for (auto const& mode : kFramePerfectOverlayModes) {
+        if (value == mode)
+            return value;
+    }
+    return "When";
 }
 
 GJGameLevel* getCurrentLevelForMenus() {
@@ -857,6 +873,15 @@ bool RecordLayer::setup() {
     lbl->setScale(0.7f);
     menu->addChild(lbl);
 
+    CCScale9Sprite* settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    settingsBg->setScale(0.7f);
+    settingsBg->setColor({ 0,0,0 });
+    settingsBg->setOpacity(90);
+    settingsBg->setPosition({ -20.f, -85.f });
+    settingsBg->setAnchorPoint({ 0.f, 0.f });
+    settingsBg->setContentSize({ 246.f, 181.f });
+    menu->addChild(settingsBg);
+
     settingsScroll = geode::ScrollLayer::create(cocos2d::CCSize { 246.f, 181.f });
     settingsScroll->setPosition({ -20.f, -85.f });
     settingsScroll->setTouchEnabled(true);
@@ -1158,6 +1183,23 @@ void RecordLayer::onCycleAccuracy(CCObject*) {
         loadSettingsList();
 }
 
+void RecordLayer::onCycleFramePerfectMode(CCObject*) {
+    std::string current = getSavedFramePerfectOverlayMode(mod);
+    size_t index = 0;
+    for (size_t i = 0; i < kFramePerfectOverlayModes.size(); i++) {
+        if (kFramePerfectOverlayModes[i] == current) {
+            index = i;
+            break;
+        }
+    }
+
+    index = (index + 1) % kFramePerfectOverlayModes.size();
+    mod->setSavedValue("frame_perfect_overlay_mode", kFramePerfectOverlayModes[index]);
+
+    if (settingsMenu)
+        loadSettingsList();
+}
+
 void RecordLayer::setToggleMember(CCMenuItemToggler* toggle, std::string id) {
     if (id == "macro_speedhack_enabled") speedhackToggle = toggle;
     if (id == "macro_show_trajectory") trajectoryToggle = toggle;
@@ -1443,6 +1485,20 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             btnSpr,
             this,
             menu_selector(RecordLayer::onCycleAccuracy)
+        );
+        btn->setPosition(ccp(127.5, yPos));
+
+        nodes.push_back(static_cast<CCNode*>(btn));
+        targetMenu->addChild(btn);
+    }
+
+    if (sett.input == InputType::FramePerfectMode) {
+        ButtonSprite* btnSpr = ButtonSprite::create(getSavedFramePerfectOverlayMode(mod).c_str());
+        btnSpr->setScale(0.4f);
+        CCMenuItemSpriteExtra* btn = CCMenuItemSpriteExtra::create(
+            btnSpr,
+            this,
+            menu_selector(RecordLayer::onCycleFramePerfectMode)
         );
         btn->setPosition(ccp(127.5, yPos));
 

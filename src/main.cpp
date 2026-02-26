@@ -98,6 +98,8 @@ class $modify(PlayLayer) {
   bool init(GJGameLevel * level, bool b1, bool b2) {
     auto& g = Global::get();
     g.firstAttempt = true;  
+    g.macroUsedInAttempt = false;
+    g.framePerfectOverlayFrames = 0;
 
     if (!PlayLayer::init(level, b1, b2)) return false;
 
@@ -127,6 +129,8 @@ class $modify(PlayLayer) {
     PlayLayer::resetLevel();
 
     auto& g = Global::get();
+    g.macroUsedInAttempt = false;
+    g.framePerfectOverlayFrames = 0;
 
     int frame = Global::getCurrentFrame();
 
@@ -240,6 +244,9 @@ class $modify(BGLHook, GJBaseGameLayer) {
     if (g.state == state::none)
       return;
 
+    if (pl && !m_levelEndAnimationStarted && (g.state == state::playing || g.state == state::recording))
+      g.macroUsedInAttempt = true;
+
     int frame = Global::getCurrentFrame(!pl);
     g.previousFrame = frame;
 
@@ -328,12 +335,25 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
     while (g.currentAction < g.macro.inputs.size() && frame >= g.macro.inputs[g.currentAction].frame) {
       auto input = g.macro.inputs[g.currentAction];
+      bool framePerfectTransition = false;
+
+      if (g.currentAction > 0) {
+        auto const& prev = g.macro.inputs[g.currentAction - 1];
+        framePerfectTransition =
+          input.player2 == prev.player2 &&
+          input.button == prev.button &&
+          input.down != prev.down &&
+          input.frame - prev.frame == 1;
+      }
 
       if (frame != g.respawnFrame) {
         if (Macro::flipControls())
           input.player2 = !input.player2;
 
         GJBaseGameLayer::handleButton(input.down, input.button, input.player2);
+
+        if (framePerfectTransition)
+          Global::triggerFramePerfectOverlay(input.button, input.down);
       }
 
       g.currentAction++;

@@ -6,6 +6,8 @@
 
 #include <random>
 #include <array>
+#include <algorithm>
+#include <cctype>
 #include <ctime>
 
 class $modify(CCTextInputNode) {
@@ -69,6 +71,60 @@ bool hasBuildExpiredBy30Days() {
   constexpr std::time_t kThirtyDays = static_cast<std::time_t>(30 * 24 * 60 * 60);
   std::time_t expiry = build + kThirtyDays;
   return std::time(nullptr) > expiry;
+}
+
+bool isValidFFmpegBinaryPath(std::filesystem::path const& path) {
+  if (path.empty()) return false;
+
+  std::error_code ec;
+  if (!std::filesystem::exists(path, ec) || !std::filesystem::is_regular_file(path, ec))
+    return false;
+
+  std::string fileName = path.filename().string();
+  std::transform(fileName.begin(), fileName.end(), fileName.begin(), [](unsigned char c) {
+    return static_cast<char>(std::tolower(c));
+  });
+  return fileName == "ffmpeg" || fileName == "ffmpeg.exe";
+}
+
+std::vector<std::filesystem::path> getBundledFFmpegCandidates(Mod* mod) {
+  std::filesystem::path resources = mod->getResourcesDir();
+  std::vector<std::filesystem::path> candidates = {
+    resources / "ffmpeg.exe",
+    resources / "ffmpeg",
+  };
+
+#ifdef GEODE_IS_WINDOWS
+  candidates.push_back(resources / "ffmpeg" / "windows" / "ffmpeg.exe");
+#elif defined(GEODE_IS_ANDROID)
+  candidates.push_back(resources / "ffmpeg" / "android" / "ffmpeg");
+  candidates.push_back(resources / "ffmpeg" / "android" / "ffmpeg.exe");
+#elif defined(GEODE_IS_MACOS)
+  candidates.push_back(resources / "ffmpeg" / "macos" / "ffmpeg");
+#elif defined(GEODE_IS_IOS)
+  candidates.push_back(resources / "ffmpeg" / "ios" / "ffmpeg");
+#else
+  candidates.push_back(resources / "ffmpeg" / "linux" / "ffmpeg");
+#endif
+
+  return candidates;
+}
+
+std::filesystem::path resolveBundledFFmpegPath(Mod* mod) {
+  for (auto const& candidate : getBundledFFmpegCandidates(mod)) {
+    if (isValidFFmpegBinaryPath(candidate))
+      return candidate;
+  }
+
+  std::filesystem::path gameDirFFmpeg = geode::dirs::getGameDir() / "ffmpeg.exe";
+  if (isValidFFmpegBinaryPath(gameDirFFmpeg))
+    return gameDirFFmpeg;
+
+  gameDirFFmpeg = geode::dirs::getGameDir() / "ffmpeg";
+  if (isValidFFmpegBinaryPath(gameDirFFmpeg))
+    return gameDirFFmpeg;
+
+  return {};
 }
 }
 
@@ -396,6 +452,16 @@ PauseLayer* Global::getPauseLayer() {
   return nullptr;
 }
 
+void Global::triggerFramePerfectOverlay(int button, bool down) {
+  auto& g = Global::get();
+  const char* buttonName = "Click";
+  if (button == 2) buttonName = "Left";
+  else if (button == 3) buttonName = "Right";
+
+  g.framePerfectOverlayText = fmt::format("Frame Perfect: {} {}", buttonName, down ? "Press" : "Release");
+  g.framePerfectOverlayFrames = 30;
+}
+
 std::filesystem::path Global::getFolderSettingPath(std::string const& settingID, bool createIfMissing) {
   auto& g = Global::get();
   auto fallback = [&]() {
@@ -514,9 +580,9 @@ $execute{
     g.mod->setSavedValue("render_video_args", std::string("colorspace=all=bt709:iall=bt470bg:fast=1"));
 
     g.mod->setSavedValue("render_codec", std::string("libx264"));
-    #ifdef GEODE_IS_WINDOWS
-    g.mod->setSettingValue("ffmpeg_path", geode::dirs::getGameDir() / "ffmpeg.exe");
-    #endif
+    auto bundledFFmpeg = resolveBundledFFmpegPath(g.mod);
+    if (!bundledFFmpeg.empty())
+      g.mod->setSettingValue("ffmpeg_path", bundledFFmpeg);
 
     g.mod->setSavedValue("render_record_audio", true);
     g.mod->setSavedValue("render_hide_labels", true);
@@ -552,6 +618,9 @@ $execute{
   // Hotfix: restore historical playback behavior (do not auto-stop by default).
   if (!g.mod->setSavedValue("defaults_set_17", true))
     g.mod->setSavedValue("auto_stop_playing", false);
+
+  if (!g.mod->hasSavedValue("frame_perfect_overlay_mode"))
+    g.mod->setSavedValue("frame_perfect_overlay_mode", std::string("When"));
 
   // Migrate legacy saved keys to current setting IDs.
   if (!g.mod->hasSavedValue("auto_stop_playing") && g.mod->hasSavedValue("macro_auto_stop_playing"))
@@ -595,26 +664,25 @@ $execute{
   if (g.mod->getSavedValue<std::string>("render_hardware_accel").empty())
     g.mod->setSavedValue("render_hardware_accel", std::string("Off"));
 
-#ifdef GEODE_IS_WINDOWS
   auto ffmpegPath = g.mod->getSettingValue<std::filesystem::path>("ffmpeg_path");
-  bool hasValidFFmpeg = std::filesystem::exists(ffmpegPath) && ffmpegPath.filename().string() == "ffmpeg.exe";
+  bool hasValidFFmpeg = isValidFFmpegBinaryPath(ffmpegPath);
   if (!hasValidFFmpeg) {
-    std::filesystem::path bundledFFmpeg = g.mod->getResourcesDir() / "ffmpeg.exe";
-    std::filesystem::path gameDirFFmpeg = geode::dirs::getGameDir() / "ffmpeg.exe";
-
-    if (std::filesystem::exists(bundledFFmpeg) && bundledFFmpeg.filename().string() == "ffmpeg.exe")
+    auto bundledFFmpeg = resolveBundledFFmpegPath(g.mod);
+    if (!bundledFFmpeg.empty())
       g.mod->setSettingValue("ffmpeg_path", bundledFFmpeg);
-    else if (std::filesystem::exists(gameDirFFmpeg) && gameDirFFmpeg.filename().string() == "ffmpeg.exe")
-      g.mod->setSettingValue("ffmpeg_path", gameDirFFmpeg);
   }
-#endif
 
   if (g.mod->getSavedValue<std::string>("macro_accuracy") == "Frame Fixes")
     g.frameFixes = true;
   else if (g.mod->getSavedValue<std::string>("macro_accuracy") == "Input Fixes")
     g.inputFixes = true;
 
-  g.macro.author = "N/A";
+  std::string defaultAuthor = "N/A";
+  if (auto* account = GJAccountManager::sharedState()) {
+    if (!account->m_username.empty())
+      defaultAuthor = account->m_username;
+  }
+  g.macro.author = defaultAuthor;
   g.macro.description = "N/A";
-  g.macro.gameVersion = 2.206;
+  g.macro.gameVersion = 2.208;
 };

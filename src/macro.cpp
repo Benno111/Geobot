@@ -19,6 +19,18 @@ void Macro::recordAction(int frame, int button, bool player2, bool hold) {
       player2 = !player2;
 
     g.macro.inputs.push_back(input(frame, button, player2, hold));
+
+    // Detect frame-perfect transitions while recording.
+    if (g.macro.inputs.size() >= 2) {
+        auto const& prev = g.macro.inputs[g.macro.inputs.size() - 2];
+        auto const& cur = g.macro.inputs[g.macro.inputs.size() - 1];
+        if (cur.player2 == prev.player2 &&
+            cur.button == prev.button &&
+            cur.down != prev.down &&
+            cur.frame - prev.frame == 1) {
+            Global::triggerFramePerfectOverlay(cur.button, cur.down);
+        }
+    }
 }
 
 void Macro::recordFrameFix(int frame, PlayerObject* p1, PlayerObject* p2) {

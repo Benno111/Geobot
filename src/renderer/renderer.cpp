@@ -13,6 +13,8 @@
 
 #include <sstream>
 #include <array>
+#include <algorithm>
+#include <cctype>
 #include <filesystem>
 #include <fstream>
 
@@ -49,7 +51,24 @@ class $modify(PlayLayer) {
 
     void showCompleteText() {
         PlayLayer::showCompleteText();
-        if (!Global::get().renderer.recording) return;
+
+        auto& g = Global::get();
+
+        if (g.macroUsedInAttempt) {
+            for (CCNode* node : CCArrayExt<CCNode*>(getChildren())) {
+                CCSprite* spr = typeinfo_cast<CCSprite*>(node);
+                if (!spr) continue;
+                if (!isSpriteFrameName(spr, "GJ_levelComplete_001.png")) continue;
+
+                float width = spr->getContentSize().width;
+                if (width > 0.f) {
+                    float ratio = (width + 10.f) / width;
+                    spr->setScaleX(spr->getScaleX() * ratio);
+                }
+            }
+        }
+
+        if (!g.renderer.recording) return;
 
         if (m_levelEndAnimationStarted && Mod::get()->getSavedValue<bool>("render_hide_levelcomplete")) {
             for (CCNode* node : CCArrayExt<CCNode*>(getChildren())) {
@@ -146,21 +165,59 @@ class $modify(CCScheduler) {
 
 };
 
-static bool isValidFFmpegExePath(std::filesystem::path const& path) {
-    return std::filesystem::exists(path) && path.filename().string() == "ffmpeg.exe";
+static bool isValidFFmpegBinaryPath(std::filesystem::path const& path) {
+    if (path.empty()) return false;
+
+    std::error_code ec;
+    if (!std::filesystem::exists(path, ec) || !std::filesystem::is_regular_file(path, ec))
+        return false;
+
+    std::string fileName = path.filename().string();
+    std::transform(fileName.begin(), fileName.end(), fileName.begin(), [](unsigned char c) {
+        return static_cast<char>(std::tolower(c));
+    });
+    return fileName == "ffmpeg" || fileName == "ffmpeg.exe";
+}
+
+static std::vector<std::filesystem::path> getBundledFFmpegCandidates() {
+    std::filesystem::path resources = Mod::get()->getResourcesDir();
+    std::vector<std::filesystem::path> candidates = {
+        resources / "ffmpeg.exe",
+        resources / "ffmpeg",
+    };
+
+#ifdef GEODE_IS_WINDOWS
+    candidates.push_back(resources / "ffmpeg" / "windows" / "ffmpeg.exe");
+#elif defined(GEODE_IS_ANDROID)
+    candidates.push_back(resources / "ffmpeg" / "android" / "ffmpeg");
+    candidates.push_back(resources / "ffmpeg" / "android" / "ffmpeg.exe");
+#elif defined(GEODE_IS_MACOS)
+    candidates.push_back(resources / "ffmpeg" / "macos" / "ffmpeg");
+#elif defined(GEODE_IS_IOS)
+    candidates.push_back(resources / "ffmpeg" / "ios" / "ffmpeg");
+#else
+    candidates.push_back(resources / "ffmpeg" / "linux" / "ffmpeg");
+#endif
+
+    return candidates;
 }
 
 static std::filesystem::path resolveFFmpegPath() {
     std::filesystem::path settingPath = Mod::get()->getSettingValue<std::filesystem::path>("ffmpeg_path");
-    if (isValidFFmpegExePath(settingPath))
+    if (isValidFFmpegBinaryPath(settingPath))
         return settingPath;
 
-    std::filesystem::path bundledPath = Mod::get()->getResourcesDir() / "ffmpeg.exe";
-    if (isValidFFmpegExePath(bundledPath))
-        return bundledPath;
+    for (auto const& candidate : getBundledFFmpegCandidates()) {
+        if (isValidFFmpegBinaryPath(candidate))
+            return candidate;
+    }
 
     std::filesystem::path gameDirPath = geode::dirs::getGameDir() / "ffmpeg.exe";
-    if (isValidFFmpegExePath(gameDirPath))
+    if (isValidFFmpegBinaryPath(gameDirPath))
+        return gameDirPath;
+
+    gameDirPath = geode::dirs::getGameDir() / "ffmpeg";
+    if (isValidFFmpegBinaryPath(gameDirPath))
         return gameDirPath;
 
     return settingPath;
@@ -198,7 +255,7 @@ bool Renderer::shouldUseAPI() {
 
     bool foundApi = Loader::get()->isModLoaded("eclipse.ffmpeg-api");
     std::filesystem::path ffmpegPath = resolveFFmpegPath();
-    bool foundExe = isValidFFmpegExePath(ffmpegPath);
+    bool foundExe = isValidFFmpegBinaryPath(ffmpegPath);
 
     return !foundExe && foundApi;
 
@@ -219,7 +276,7 @@ bool Renderer::toggle() {
 
     bool foundApi = Loader::get()->isModLoaded("eclipse.ffmpeg-api");
     std::filesystem::path ffmpegPath = resolveFFmpegPath();
-    bool foundExe = isValidFFmpegExePath(ffmpegPath);
+    bool foundExe = isValidFFmpegBinaryPath(ffmpegPath);
 
     g.renderer.usingApi = Renderer::shouldUseAPI();
 

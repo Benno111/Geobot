@@ -102,6 +102,7 @@ public:
 
     static PauseLayer* getPauseLayer();
     static std::filesystem::path getFolderSettingPath(std::string const& settingID, bool createIfMissing = true);
+    static void triggerFramePerfectOverlay(int button, bool down);
 
     Mod* mod = Mod::get();
     geode::Popup* layer = nullptr;
@@ -131,6 +132,7 @@ public:
     bool restartLater = false;
     bool creatingTrajectory = false;
     bool firstAttempt = false;
+    bool macroUsedInAttempt = false;
 
     bool disableShaders = false;
     bool safeMode = false;
@@ -191,4 +193,6 @@ public:
     float currentPitch = 1.f;
     uintptr_t latestSeed = 0;
     float leftOver = 0.f;
+    int framePerfectOverlayFrames = 0;
+    std::string framePerfectOverlayText = "";
 };

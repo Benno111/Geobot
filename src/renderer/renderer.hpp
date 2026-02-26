@@ -53,7 +53,7 @@ public:
     std::vector<uint8_t> currentFrame;
     std::mutex lock;
     std::string codec = "", bitrate = "12M", extraArgs = "", videoArgs = "", extraAudioArgs = "", path = "";
-    std::string ffmpegPath = (geode::dirs::getGameDir() / "ffmpeg.exe").string();
+    std::string ffmpegPath = "";
     std::unordered_set<int> renderedFrames;
 
     FMODAudioEngine* fmod = nullptr;

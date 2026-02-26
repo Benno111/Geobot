@@ -23,9 +23,28 @@ private:
         auto& g = Global::get();
 
         int playerInputs[2][3][2] = { { { 0, 0 }, { 0, 0 }, { 0, 0 } }, { { 0, 0 }, { 0, 0 }, { 0, 0 } } };
+        int framePerfectByButton[3] = { 0, 0, 0 };
+        int framePerfectPress = 0;
+        int framePerfectRelease = 0;
 
         for (const auto& input : g.macro.inputs)
             playerInputs[input.player2][input.button - 1][input.down]++;
+
+        // Frame-perfect: same player+button toggled exactly 1 frame later.
+        for (size_t i = 1; i < g.macro.inputs.size(); i++) {
+            auto const& prev = g.macro.inputs[i - 1];
+            auto const& cur = g.macro.inputs[i];
+            if (cur.player2 != prev.player2) continue;
+            if (cur.button != prev.button) continue;
+            if (cur.frame - prev.frame != 1) continue;
+            if (cur.down == prev.down) continue;
+
+            if (cur.button >= 1 && cur.button <= 3)
+                framePerfectByButton[cur.button - 1]++;
+
+            if (cur.down) framePerfectPress++;
+            else framePerfectRelease++;
+        }
 
         CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
         bg->setColor({ 0,0,0 });
@@ -184,6 +203,25 @@ private:
         lbl->updateLabel();
         lbl->setPosition({ 52.3, 34 });
         lbl->setOpacity(150);
+        m_mainLayer->addChild(lbl);
+
+        int totalFramePerfects = framePerfectPress + framePerfectRelease;
+        std::string fpSummary = fmt::format(
+            "FP {} | Clk {} L {} R {} | Inp {} Rel {}",
+            totalFramePerfects,
+            framePerfectByButton[0],
+            framePerfectByButton[1],
+            framePerfectByButton[2],
+            framePerfectPress,
+            framePerfectRelease
+        );
+
+        lbl = CCLabelBMFont::create(fpSummary.c_str(), "chatFont.fnt");
+        lbl->setAnchorPoint({ 0, 0.5 });
+        lbl->limitLabelWidth(148.f, 0.36f, 0.01f);
+        lbl->setScale(0.36f);
+        lbl->setPosition({ 36, 24 });
+        lbl->setOpacity(145);
         m_mainLayer->addChild(lbl);
 
         lbl = CCLabelBMFont::create("Total actions:", "chatFont.fnt");
