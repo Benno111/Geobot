@@ -13,6 +13,7 @@
 enum InputType {
 	None,
 	Settings,
+	Action,
 	Autosave,
 	Speedhack,
 	Seed,

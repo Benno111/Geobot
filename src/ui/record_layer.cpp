@@ -61,9 +61,9 @@ const std::vector<std::vector<RecordSetting>> settings {
 		{ "Speedhack Audio:", "macro_speedhack_audio", InputType::None }
 	},
     {
-		{ "Macros Folder:", "macros_folder_btn", InputType::Settings, 0.325f, menu_selector(RecordLayer::openMacrosFolder) },
-		{ "Autosaves Folder:", "autosaves_folder_btn", InputType::Settings, 0.325f, menu_selector(RecordLayer::openAutosavesFolder) },
-		{ "Renders Folder:", "render_folder_btn", InputType::Settings, 0.325f, menu_selector(RecordLayer::openRendersFolder) },
+		{ "Macros Folder:", "macros_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openMacrosFolder) },
+		{ "Autosaves Folder:", "autosaves_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openAutosavesFolder) },
+		{ "Renders Folder:", "render_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openRendersFolder) },
 		{ "Respawn Time:", "respawn_time_enabled", InputType::Respawn },
 		{ "Input Mirror:", "p2_input_mirror", InputType::Settings, 0.325f, menu_selector(MirrorSettingsLayer::open) },
 		{ "Disable Shaders:", "disable_shaders", InputType::None },
@@ -716,7 +716,17 @@ void RecordLayer::showCodecPopup(CCObject*) {
 }
 
 void RecordLayer::openMacrosFolder(CCObject*) {
-    file::openFolder(Global::getFolderSettingPath("macros_folder"));
+    geode::createQuickPopup(
+        "Macros Folder",
+        "Open the current macros folder or change its path in mod settings?",
+        "Open", "Change",
+        [this](auto, bool btn2) {
+            if (btn2)
+                geode::openSettingsPopup(mod, false);
+            else
+                file::openFolder(Global::getFolderSettingPath("macros_folder"));
+        }
+    );
 }
 
 void RecordLayer::openAutosavesFolder(CCObject*) {
@@ -915,12 +925,12 @@ bool RecordLayer::setup() {
     menu->addChild(btn);
 
 
-    btnSprite = ButtonSprite::create("More Settings");
+    btnSprite = ButtonSprite::create("Rate");
     btnSprite->setScale(0.54f);
 
     btn = CCMenuItemSpriteExtra::create(btnSprite,
         this,
-        menu_selector(RecordLayer::moreSettings));
+        menu_selector(RecordLayer::openStarRateOverride));
 
     btn->setPosition(ccp(148, -100));
     menu->addChild(btn);
@@ -943,16 +953,6 @@ bool RecordLayer::setup() {
         menu_selector(RecordLayer::onEditMacro));
 
     btn->setPosition(ccp(-50, 34));
-    menu->addChild(btn);
-
-    btnSprite = ButtonSprite::create("Rate");
-    btnSprite->setScale(0.54f);
-    btn = CCMenuItemSpriteExtra::create(
-        btnSprite,
-        this,
-        menu_selector(RecordLayer::openStarRateOverride)
-    );
-    btn->setPosition(ccp(-44, 34));
     menu->addChild(btn);
 
     widthInput = CCTextInputNode::create(150, 30, "Width", "chatFont.fnt");
@@ -1184,18 +1184,41 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
         // Code when disabled xD!
     }
 
-    CCMenuItemToggler* toggle = CCMenuItemToggler::create(spriteOff, spriteOn, this, menu_selector(RecordLayer::toggleSetting));
-    toggle->setPosition(ccp(175, yPos));
-    toggle->setScale(toggleScale);
-    toggle->toggle(mod->getSavedValue<bool>(sett.id));
-    toggle->setID(sett.id.c_str());
+    if (sett.input != InputType::Action) {
+        CCMenuItemToggler* toggle = CCMenuItemToggler::create(spriteOff, spriteOn, this, menu_selector(RecordLayer::toggleSetting));
+        toggle->setPosition(ccp(175, yPos));
+        toggle->setScale(toggleScale);
+        toggle->toggle(mod->getSavedValue<bool>(sett.id));
+        toggle->setID(sett.id.c_str());
 
-    nodes.push_back(static_cast<CCNode*>(toggle));
-    targetMenu->addChild(toggle);
+        nodes.push_back(static_cast<CCNode*>(toggle));
+        targetMenu->addChild(toggle);
 
-    setToggleMember(toggle, sett.id);
+        setToggleMember(toggle, sett.id);
+    }
 
     if (sett.input == InputType::None) return;
+
+    if (sett.input == InputType::Action) {
+        CCSprite* emptyBtn = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
+        emptyBtn->setScale(0.469f);
+
+        CCSprite* folderIcon = CCSprite::createWithSpriteFrameName("folderIcon_001.png");
+        folderIcon->setPosition(emptyBtn->getContentSize() / 2);
+        folderIcon->setScale(0.7f);
+        emptyBtn->addChild(folderIcon);
+
+        CCMenuItemSpriteExtra* btn = CCMenuItemSpriteExtra::create(
+            emptyBtn,
+            this,
+            sett.callback
+        );
+        btn->setPosition(ccp(147, yPos));
+
+        nodes.push_back(static_cast<CCNode*>(btn));
+        targetMenu->addChild(btn);
+        return;
+    }
 
     if (sett.input == InputType::Settings) {
         CCSprite* spr = CCSprite::createWithSpriteFrameName("GJ_optionsBtn_001.png");

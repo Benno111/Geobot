@@ -238,16 +238,11 @@ int Global::getCurrentFrame(bool editor) {
   int frame;
 
   if (!editor && pl) {
-    // In normal gameplay (non-editor), currentProgress tracks physics ticks
-    // more reliably than levelTime when playback/lock-delta is active.
-    frame = pl->m_gameState.m_currentProgress;
-
-    // Preserve geobot macro frame indexing compatibility.
+    // Use levelTime as the frame source to avoid progress-based jumps that
+    // can fast-forward playback and skip actions.
+    frame = static_cast<int>(bgl->m_gameState.m_levelTime * getTPS());
     if (g.macro.geobotMacro)
       frame++;
-
-    if (frame <= 0)
-      frame = static_cast<int>(bgl->m_gameState.m_levelTime * getTPS()) + 1;
   } else {
     frame = static_cast<int>(bgl->m_gameState.m_levelTime * getTPS());
     frame++;
@@ -483,7 +478,7 @@ $execute{
     g.mod->setSavedValue("render_fade_in_video", std::to_string(2));
     g.mod->setSavedValue("render_fade_out_video", std::to_string(2));
 
-    g.mod->setSavedValue("auto_stop_playing", true);
+    g.mod->setSavedValue("auto_stop_playing", false);
     g.mod->setSavedValue("macro_tps", 240.f);
     g.mod->setSavedValue("macro_tps_enabled", false);
 
@@ -551,8 +546,12 @@ $execute{
     g.mod->setSavedValue("frame_offset", 0);
     g.mod->setSavedValue("frame_fixes_limit", 240);
     g.mod->setSavedValue("lock_delta", false);
-    g.mod->setSavedValue("auto_stop_playing", true);
+    g.mod->setSavedValue("auto_stop_playing", false);
   }
+
+  // Hotfix: restore historical playback behavior (do not auto-stop by default).
+  if (!g.mod->setSavedValue("defaults_set_17", true))
+    g.mod->setSavedValue("auto_stop_playing", false);
 
   // Migrate legacy saved keys to current setting IDs.
   if (!g.mod->hasSavedValue("auto_stop_playing") && g.mod->hasSavedValue("macro_auto_stop_playing"))
