@@ -1314,6 +1314,8 @@ void RecordLayer::loadSettingsList() {
 
     settingsMenu = CCMenu::create();
     settingsMenu->setPosition({ 0.f, 0.f });
+    settingsMenu->setAnchorPoint({ 0.f, 0.f });
+    settingsMenu->setContentSize({ viewWidth, contentHeight });
     settingsScroll->m_contentLayer->addChild(settingsMenu);
 
     size_t i = 0;

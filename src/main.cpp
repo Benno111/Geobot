@@ -115,16 +115,17 @@ class $modify(PlayLayer) {
 
     if (!PlayLayer::init(level, b1, b2)) return false;
 
-    if (m_isTestMode && g.state == state::playing) {
-      // Starting a fresh editor playtest should not inherit playback cursor
-      // from any previous run/session.
+    if (g.state == state::playing) {
+      // Starting a fresh level or editor playtest should not inherit playback
+      // state from any previous run/session.
       g.currentAction = 0;
       g.currentFrameFix = 0;
       g.previousFrame = 0;
       g.respawnFrame = -1;
       g.leftOver = 0.f;
-      g.restart = true;
       Macro::resetVariables();
+      if (m_isTestMode)
+        g.restart = true;
     }
 
     Global::updateKeybinds();
