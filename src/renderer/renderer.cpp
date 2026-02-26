@@ -257,7 +257,7 @@ bool Renderer::toggle() {
             return false;
         }
 
-        std::filesystem::path path = Mod::get()->getSettingValue<std::filesystem::path>("render_folder");
+        std::filesystem::path path = Global::getFolderSettingPath("render_folder");
 
         if (std::filesystem::exists(path))
             g.renderer.start();
@@ -302,7 +302,7 @@ void Renderer::start() {
     auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
     
     std::string filename = fmt::format("render_{}_{}{}", std::string_view(pl->m_level->m_levelName), std::to_string(timestamp), extension);
-    std::string path = (Mod::get()->getSettingValue<std::filesystem::path>("render_folder") / filename).string();
+    std::string path = (Global::getFolderSettingPath("render_folder") / filename).string();
 
     width = std::stoi(mod->getSavedValue<std::string>("render_width2"));
     height = std::stoi(mod->getSavedValue<std::string>("render_height"));

@@ -124,6 +124,9 @@ public:
 	void openPresets(CCObject*);
 
 	void onAutosaves(CCObject*);
+	void openMacrosFolder(CCObject*);
+	void openAutosavesFolder(CCObject*);
+	void openRendersFolder(CCObject*);
 
 	void loadSettingsList();
 

@@ -401,6 +401,48 @@ PauseLayer* Global::getPauseLayer() {
   return nullptr;
 }
 
+std::filesystem::path Global::getFolderSettingPath(std::string const& settingID, bool createIfMissing) {
+  auto& g = Global::get();
+  auto fallback = [&]() {
+    if (settingID == "macros_folder")
+      return g.mod->getSaveDir() / "macros";
+    if (settingID == "autosaves_folder")
+      return g.mod->getSaveDir() / "autosaves";
+    if (settingID == "render_folder")
+      return g.mod->getSaveDir() / "renders";
+    return g.mod->getSaveDir() / settingID;
+  };
+
+  auto path = g.mod->getSettingValue<std::filesystem::path>(settingID);
+  if (path.empty()) {
+    path = fallback();
+    g.mod->setSettingValue<std::filesystem::path>(settingID, path);
+  }
+
+  std::error_code ec;
+  bool validDir = std::filesystem::exists(path, ec) ? std::filesystem::is_directory(path, ec) : true;
+
+  if (!validDir) {
+    path = fallback();
+    g.mod->setSettingValue<std::filesystem::path>(settingID, path);
+  }
+
+  if (createIfMissing && !std::filesystem::exists(path, ec)) {
+    std::filesystem::create_directories(path, ec);
+    if (ec) {
+      auto fb = fallback();
+      ec.clear();
+      std::filesystem::create_directories(fb, ec);
+      if (!ec) {
+        path = fb;
+        g.mod->setSettingValue<std::filesystem::path>(settingID, path);
+      }
+    }
+  }
+
+  return path;
+}
+
 $execute{
   auto & g = Global::get();
   g.buildExpired = hasBuildExpiredBy30Days();
@@ -512,6 +554,12 @@ $execute{
     g.mod->setSavedValue("auto_stop_playing", true);
   }
 
+  // Migrate legacy saved keys to current setting IDs.
+  if (!g.mod->hasSavedValue("auto_stop_playing") && g.mod->hasSavedValue("macro_auto_stop_playing"))
+    g.mod->setSavedValue("auto_stop_playing", g.mod->getSavedValue<bool>("macro_auto_stop_playing"));
+  if (!g.mod->hasSavedValue("disable_shaders") && g.mod->hasSavedValue("disableShaders"))
+    g.mod->setSavedValue("disable_shaders", g.mod->getSavedValue<bool>("disableShaders"));
+
   g.showTrajectory = g.mod->getSavedValue<bool>("macro_show_trajectory");
   g.coinFinder = g.mod->getSavedValue<bool>("macro_coin_finder");
   g.frameStepper = g.mod->getSavedValue<bool>("macro_frame_stepper");
@@ -525,7 +573,7 @@ $execute{
   g.autoclicker = g.mod->getSavedValue<bool>("autoclicker_enabled");
   g.autoclickerP1 = g.mod->getSavedValue<bool>("autoclicker_p1");
   g.autoclickerP2 = g.mod->getSavedValue<bool>("autoclicker_p2");
-  g.disableShaders = g.mod->getSavedValue<bool>("disableShaders");
+  g.disableShaders = g.mod->getSavedValue<bool>("disable_shaders");
   g.autosaveIntervalEnabled = g.mod->getSavedValue<bool>("autosave_interval_enabled");
   g.autosaveEnabled = g.mod->getSavedValue<bool>("macro_auto_save");
 

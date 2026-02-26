@@ -104,7 +104,7 @@ private:
     }
 
     void openRendersFolder(CCObject*) {
-        std::filesystem::path path = Mod::get()->getSettingValue<std::filesystem::path>("render_folder");
+        std::filesystem::path path = Global::getFolderSettingPath("render_folder");
 
         if (std::filesystem::exists(path))
             file::openFolder(path);

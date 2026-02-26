@@ -61,6 +61,9 @@ const std::vector<std::vector<RecordSetting>> settings {
 		{ "Speedhack Audio:", "macro_speedhack_audio", InputType::None }
 	},
     {
+		{ "Macros Folder:", "macros_folder_btn", InputType::Settings, 0.325f, menu_selector(RecordLayer::openMacrosFolder) },
+		{ "Autosaves Folder:", "autosaves_folder_btn", InputType::Settings, 0.325f, menu_selector(RecordLayer::openAutosavesFolder) },
+		{ "Renders Folder:", "render_folder_btn", InputType::Settings, 0.325f, menu_selector(RecordLayer::openRendersFolder) },
 		{ "Respawn Time:", "respawn_time_enabled", InputType::Respawn },
 		{ "Input Mirror:", "p2_input_mirror", InputType::Settings, 0.325f, menu_selector(MirrorSettingsLayer::open) },
 		{ "Disable Shaders:", "disable_shaders", InputType::None },
@@ -699,7 +702,7 @@ void RecordLayer::openPresets(CCObject*) {
 }
 
 void RecordLayer::onAutosaves(CCObject*) {
-    std::filesystem::path path = Mod::get()->getSettingValue<std::filesystem::path>("autosaves_folder");
+    std::filesystem::path path = Global::getFolderSettingPath("autosaves_folder");
 
     if (std::filesystem::exists(path))
         LoadMacroLayer::open(static_cast<geode::Popup*>(this), nullptr, true);
@@ -710,6 +713,18 @@ void RecordLayer::onAutosaves(CCObject*) {
 
 void RecordLayer::showCodecPopup(CCObject*) {
     FLAlertLayer::create("Codec", "<cr>AMD:</c> h264_amf\n<cg>NVIDIA:</c> h264_nvenc\n<cl>INTEL:</c> h264_qsv\nI don't know: libx264", "Ok")->show();
+}
+
+void RecordLayer::openMacrosFolder(CCObject*) {
+    file::openFolder(Global::getFolderSettingPath("macros_folder"));
+}
+
+void RecordLayer::openAutosavesFolder(CCObject*) {
+    file::openFolder(Global::getFolderSettingPath("autosaves_folder"));
+}
+
+void RecordLayer::openRendersFolder(CCObject*) {
+    file::openFolder(Global::getFolderSettingPath("render_folder"));
 }
 
 bool RecordLayer::setup() {

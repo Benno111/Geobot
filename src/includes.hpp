@@ -10,6 +10,7 @@
 #include <cmath>
 #include <vector>
 #include <utility>
+#include <filesystem>
 
 #include "renderer/renderer.hpp"
 #include "macro.hpp"
@@ -100,6 +101,7 @@ public:
     static void frameStepperOff();
 
     static PauseLayer* getPauseLayer();
+    static std::filesystem::path getFolderSettingPath(std::string const& settingID, bool createIfMissing = true);
 
     Mod* mod = Mod::get();
     geode::Popup* layer = nullptr;

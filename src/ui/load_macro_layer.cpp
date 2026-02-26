@@ -26,19 +26,13 @@ class $modify(CCMenu) {
 };
 
 void LoadMacroLayer::open(geode::Popup* layer, geode::Popup* layer2, bool autosaves) {
-	std::filesystem::path path = Mod::get()->getSettingValue<std::filesystem::path>("macros_folder");
+	std::filesystem::path path = Global::getFolderSettingPath("macros_folder");
+	if (!std::filesystem::exists(path))
+		return FLAlertLayer::create("Error", "There was an error getting the folder. ID: 6", "Ok")->show();
 
-	if (!std::filesystem::exists(path)) {
-		if (utils::file::createDirectoryAll(path).isErr())
-			return FLAlertLayer::create("Error", "There was an error getting the folder. ID: 6", "Ok")->show();
-	}
-
-	path = Mod::get()->getSettingValue<std::filesystem::path>("autosaves_folder");
-
-	if (!std::filesystem::exists(path)) {
-		if (utils::file::createDirectoryAll(path).isErr())
-			return FLAlertLayer::create("Error", "There was an error getting the folder. ID: 61", "Ok")->show();
-	}
+	path = Global::getFolderSettingPath("autosaves_folder");
+	if (!std::filesystem::exists(path))
+		return FLAlertLayer::create("Error", "There was an error getting the folder. ID: 61", "Ok")->show();
 
 	LoadMacroLayer* layerReal = create(layer, layer2, autosaves);
 	layerReal->m_noElasticity = true;
@@ -344,7 +338,7 @@ void LoadMacroLayer::updateSort(CCObject*) {
 void LoadMacroLayer::addList(bool refresh, float prevScroll) {
 	cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
 
-	std::filesystem::path path = Mod::get()->getSettingValue<std::filesystem::path>(isAutosaves ? "autosaves_folder" : "macros_folder");
+	std::filesystem::path path = Global::getFolderSettingPath(isAutosaves ? "autosaves_folder" : "macros_folder");
 	std::vector<std::filesystem::path> macros = file::readDirectory(path).unwrapOrDefault();
 
 	CCArray* cells = CCArray::create();
