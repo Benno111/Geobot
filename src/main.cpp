@@ -115,16 +115,17 @@ class $modify(PlayLayer) {
 
     if (!PlayLayer::init(level, b1, b2)) return false;
 
-    if (m_isTestMode && g.state == state::playing) {
-      // Starting a fresh editor playtest should not inherit playback cursor
-      // from any previous run/session.
+    if (g.state == state::playing) {
+      // Starting a fresh level or editor playtest should not inherit playback
+      // state from any previous run/session.
       g.currentAction = 0;
       g.currentFrameFix = 0;
       g.previousFrame = 0;
       g.respawnFrame = -1;
       g.leftOver = 0.f;
-      g.restart = true;
       Macro::resetVariables();
+      if (m_isTestMode)
+        g.restart = true;
     }
 
     Global::updateKeybinds();
@@ -213,6 +214,15 @@ class $modify(BGLHook, GJBaseGameLayer) {
     auto& g = Global::get();
 
     PlayLayer* pl = PlayLayer::get();
+
+    // During editor playtesting, both PlayLayer and LevelEditorLayer (which
+    // also derives from GJBaseGameLayer) may both call processCommands within
+    // the same physics tick.  Only process macro logic for the active PlayLayer;
+    // for all other GJBaseGameLayer instances (e.g. LevelEditorLayer) just
+    // forward to the native implementation so we don't corrupt g.previousFrame
+    // or g.firstAttempt before the PlayLayer has had a chance to run.
+    if (pl && pl != typeinfo_cast<PlayLayer*>(this))
+      return GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
 
     Global::updateSeed();
 

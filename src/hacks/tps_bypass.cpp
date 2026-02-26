@@ -10,12 +10,23 @@ class $modify(GJBaseGameLayer) {
         //   1. Custom TPS bypass is enabled (non-240 TPS), OR
         //   2. Lock Delta is enabled while playing/recording (ensures one physics step
         //      per 1/TPS slice, which is required for correct macro playback physics
-        //      even at the default 240 TPS when the render framerate is lower).
+        //      even at the default 240 TPS when the render framerate is lower), OR
+        //   3. A macro is actively being played back (ensures the fixed step loop runs
+        //      regardless of user TPS/lockDelta settings, so playback speed is
+        //      identical in normal play and in editor test mode).
         bool shouldBypass = (g.tpsEnabled && Global::getTPS() != 240.f) ||
-                            (g.lockDelta && g.state != state::none);
+                            (g.lockDelta && g.state != state::none) ||
+                            g.state == state::playing;
 
         if (!shouldBypass) return GJBaseGameLayer::update(dt);
-        if (!PlayLayer::get()) return GJBaseGameLayer::update(dt);
+        // Only apply the bypass for the active PlayLayer.  During editor
+        // playtesting, both PlayLayer and LevelEditorLayer derive from
+        // GJBaseGameLayer and may both receive update() calls.  Letting the
+        // bypass run for the LevelEditorLayer would corrupt g.leftOver and
+        // cause double-stepping, making the game run at twice the expected speed.
+        PlayLayer* pl = PlayLayer::get();
+        if (!pl || pl != typeinfo_cast<PlayLayer*>(this))
+            return GJBaseGameLayer::update(dt);
         
         float newDt = 1.f / Global::getTPS();
 
@@ -44,9 +55,12 @@ class $modify(GJBaseGameLayer) {
     float getModifiedDelta(float dt) {
         auto& g = Global::get();
         bool shouldBypass = (g.tpsEnabled && Global::getTPS() != 240.f) ||
-                            (g.lockDelta && g.state != state::none);
+                            (g.lockDelta && g.state != state::none) ||
+                            g.state == state::playing;
         if (!shouldBypass) return GJBaseGameLayer::getModifiedDelta(dt);
-        if (!PlayLayer::get()) return GJBaseGameLayer::getModifiedDelta(dt);
+        PlayLayer* pl = PlayLayer::get();
+        if (!pl || pl != typeinfo_cast<PlayLayer*>(this))
+            return GJBaseGameLayer::getModifiedDelta(dt);
 
         double dVar1;
         float fVar2;
