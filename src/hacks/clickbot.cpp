@@ -104,7 +104,7 @@ void Clickbot::playSound(std::string id) {
 
     if (!sound) return;
 
-    int masterVol = g.mod->getSavedValue<int64_t>("clickbot_volume");
+    int masterVol = static_cast<int>(getSavedInt64Safe(g.mod, "clickbot_volume", 100));
     if (settings.volume == 0 || masterVol == 0) return;
 
     FMOD_RESULT result;

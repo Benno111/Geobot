@@ -55,6 +55,12 @@ const std::string buttonIDs[6] = {
     "robtop.geometry-dash/move-right-p2"
 };
 
+inline int64_t getSavedInt64Safe(Mod* mod, std::string const& key, int64_t fallback = 0) {
+    if (!mod) return fallback;
+    auto raw = mod->getSavedValue<std::string>(key);
+    return geode::utils::numFromString<int64_t>(raw).unwrapOr(fallback);
+}
+
 #define STATIC_CREATE(class, width, height) \
     static class* create() { \
         class* ret = new class(); \

@@ -81,7 +81,7 @@ private:
 
 		holdInput = TextInput::create(50, "Frames", "chatFont.fnt");
 		holdInput->setPosition({72, 150});
-		holdInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_hold_for")).c_str());
+		holdInput->setString(std::to_string(getSavedInt64Safe(Mod::get(), "autoclicker_hold_for", 5)).c_str());
 		holdInput->getInputNode()->setDelegate(this);
 		holdInput->getInputNode()->setAllowedChars("0123456789");
 		holdInput->getInputNode()->setMaxLabelLength(4);
@@ -89,7 +89,7 @@ private:
 
 		releaseInput = TextInput::create(50, "Frames", "chatFont.fnt");
 		releaseInput->setPosition({x, 150});
-		releaseInput->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_release_for")).c_str());
+		releaseInput->setString(std::to_string(getSavedInt64Safe(Mod::get(), "autoclicker_release_for", 5)).c_str());
 		releaseInput->getInputNode()->setDelegate(this);
 		releaseInput->getInputNode()->setAllowedChars("0123456789");
 		releaseInput->getInputNode()->setMaxLabelLength(4);
@@ -126,7 +126,7 @@ private:
 
 		holdInput2 = TextInput::create(50, "Frames", "chatFont.fnt");
 		holdInput2->setPosition({72, 70});
-		holdInput2->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_hold_for2")).c_str());
+		holdInput2->setString(std::to_string(getSavedInt64Safe(Mod::get(), "autoclicker_hold_for2", 5)).c_str());
 		holdInput2->getInputNode()->setDelegate(this);
 		holdInput2->getInputNode()->setAllowedChars("0123456789");
 		holdInput2->getInputNode()->setMaxLabelLength(4);
@@ -134,7 +134,7 @@ private:
 
 		releaseInput2 = TextInput::create(50, "Frames", "chatFont.fnt");
 		releaseInput2->setPosition({x, 70});
-		releaseInput2->setString(std::to_string(Mod::get()->getSavedValue<int64_t>("autoclicker_release_for2")).c_str());
+		releaseInput2->setString(std::to_string(getSavedInt64Safe(Mod::get(), "autoclicker_release_for2", 5)).c_str());
 		releaseInput2->getInputNode()->setDelegate(this);
 		releaseInput2->getInputNode()->setAllowedChars("0123456789");
 		releaseInput2->getInputNode()->setMaxLabelLength(4);

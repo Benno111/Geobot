@@ -674,19 +674,19 @@ $execute{
   g.autosaveIntervalEnabled = g.mod->getSavedValue<bool>("autosave_interval_enabled");
   g.autosaveEnabled = g.mod->getSavedValue<bool>("macro_auto_save");
 
-  g.holdFor = g.mod->getSavedValue<int64_t>("autoclicker_hold_for");
-  g.releaseFor = g.mod->getSavedValue<int64_t>("autoclicker_release_for");
-  g.holdFor2 = g.mod->getSavedValue<int64_t>("autoclicker_hold_for2");
-  g.releaseFor2 = g.mod->getSavedValue<int64_t>("autoclicker_release_for2");
-  g.currentPage = g.mod->getSavedValue<int64_t>("current_page");
+  g.holdFor = static_cast<int>(getSavedInt64Safe(g.mod, "autoclicker_hold_for", 5));
+  g.releaseFor = static_cast<int>(getSavedInt64Safe(g.mod, "autoclicker_release_for", 5));
+  g.holdFor2 = static_cast<int>(getSavedInt64Safe(g.mod, "autoclicker_hold_for2", 5));
+  g.releaseFor2 = static_cast<int>(getSavedInt64Safe(g.mod, "autoclicker_release_for2", 5));
+  g.currentPage = static_cast<int>(getSavedInt64Safe(g.mod, "current_page", 0));
 
   g.autosaveInterval = (geode::utils::numFromString<float>(g.mod->getSavedValue<std::string>("autosave_interval")).unwrapOr(0.f) * 60);
   
   g.speedhackEnabled = false;
   g.mod->setSavedValue("macro_speedhack_enabled", false);
 
-  g.frameOffset = g.mod->getSavedValue<int64_t>("frame_offset");
-  g.frameFixesLimit = g.mod->getSavedValue<int64_t>("frame_fixes_limit");
+  g.frameOffset = static_cast<int>(getSavedInt64Safe(g.mod, "frame_offset", 0));
+  g.frameFixesLimit = static_cast<int>(getSavedInt64Safe(g.mod, "frame_fixes_limit", 240));
   g.lockDelta = g.mod->getSavedValue<bool>("lock_delta");
   g.stopPlaying = g.mod->getSavedValue<bool>("auto_stop_playing");
 

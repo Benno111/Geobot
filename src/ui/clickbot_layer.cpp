@@ -212,7 +212,7 @@ bool ClickbotLayer::setup() {
 	lbl->setScale(0.625);
 	menu->addChild(lbl);
 
-	int volume = Mod::get()->getSavedValue<int64_t>("clickbot_volume");
+	int volume = static_cast<int>(getSavedInt64Safe(Mod::get(), "clickbot_volume", 100));
 
 	volumeSlider = Slider::create(
 		this,
