@@ -8,6 +8,7 @@
 #include <array>
 #include <algorithm>
 #include <cctype>
+#include <charconv>
 #include <ctime>
 
 class $modify(CCTextInputNode) {
@@ -322,7 +323,31 @@ void Global::updateSeed(bool isRestart) {
     PlayLayer* pl = PlayLayer::get();
     if (!pl) return;
 
-    unsigned long long ull = std::stoull(g.mod->getSavedValue<std::string>("macro_seed"), nullptr, 0);
+    unsigned long long ull = 1;
+    {
+      std::string raw = g.mod->getSavedValue<std::string>("macro_seed");
+      auto begin = raw.data();
+      auto end = begin + raw.size();
+      while (begin < end && std::isspace(static_cast<unsigned char>(*begin))) ++begin;
+      while (end > begin && std::isspace(static_cast<unsigned char>(*(end - 1)))) --end;
+      if (begin < end) {
+        if (*begin == '+') ++begin;
+        else if (*begin == '-') begin = end;
+
+        int base = 10;
+        if ((end - begin) >= 2 && begin[0] == '0' && (begin[1] == 'x' || begin[1] == 'X')) {
+          base = 16;
+          begin += 2;
+        }
+        else if ((end - begin) > 1 && begin[0] == '0') {
+          base = 8;
+        }
+
+        auto [ptr, ec] = std::from_chars(begin, end, ull, base);
+        if (ec != std::errc() || ptr != end)
+          ull = 1;
+      }
+    }
     uintptr_t seed = static_cast<uintptr_t>(ull);
     int finalSeed;
 

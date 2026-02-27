@@ -16,7 +16,48 @@
 #include <Geode/binding/LevelEditorLayer.hpp>
 #include <Geode/utils/web.hpp>
 #include <array>
+#include <charconv>
+#include <cctype>
 #include <ctime>
+
+namespace {
+bool parseU64Safe(std::string const& raw, unsigned long long& out) {
+	if (raw.empty()) return false;
+	auto begin = raw.data();
+	auto end = begin + raw.size();
+	while (begin < end && std::isspace(static_cast<unsigned char>(*begin))) ++begin;
+	while (end > begin && std::isspace(static_cast<unsigned char>(*(end - 1)))) --end;
+	if (begin >= end) return false;
+
+	if (*begin == '+') ++begin;
+	else if (*begin == '-') return false;
+	if (begin >= end) return false;
+
+	int base = 10;
+	if ((end - begin) >= 2 && begin[0] == '0' && (begin[1] == 'x' || begin[1] == 'X')) {
+		base = 16;
+		begin += 2;
+		if (begin >= end) return false;
+	}
+	else if ((end - begin) > 1 && begin[0] == '0') {
+		base = 8;
+	}
+
+	auto [ptr, ec] = std::from_chars(begin, end, out, base);
+	return ec == std::errc() && ptr == end;
+}
+
+bool parseIntSafe(std::string const& raw, int& out) {
+	if (raw.empty()) return false;
+	auto begin = raw.data();
+	auto end = begin + raw.size();
+	while (begin < end && std::isspace(static_cast<unsigned char>(*begin))) ++begin;
+	while (end > begin && std::isspace(static_cast<unsigned char>(*(end - 1)))) --end;
+	if (begin >= end) return false;
+	auto [ptr, ec] = std::from_chars(begin, end, out);
+	return ec == std::errc() && ptr == end;
+}
+}
 
 const std::vector<std::vector<RecordSetting>> settings {
 	{
@@ -557,9 +598,10 @@ void RecordLayer::textChanged(CCTextInputNode* node) {
     mod = Mod::get();
 
     if (node == seedInput) {
-
-        if (auto num = numFromString<unsigned long long>(seedInput->getString())) {
-            mod->setSavedValue("macro_seed", std::to_string(num.unwrap()));
+        unsigned long long num = 0;
+        std::string seedStr = seedInput ? std::string(seedInput->getString()) : std::string();
+        if (parseU64Safe(seedStr, num)) {
+            mod->setSavedValue("macro_seed", std::to_string(num));
             return;
         }
         else {
@@ -580,7 +622,8 @@ void RecordLayer::textChanged(CCTextInputNode* node) {
         mod->setSavedValue("render_bitrate", std::string(bitrateInput->getString()));
 
     if (std::string_view(fpsInput->getString()) != "" && node == fpsInput) {
-        if (std::stoi(fpsInput->getString()) > 240)
+        int fpsValue = 0;
+        if (!parseIntSafe(std::string(fpsInput->getString()), fpsValue) || fpsValue > 240)
             return fpsInput->setString(mod->getSavedValue<std::string>("render_fps").c_str());
         mod->setSavedValue("render_fps", std::string(fpsInput->getString()));
     }
