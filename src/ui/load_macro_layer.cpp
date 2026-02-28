@@ -3,6 +3,9 @@
 #include "macro_editor.hpp"
 
 #include <Geode/modify/CCMenu.hpp>
+#ifdef GEODE_IS_WINDOWS
+#include <Windows.h>
+#endif
 
 class $modify(CCMenu) {
 	virtual bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) {
@@ -594,17 +597,54 @@ void MacroCell::handleLoad() {
 	}
 	else {
 		std::ifstream f(path.string(), std::ios::binary);
+		if (!f.is_open()) {
+			if (!isMerge)
+				return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 451", "Ok")->show();
+			return;
+		}
 
 		f.seekg(0, std::ios::end);
-		size_t fileSize = f.tellg();
+		std::streamoff end = f.tellg();
+		if (end <= 0) {
+			f.close();
+			if (!isMerge)
+				return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 452", "Ok")->show();
+			return;
+		}
 		f.seekg(0, std::ios::beg);
 
+		size_t fileSize = static_cast<size_t>(end);
 		std::vector<std::uint8_t> macroData(fileSize);
 
-		f.read(reinterpret_cast<char*>(macroData.data()), fileSize);
+		f.read(reinterpret_cast<char*>(macroData.data()), static_cast<std::streamsize>(fileSize));
+		if (!f) {
+			f.close();
+			if (!isMerge)
+				return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 453", "Ok")->show();
+			return;
+		}
 		f.close();
 
-		newMacro = Macro::importData(macroData);
+		try {
+#ifdef GEODE_IS_WINDOWS
+			// Catch hard parser faults on malformed data in the load path itself.
+			__try {
+				newMacro = Macro::importData(macroData);
+			}
+			__except (EXCEPTION_EXECUTE_HANDLER) {
+				if (!isMerge)
+					return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 455", "Ok")->show();
+				return;
+			}
+#else
+			newMacro = Macro::importData(macroData);
+#endif
+		}
+		catch (...) {
+			if (!isMerge)
+				return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 454", "Ok")->show();
+			return;
+		}
 	}
 
 	if (isMerge) {

@@ -149,10 +149,14 @@ namespace gdr {
 			if (!replayJson["coins"].is_null()) replay.coins = replayJson["coins"];
 			if (!replayJson["ldm"].is_null()) replay.ldm = replayJson["ldm"];
 
-			if (!replayJson["bot"]["name"].is_null()) replay.botInfo.name = replayJson["bot"]["name"];
-			if (!replayJson["bot"]["version"].is_null()) replay.botInfo.version = replayJson["bot"]["version"];
-			if (!replayJson["level"]["id"].is_null()) replay.levelInfo.id = replayJson["level"]["id"];
-			if (!replayJson["level"]["name"].is_null()) replay.levelInfo.name = replayJson["level"]["name"];
+			if (replayJson.contains("bot") && replayJson["bot"].is_object()) {
+				if (!replayJson["bot"]["name"].is_null()) replay.botInfo.name = replayJson["bot"]["name"];
+				if (!replayJson["bot"]["version"].is_null()) replay.botInfo.version = replayJson["bot"]["version"];
+			}
+			if (replayJson.contains("level") && replayJson["level"].is_object()) {
+				if (!replayJson["level"]["id"].is_null()) replay.levelInfo.id = replayJson["level"]["id"];
+				if (!replayJson["level"]["name"].is_null()) replay.levelInfo.name = replayJson["level"]["name"];
+			}
 
 			std::string ver = replay.botInfo.version;
 			
@@ -165,12 +169,12 @@ namespace gdr {
 			// bool offset = false;
 			int offset = replay.botInfo.name == "geobot" ? 1 : 0;
 
-			if (offset == 1) {
+			if (offset == 1 && !ver.empty()) {
 				if (ver.front() == 'v') ver = ver.substr(1);
 
 				std::vector<std::string> splitVer = splitByChar(ver, '.');
 
-				if (splitVer.size() <= 3) {
+				if (splitVer.size() == 3) {
 					std::vector<std::string> realVer = {"2", "3", "6"};
 
 					geode::prelude::VersionInfo macroVer = getVersion(splitVer);

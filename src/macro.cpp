@@ -240,6 +240,9 @@ Macro Macro::XDtoGDR(std::filesystem::path path) {
     float fpsMultiplier = 1.f;
 
     while (std::getline(file, line)) {
+        if (line.empty())
+            continue;
+
         std::string item;
         std::stringstream ss(line);
         std::vector<std::string> action;
@@ -247,30 +250,49 @@ Macro Macro::XDtoGDR(std::filesystem::path path) {
         while (std::getline(ss, item, '|'))
             action.push_back(item);
 
-        if (action.size() < 4) {
-            if (action[0] == "android")
+        if (action.empty())
+            continue;
+
+        if (action.size() < 5) {
+            if (action[0] == "android") {
                 fpsMultiplier = 4.f;
+            }
             else {
-                int fps = std::stoi(action[0]);
-                fpsMultiplier = 240.f / fps;
+                try {
+                    int fps = std::stoi(action[0]);
+                    if (fps > 0)
+                        fpsMultiplier = 240.f / fps;
+                }
+                catch (...) {}
             }
 
             continue;
         }
 
-        int frame = static_cast<int>(round(std::stoi(action[0]) * fpsMultiplier));
-        int button = std::stoi(action[2]);
-        bool hold = action[1] == "1";
-        bool player2 = action[3] == "1";
-        bool posOnly = action[4] == "1";
+        try {
+            int frame = static_cast<int>(round(std::stoi(action[0]) * fpsMultiplier));
+            int button = std::stoi(action[2]);
+            bool hold = action[1] == "1";
+            bool player2 = action[3] == "1";
+            bool posOnly = action[4] == "1";
 
-        if (!posOnly)
-            newMacro.inputs.push_back(input(frame, button, player2, hold));
-        else {
-            cocos2d::CCPoint p1Pos = ccp(std::stof(action[5]), std::stof(action[6]));
-            cocos2d::CCPoint p2Pos = ccp(std::stof(action[11]), std::stof(action[12]));
+            if (!posOnly) {
+                newMacro.inputs.push_back(input(frame, button, player2, hold));
+            }
+            else {
+                // Legacy XD frame-fix rows need at least 13 fields.
+                if (action.size() < 13)
+                    continue;
 
-            newMacro.frameFixes.push_back({ frame, {p1Pos, 0.f, false}, {p2Pos, 0.f, false} });
+                cocos2d::CCPoint p1Pos = ccp(std::stof(action[5]), std::stof(action[6]));
+                cocos2d::CCPoint p2Pos = ccp(std::stof(action[11]), std::stof(action[12]));
+
+                newMacro.frameFixes.push_back({ frame, {p1Pos, 0.f, false}, {p2Pos, 0.f, false} });
+            }
+        }
+        catch (...) {
+            // Skip malformed lines instead of crashing macro load.
+            continue;
         }
     }
 

@@ -38,6 +38,10 @@ std::vector<std::string> splitByChar(std::string str, char splitChar) {
 }
 
 geode::prelude::VersionInfo getVersion(std::vector<std::string> nums) {
+    if (nums.size() < 3) {
+        return geode::prelude::VersionInfo(0, 0, 0);
+    }
+
     size_t major = geode::utils::numFromString<int>(nums[0]).unwrapOr(-1);
     size_t minor = geode::utils::numFromString<int>(nums[1]).unwrapOr(-1);
     size_t patch = geode::utils::numFromString<int>(nums[2]).unwrapOr(-1);
