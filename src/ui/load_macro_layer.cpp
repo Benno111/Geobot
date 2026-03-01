@@ -625,26 +625,26 @@ void MacroCell::handleLoad() {
 		}
 		f.close();
 
-		try {
 #ifdef GEODE_IS_WINDOWS
-			// Catch hard parser faults on malformed data in the load path itself.
-			__try {
-				newMacro = Macro::importData(macroData);
-			}
-			__except (EXCEPTION_EXECUTE_HANDLER) {
-				if (!isMerge)
-					return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 455", "Ok")->show();
-				return;
-			}
-#else
+		// Catch hard parser faults on malformed data in the load path itself.
+		__try {
 			newMacro = Macro::importData(macroData);
-#endif
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER) {
+			if (!isMerge)
+				return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 455", "Ok")->show();
+			return;
+		}
+#else
+		try {
+			newMacro = Macro::importData(macroData);
 		}
 		catch (...) {
 			if (!isMerge)
 				return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 454", "Ok")->show();
 			return;
 		}
+#endif
 	}
 
 	if (isMerge) {

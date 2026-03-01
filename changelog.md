@@ -1,3 +1,7 @@
+# 1.0.0-alpha.21
+* fixed a crash on windows
+
+
 # 1.0.0-alpha.2
 
 * add geode 5x and 2.208
