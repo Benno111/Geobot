@@ -373,9 +373,11 @@ class $modify(BGLHook, GJBaseGameLayer) {
     auto& g = Global::get();
     if (m_levelEndAnimationStarted) return;
 
+    if (!m_player1) return;
+
     if (m_player1->m_isDead) {
       m_player1->releaseAllButtons();
-      m_player2->releaseAllButtons();
+      if (m_player2) m_player2->releaseAllButtons();
 
       PlayLayer* pl = PlayLayer::get();
       if (pl && !pl->m_isPracticeMode)

@@ -41,6 +41,8 @@ class $modify(CheckpointObject) {
     auto& g = Global::get();
     PlayLayer* pl = PlayLayer::get();
 
+    if (!pl || !pl->m_player1 || !pl->m_player2) return ret;
+
     PlayerData p1Data = PlayerPracticeFixes::saveData(pl->m_player1);
     PlayerData p2Data = PlayerPracticeFixes::saveData(pl->m_player2);
 
