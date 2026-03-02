@@ -673,11 +673,15 @@ void MacroCell::handleLoad() {
 
     g.macro.geobotMacro = g.macro.botInfo.name == "geobot";
 
+	// Capture member variables before keyBackClicked() frees 'this' via recursive child cleanup.
+	geode::Popup* capturedMenuLayer = menuLayer;
+	bool isXdMacro = path.extension() == ".xd";
+
 	loadLayer->keyBackClicked();
 
 	RecordLayer* newLayer = nullptr;
 
-	if (RecordLayer* layer = typeinfo_cast<RecordLayer*>(menuLayer)) {
+	if (RecordLayer* layer = typeinfo_cast<RecordLayer*>(capturedMenuLayer)) {
 		layer->onClose(nullptr);
 		newLayer = RecordLayer::openMenu(true);
 	}
@@ -699,7 +703,7 @@ void MacroCell::handleLoad() {
 		}
 	}
 
-	if (path.extension() == ".xd")
+	if (isXdMacro)
 		FLAlertLayer::create("Warning", "<cl>.xd</c> extension macros may not function correctly in this version.", "Ok")->show();
 
 	Notification::create("Macro Loaded", NotificationIcon::Success)->show();
