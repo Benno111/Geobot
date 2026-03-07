@@ -39,7 +39,9 @@ jobs:
           ./scripts/fetch_ffmpeg.ps1 -Target "$env:BUILD_TARGET"
 
       - name: Install Geode CLI
-        uses: geode-sdk/cli@main
+        run: |
+          curl -fsSL https://geode-sdk.org/install.sh | bash
+        shell: bash
       - name: Install Geode SDK binaries
         run: |
           if [ "${{ matrix.config.target }}" = "Win32" ]; then
