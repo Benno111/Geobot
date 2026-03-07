@@ -1,6 +1,7 @@
 #include "../includes.hpp"
 #include "record_layer.hpp"
 
+#if __has_include(<Geode/loader/SettingV3.hpp>)
 #include <Geode/loader/SettingV3.hpp>
 #include <Geode/loader/Mod.hpp>
 
@@ -99,3 +100,9 @@ SettingNodeV3* MyButtonSettingV3::createNode(float width) {
 $execute {
     (void)Mod::get()->registerCustomSettingType("button", &MyButtonSettingV3::parse);
 }
+
+#else
+
+$execute {}
+
+#endif
