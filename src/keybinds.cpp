@@ -11,7 +11,7 @@
 #include <Geode/modify/CCTouchDispatcher.hpp>
 
 class $modify(CCKeyboardDispatcher) {
-  bool dispatchKeyboardMSG(enumKeyCodes key, bool isKeyDown, bool isKeyRepeat, double dt) {
+  bool dispatchKeyboardMSG(enumKeyCodes key, bool isKeyDown, bool isKeyRepeat) {
     auto& g = Global::get();
 
     int keyInt = static_cast<int>(key);
@@ -23,7 +23,7 @@ class $modify(CCKeyboardDispatcher) {
       }
     }
 
-    return CCKeyboardDispatcher::dispatchKeyboardMSG(key, isKeyDown, isKeyRepeat, dt);
+    return CCKeyboardDispatcher::dispatchKeyboardMSG(key, isKeyDown, isKeyRepeat);
   }
 };
 

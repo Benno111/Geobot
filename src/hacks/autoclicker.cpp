@@ -11,8 +11,8 @@ class $modify(GJBaseGameLayer) {
         bool holding[2] = {false, false};
     };
 
-    void processCommands(float dt, bool isHalfTick, bool isLastTick) {
-        GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
+    void processCommands(float dt) {
+        GJBaseGameLayer::processCommands(dt);
 
         auto& g = Global::get();
 

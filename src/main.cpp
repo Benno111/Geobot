@@ -253,7 +253,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
     bool aliveLastFrame[2] = { true, true };
   };
 
-  void processCommands(float dt, bool isHalfTick, bool isLastTick) {
+  void processCommands(float dt) {
     auto& g = Global::get();
 
     PlayLayer* pl = PlayLayer::get();
@@ -265,7 +265,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
     // forward to the native implementation so we don't corrupt g.previousFrame
     // or g.firstAttempt before the PlayLayer has had a chance to run.
     if (pl && pl != typeinfo_cast<PlayLayer*>(this))
-      return GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
+      return GJBaseGameLayer::processCommands(dt);
 
     Global::updateSeed();
 
@@ -288,11 +288,11 @@ class $modify(BGLHook, GJBaseGameLayer) {
       }
 
       if (g.previousFrame == frame && frame != 0 && g.macro.geobotMacro)
-        return GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
+        return GJBaseGameLayer::processCommands(dt);
 
     }
 
-    GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
+    GJBaseGameLayer::processCommands(dt);
 
     if (g.state == state::none)
       return;
