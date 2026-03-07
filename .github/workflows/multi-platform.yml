@@ -39,22 +39,26 @@ jobs:
           ./scripts/fetch_ffmpeg.ps1 -Target "$env:BUILD_TARGET"
 
       - name: Install Geode CLI
+        shell: pwsh
         run: |
-          GEODE_CLI_VERSION=latest
-          if [ "${{ matrix.config.os }}" = "windows-latest" ]; then
-            GH_API_URL="https://api.github.com/repos/geode-sdk/cli/releases/${GEODE_CLI_VERSION}"
-            CLI_URL=$(curl -s $GH_API_URL | grep browser_download_url | grep windows-x86_64.zip | cut -d '"' -f 4)
-            curl -L -o geode-cli.zip "$CLI_URL"
-            unzip geode-cli.zip -d geode-cli
-            echo "$(pwd)/geode-cli" >> $GITHUB_PATH
-          else
-            GH_API_URL="https://api.github.com/repos/geode-sdk/cli/releases/${GEODE_CLI_VERSION}"
-            CLI_URL=$(curl -s $GH_API_URL | grep browser_download_url | grep linux-x86_64.tar.gz | cut -d '"' -f 4)
-            curl -L -o geode-cli.tar.gz "$CLI_URL"
+          $ErrorActionPreference = 'Stop'
+          $version = 'latest'
+          $isWindows = $env:RUNNER_OS -eq 'Windows'
+          if ($isWindows) {
+            $apiUrl = "https://api.github.com/repos/geode-sdk/cli/releases/$version"
+            $cliUrl = (Invoke-RestMethod $apiUrl).assets | Where-Object { $_.name -like '*windows-x86_64.zip' } | Select-Object -First 1 -ExpandProperty browser_download_url
+            Invoke-WebRequest -Uri $cliUrl -OutFile 'geode-cli.zip'
+            Expand-Archive -Path 'geode-cli.zip' -DestinationPath 'geode-cli'
+            $cliPath = Join-Path $PWD 'geode-cli'
+            echo "$cliPath" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          } else {
+            $apiUrl = "https://api.github.com/repos/geode-sdk/cli/releases/$version"
+            $cliUrl = curl -s $apiUrl | grep browser_download_url | grep linux-x86_64.tar.gz | cut -d '"' -f 4
+            curl -L -o geode-cli.tar.gz "$cliUrl"
+            mkdir -p geode-cli
             tar -xzf geode-cli.tar.gz -C geode-cli
             echo "$(pwd)/geode-cli" >> $GITHUB_PATH
-          fi
-        shell: bash
+          }
       - name: Install Geode SDK binaries
         run: |
           if [ "${{ matrix.config.target }}" = "Win32" ]; then
