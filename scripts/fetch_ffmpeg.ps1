@@ -1,5 +1,5 @@
 param(
-    [string]$Target = "Windows"
+    [string]$Target = "Win32"
 )
 
 $ErrorActionPreference = "Stop"
@@ -122,8 +122,8 @@ New-Item -ItemType Directory -Force -Path $resourcesDir | Out-Null
 
 $windowsUrls = @(
     "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip",
-    "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip",
-    "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip"
+    "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win32-gpl.zip",
+    "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win32-gpl.zip"
 )
 
 $targetNormalized = $Target.ToLowerInvariant()

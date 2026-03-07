@@ -33,7 +33,7 @@ jobs:
       - name: Bundle FFmpeg
         shell: pwsh
         env:
-          BUILD_TARGET: ${{ matrix.config.target || 'Windows' }}
+          BUILD_TARGET: ${{ matrix.config.target || 'Win32' }}
           FFMPEG_ANDROID32_URL: ${{ vars.FFMPEG_ANDROID32_URL }}
           FFMPEG_ANDROID64_URL: ${{ vars.FFMPEG_ANDROID64_URL }}
         run: |
