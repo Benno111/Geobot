@@ -11,8 +11,8 @@ class MacroCell : public CCNode {
 	std::filesystem::path path;
 	std::time_t date;
 
-	geode::Popup* menuLayer = nullptr;
-	geode::Popup* mergeLayer = nullptr;
+	geode::Popup<>* menuLayer = nullptr;
+	geode::Popup<>* mergeLayer = nullptr;
 	CCLayer* loadLayer = nullptr;
 
 	bool isMerge = false;
@@ -22,9 +22,9 @@ public:
 	CCMenu* menu = nullptr;
 	CCMenuItemToggler* toggler = nullptr;
 
-	static MacroCell* create(std::filesystem::path path, std::string name, std::time_t date, geode::Popup* menuLayer, geode::Popup* mergeLayer, CCLayer* loadLayer);
+	static MacroCell* create(std::filesystem::path path, std::string name, std::time_t date, geode::Popup<>* menuLayer, geode::Popup<>* mergeLayer, CCLayer* loadLayer);
 
-	bool init(std::filesystem::path path, std::string name, std::time_t date, geode::Popup* menuLayer, geode::Popup* mergeLayer, CCLayer* loadLayer);
+	bool init(std::filesystem::path path, std::string name, std::time_t date, geode::Popup<>* menuLayer, geode::Popup<>* mergeLayer, CCLayer* loadLayer);
 
 	void onLoad(CCObject*);
 
@@ -39,11 +39,11 @@ public:
 	void selectMacro(bool single);
 };
 
-class LoadMacroLayer : public xdb::Popup<geode::Popup*, geode::Popup*, bool>, public TextInputDelegate {
+class LoadMacroLayer : public xdb::Popup<geode::Popup<>*, geode::Popup<>*, bool>, public TextInputDelegate {
 public:
 
-	geode::Popup* menuLayer = nullptr;
-	geode::Popup* mergeLayer = nullptr;
+	geode::Popup<>* menuLayer = nullptr;
+	geode::Popup<>* mergeLayer = nullptr;
 	CCMenu* menu = nullptr;
 
 	CCMenuItemToggler* selectAllToggle = nullptr;
@@ -66,11 +66,11 @@ public:
 	bool isMerge = false;
 	bool invertSort = false;
 
-	static LoadMacroLayer* create(geode::Popup* layer, geode::Popup* layer2, bool autosaves);
+	static LoadMacroLayer* create(geode::Popup<>* layer, geode::Popup<>* layer2, bool autosaves);
 
-	bool setup(geode::Popup* layer, geode::Popup* layer2, bool autosaves) override;
+	bool setup(geode::Popup<>* layer, geode::Popup<>* layer2, bool autosaves) override;
 
-	static void open(geode::Popup* layer, geode::Popup* layer2, bool autosaves = false);
+	static void open(geode::Popup<>* layer, geode::Popup<>* layer2, bool autosaves = false);
 
 	void openFolder(CCObject*) {
 		file::openFolder(Global::getFolderSettingPath(isAutosaves ? "autosaves_folder" : "macros_folder"));

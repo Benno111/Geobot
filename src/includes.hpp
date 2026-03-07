@@ -22,22 +22,7 @@ using namespace geode::prelude;
 
 namespace xdb {
 template <class... SetupArgs>
-class Popup : public geode::Popup {
-protected:
-    virtual bool setup(SetupArgs... args) = 0;
-
-public:
-    bool initAnchored(
-        float width,
-        float height,
-        SetupArgs... args,
-        char const* bg = "GJ_square01.png",
-        cocos2d::CCRect bgRect = {}
-    ) {
-        if (!this->init(width, height, bg, bgRect)) return false;
-        return this->setup(std::forward<SetupArgs>(args)...);
-    }
-};
+using Popup = geode::Popup<SetupArgs...>;
 }
 
 const int seedAddr = 0x6a4e20;
@@ -126,7 +111,7 @@ public:
     static void triggerFramePerfectOverlayCounted(size_t actionIndex, int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle);
 
     Mod* mod = Mod::get();
-    geode::Popup* layer = nullptr;
+    geode::Popup<>* layer = nullptr;
 
     Macro macro;
     Renderer renderer;

@@ -8,33 +8,33 @@ namespace ffmpeg::events {
 namespace impl {
 #define DEFAULT_RESULT_ERROR geode::Err("Event was not handled")
 
-    class CreateRecorderEvent : public geode::Event<CreateRecorderEvent, bool(CreateRecorderEvent*)> {
+    class CreateRecorderEvent  {
     public:
         CreateRecorderEvent() {m_ptr = nullptr;}
-        bool post() { return this->send(this); }
+        bool post() { return false; }
         void setPtr(void* ptr) {m_ptr = ptr;}
         void* getPtr() const {return m_ptr;}
     private:
         void* m_ptr;
     };
 
-    class DeleteRecorderEvent : public geode::Event<DeleteRecorderEvent, bool(DeleteRecorderEvent*)> {
+    class DeleteRecorderEvent  {
     public:
         DeleteRecorderEvent(void* ptr) {m_ptr = ptr;}
-        bool post() { return this->send(this); }
+        bool post() { return false; }
         void* getPtr() const {return m_ptr;}
     private:
         void* m_ptr;
     };
 
-    class InitRecorderEvent : public geode::Event<InitRecorderEvent, bool(InitRecorderEvent*)> {
+    class InitRecorderEvent  {
     public:
         InitRecorderEvent(void* ptr, const RenderSettings* settings) {
             m_ptr = ptr;
             m_renderSettings = settings;
         }
 
-        bool post() { return this->send(this); }
+        bool post() { return false; }
         void setResult(geode::Result<>&& result) {m_result = std::move(result);}
         geode::Result<> getResult() {return m_result;}
 
@@ -48,10 +48,10 @@ namespace impl {
         geode::Result<> m_result = DEFAULT_RESULT_ERROR;
     };
 
-    class StopRecorderEvent : public geode::Event<StopRecorderEvent, bool(StopRecorderEvent*)> {
+    class StopRecorderEvent  {
     public:
         StopRecorderEvent(void* ptr) {m_ptr = ptr;}
-        bool post() { return this->send(this); }
+        bool post() { return false; }
         void* getPtr() const {return m_ptr;}
     private:
         void* m_ptr;
@@ -59,30 +59,30 @@ namespace impl {
 
     struct Dummy {};
 
-    class GetWriteFrameFunctionEvent : public geode::Event<GetWriteFrameFunctionEvent, bool(GetWriteFrameFunctionEvent*)> {
+    class GetWriteFrameFunctionEvent  {
     public:
         using writeFrame_t = geode::Result<>(Dummy::*)(std::vector<uint8_t> const&);
         GetWriteFrameFunctionEvent() = default;
 
-        bool post() { return this->send(this); }
+        bool post() { return false; }
         void setFunction(writeFrame_t function) {m_function = function;}
         writeFrame_t getFunction() const {return m_function;}
     private:
         writeFrame_t m_function;
     };
 
-    class CodecRecorderEvent : public geode::Event<CodecRecorderEvent, bool(CodecRecorderEvent*)> {
+    class CodecRecorderEvent  {
     public:
         CodecRecorderEvent() = default;
 
-        bool post() { return this->send(this); }
+        bool post() { return false; }
         void setCodecs(std::vector<std::string>&& codecs) {m_codecs = std::move(codecs);}
         const std::vector<std::string>& getCodecs() const {return m_codecs;}
     private:
         std::vector<std::string> m_codecs;
     };
 
-    class MixVideoAudioEvent : public geode::Event<MixVideoAudioEvent, bool(MixVideoAudioEvent*)> {
+    class MixVideoAudioEvent  {
     public:
         MixVideoAudioEvent(const std::filesystem::path& videoFile, const std::filesystem::path& audioFile, const std::filesystem::path& outputMp4File) {
             m_videoFile = &videoFile;
@@ -90,7 +90,7 @@ namespace impl {
             m_outputMp4File = &outputMp4File;
         }
 
-        bool post() { return this->send(this); }
+        bool post() { return false; }
         void setResult(geode::Result<>&& result) {m_result = std::move(result);}
         geode::Result<> getResult() {return m_result;}
 
@@ -105,7 +105,7 @@ namespace impl {
         geode::Result<> m_result = DEFAULT_RESULT_ERROR;
     };
 
-    class MixVideoRawEvent : public geode::Event<MixVideoRawEvent, bool(MixVideoRawEvent*)> {
+    class MixVideoRawEvent  {
     public:
         MixVideoRawEvent(const std::filesystem::path& videoFile, const std::vector<float>& raw, const std::filesystem::path& outputMp4File) {
             m_videoFile = &videoFile;
@@ -113,7 +113,7 @@ namespace impl {
             m_outputMp4File = &outputMp4File;
         }
 
-        bool post() { return this->send(this); }
+        bool post() { return false; }
         void setResult(const geode::Result<>& result) {m_result = geode::Result(result);}
         geode::Result<> getResult() {return m_result;}
 

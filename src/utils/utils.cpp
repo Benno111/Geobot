@@ -244,18 +244,6 @@ void Utils::setBackgroundColor(cocos2d::extension::CCScale9Sprite* bg) {
     Utils::applyBackgroundBlur(bg);
 }
 
-void Utils::setBackgroundColor(geode::NineSlice* bg) {
-    if (!bg) return;
-
-    cocos2d::ccColor3B color = Mod::get()->getSettingValue<cocos2d::ccColor3B>("background_color");
-
-    if (color == ccc3(51, 68, 153))
-        color = ccc3(255, 255, 255);
-
-    bg->setColor(color);
-    Utils::applyBackgroundBlur(bg);
-}
-
 void Utils::applyBackgroundBlur(cocos2d::CCNode* bg) {
     if (!bg) return;
 
