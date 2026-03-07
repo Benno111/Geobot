@@ -22,6 +22,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Geode SDK binaries
+        run: |
+          if [ "${{ matrix.config.target }}" = "Android32" ]; then
+            geode sdk install-binaries --platform android
+          else
+            geode sdk install-binaries --platform ${{ matrix.config.target }}
+          fi
+        shell: bash
       - name: Build the mod
         uses: geode-sdk/build-geode-mod@main
         with:
@@ -29,7 +37,7 @@ jobs:
           bindings-ref: main
           combine: false
           target: ${{ matrix.config.target }}
-          platform: ${{ matrix.config.target }}
+          platform: ${{ matrix.config.target == 'Android32' && 'android' || matrix.config.target }}
 
   package:
     name: Package builds
