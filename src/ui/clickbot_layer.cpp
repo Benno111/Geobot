@@ -398,7 +398,7 @@ bool ClickSettingsLayer::setup(std::string button, geode::Popup* layer) {
 void ClickSettingsLayer::onSelectFile(CCObject*) {
 	FLAlertLayer::create(
 		"Notice",
-		"File picker is temporarily disabled on this Geode v5 migration branch.",
+		"File picker is temporarily disabled on this Geode 4 / GD 1.9 branch.",
 		"Ok"
 	)->show();
 }

@@ -312,7 +312,7 @@ int Global::getCurrentFrame(bool editor) {
 }
 
 void Global::updateKeybinds() {
-  // Legacy custom-keybinds integration is disabled for Geode v5 migration.
+  // Legacy custom-keybinds integration is disabled on this Geode 4 / GD 1.9 branch.
 }
 
 void Global::updateSeed(bool isRestart) {

@@ -29,7 +29,6 @@ class $modify(CCKeyboardDispatcher) {
 
 $execute {
 #ifdef GEODE_IS_WINDOWS
-  // geode.custom-keybinds is pre-v5 and does not compile with Geode v5 headers.
-  // Keybind registration is temporarily disabled pending migration to the v5 keybind API.
+  // geode.custom-keybinds remains disabled on this Geode 4 / GD 1.9 branch.
 #endif
 }

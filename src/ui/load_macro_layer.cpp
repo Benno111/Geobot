@@ -137,7 +137,7 @@ LoadMacroLayer* LoadMacroLayer::create(geode::Popup* layer, geode::Popup* layer2
 void LoadMacroLayer::onImportMacro(CCObject*) {
 	FLAlertLayer::create(
 		"Notice",
-		"Import via file picker is temporarily disabled on this Geode v5 migration branch.",
+		"Import via file picker is temporarily disabled on this Geode 4 / GD 1.9 branch.",
 		"Ok"
 	)->show();
 }
