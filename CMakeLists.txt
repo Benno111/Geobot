@@ -69,6 +69,27 @@ if (NOT MSVC)
             endif()
         endif()
     endforeach()
+
+    # Android NDK uses libc++, but Geode 4.9's gnustl shim may reference
+    # libstdc++ internals (std::__detail::__synth3way*). Inject a fallback.
+    set(_geode_stl_vector_hpp "$ENV{GEODE_SDK}/loader/include/Geode/c++stl/gnustl/stl_vector.h")
+    if (EXISTS "${_geode_stl_vector_hpp}")
+        file(READ "${_geode_stl_vector_hpp}" _geode_stl_vector_content)
+        set(_geode_stl_vector_original "${_geode_stl_vector_content}")
+        if (_geode_stl_vector_content MATCHES "__synth3way_t" AND
+            NOT _geode_stl_vector_content MATCHES "GEOBOT_LIBCXX_SYNTH3WAY_FALLBACK")
+            string(REPLACE
+                "#pragma GCC system_header"
+                "#pragma GCC system_header\n\n#ifndef GEOBOT_LIBCXX_SYNTH3WAY_FALLBACK\n#define GEOBOT_LIBCXX_SYNTH3WAY_FALLBACK\n#if defined(_LIBCPP_VERSION)\n#include <compare>\n#include <type_traits>\nnamespace std { namespace __detail {\ntemplate <class _Tp, class _Up = _Tp>\nusing __synth3way_t = decltype(std::declval<_Tp>() <=> std::declval<_Up>());\n\ntemplate <class _Tp, class _Up>\nconstexpr __synth3way_t<_Tp, _Up> __synth3way(_Tp&& __t, _Up&& __u) {\n    return std::forward<_Tp>(__t) <=> std::forward<_Up>(__u);\n}\n}} // namespace std::__detail\n#endif\n#endif\n"
+                _geode_stl_vector_content
+                "${_geode_stl_vector_content}"
+            )
+        endif()
+        if (NOT _geode_stl_vector_content STREQUAL _geode_stl_vector_original)
+            file(WRITE "${_geode_stl_vector_hpp}" "${_geode_stl_vector_content}")
+            message(STATUS "Applied Android compatibility patch to gnustl/stl_vector.h (__synth3way fallback)")
+        endif()
+    endif()
 endif()
 
 if (MSVC)
