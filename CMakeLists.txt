@@ -206,6 +206,16 @@ if (WIN32)
     endforeach()
 endif()
 if (TARGET GeodeBindings)
+    # Geode 4.9 + Android NDK's libc++ can fail in gnustl shims when building as C++23.
+    # Force bindings to C++17 on this 1.9/GDPS branch.
+    set_target_properties(GeodeBindings PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED ON
+    )
+    # Remove any transitive C++23 requirement that Geode may export.
+    set_property(TARGET GeodeBindings PROPERTY COMPILE_FEATURES "")
+    set_property(TARGET GeodeBindings PROPERTY INTERFACE_COMPILE_FEATURES "")
+
     # MSVC 19.42 can ICE in Geode Event.hpp under Unity builds and also emit
     # a large amount of duplicate object-name warnings in this target.
     set_target_properties(GeodeBindings PROPERTIES UNITY_BUILD OFF)
@@ -220,6 +230,15 @@ if (TARGET GeodeBindings)
 endif()
 
 setup_geode_mod(${PROJECT_NAME})
+
+if (TARGET ${PROJECT_NAME})
+    # Keep the mod target aligned with Geode 4.9 Android toolchains.
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED ON
+    )
+    set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_FEATURES "")
+endif()
 
 if (geobot_FAST_BUILD AND TARGET ${PROJECT_NAME})
     # Faster builds: disable LTO. Unity build is disabled because Geode's
