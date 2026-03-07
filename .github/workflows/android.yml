@@ -29,6 +29,7 @@ jobs:
           bindings-ref: main
           combine: false
           target: ${{ matrix.config.target }}
+          platform: ${{ matrix.config.target }}
 
   package:
     name: Package builds
