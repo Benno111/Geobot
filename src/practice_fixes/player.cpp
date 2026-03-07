@@ -38,7 +38,7 @@ PlayerData PlayerPracticeFixes::saveData(PlayerObject* player) {
     data.m_dashRing = player->m_dashRing;
     data.m_slopeStartTime = player->m_slopeStartTime;
     data.m_justPlacedStreak = player->m_justPlacedStreak;
-    data.m_maybeLastGroundObject = player->m_maybeLastGroundObject;
+    data.m_maybeLastGroundObject = typeinfo_cast<GameObject*>(player->m_maybeLastGroundObject);
     data.m_collisionLogTop = player->m_collisionLogTop;
     data.m_collisionLogBottom = player->m_collisionLogBottom;
     data.m_collisionLogLeft = player->m_collisionLogLeft;
