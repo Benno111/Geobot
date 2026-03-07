@@ -24,7 +24,13 @@ jobs:
 
       - name: Install Geode CLI
         run: |
-          curl -fsSL https://geode-sdk.org/install.sh | bash
+          GEODE_CLI_VERSION=latest
+          GH_API_URL="https://api.github.com/repos/geode-sdk/cli/releases/${GEODE_CLI_VERSION}"
+          CLI_URL=$(curl -s $GH_API_URL | grep browser_download_url | grep linux-x86_64.tar.gz | cut -d '"' -f 4)
+          curl -L -o geode-cli.tar.gz "$CLI_URL"
+          mkdir -p geode-cli
+          tar -xzf geode-cli.tar.gz -C geode-cli
+          echo "$(pwd)/geode-cli" >> $GITHUB_PATH
         shell: bash
       - name: Install Geode SDK binaries
         run: |
