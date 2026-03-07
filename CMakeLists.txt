@@ -7,6 +7,14 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 project(geobot2 VERSION 1.0.0)
 option(geobot_FAST_BUILD "Optimize build settings for faster compile times" ON)
 
+if (WIN32 AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message(FATAL_ERROR "This branch is 32-bit only. Build with target Win32.")
+endif()
+
+if (ANDROID AND DEFINED CMAKE_ANDROID_ARCH_ABI AND NOT CMAKE_ANDROID_ARCH_ABI STREQUAL "armeabi-v7a")
+    message(FATAL_ERROR "This branch is 32-bit only. Build with target Android32 (armeabi-v7a).")
+endif()
+
 option(geobot_ENABLE_TEST_BUILDS "Enable test targets in this project and dependencies" OFF)
 set(BUILD_TESTING ${geobot_ENABLE_TEST_BUILDS} CACHE BOOL "Build tests" FORCE)
  

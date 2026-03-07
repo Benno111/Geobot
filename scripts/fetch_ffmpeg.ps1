@@ -135,12 +135,6 @@ if ($targetNormalized -eq "android32") {
     } else {
         Write-Warning "FFMPEG_ANDROID32_URL not set; falling back to Windows FFmpeg binary."
     }
-} elseif ($targetNormalized -eq "android64") {
-    if ($env:FFMPEG_ANDROID64_URL) {
-        $downloadUrls = @($env:FFMPEG_ANDROID64_URL) + $windowsUrls
-    } else {
-        Write-Warning "FFMPEG_ANDROID64_URL not set; falling back to Windows FFmpeg binary."
-    }
 }
 
 $extractDir = Join-Path $env:RUNNER_TEMP ("ffmpeg_extract_" + [Guid]::NewGuid().ToString("N"))
