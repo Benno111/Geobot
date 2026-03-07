@@ -78,12 +78,26 @@ if (NOT MSVC)
         set(_geode_stl_vector_original "${_geode_stl_vector_content}")
         if (_geode_stl_vector_content MATCHES "__synth3way_t" AND
             NOT _geode_stl_vector_content MATCHES "GEOBOT_LIBCXX_SYNTH3WAY_FALLBACK")
-            string(REPLACE
-                "#pragma GCC system_header"
-                "#pragma GCC system_header\n\n#ifndef GEOBOT_LIBCXX_SYNTH3WAY_FALLBACK\n#define GEOBOT_LIBCXX_SYNTH3WAY_FALLBACK\n#if defined(_LIBCPP_VERSION)\n#include <compare>\n#include <type_traits>\nnamespace std { namespace __detail {\ntemplate <class _Tp, class _Up = _Tp>\nusing __synth3way_t = decltype(std::declval<_Tp>() <=> std::declval<_Up>());\n\ntemplate <class _Tp, class _Up>\nconstexpr __synth3way_t<_Tp, _Up> __synth3way(_Tp&& __t, _Up&& __u) {\n    return std::forward<_Tp>(__t) <=> std::forward<_Up>(__u);\n}\n}} // namespace std::__detail\n#endif\n#endif\n"
-                _geode_stl_vector_content
-                "${_geode_stl_vector_content}"
-            )
+            set(_geode_synth3way_fallback
+"#ifndef GEOBOT_LIBCXX_SYNTH3WAY_FALLBACK
+#define GEOBOT_LIBCXX_SYNTH3WAY_FALLBACK
+#if defined(_LIBCPP_VERSION)
+#include <compare>
+#include <type_traits>
+#include <utility>
+namespace std { namespace __detail {
+template <class _Tp, class _Up = _Tp>
+using __synth3way_t = decltype(std::declval<_Tp>() <=> std::declval<_Up>());
+
+template <class _Tp, class _Up>
+constexpr __synth3way_t<_Tp, _Up> __synth3way(_Tp&& __t, _Up&& __u) {
+    return std::forward<_Tp>(__t) <=> std::forward<_Up>(__u);
+}
+}} // namespace std::__detail
+#endif
+#endif
+")
+            set(_geode_stl_vector_content "${_geode_synth3way_fallback}\n${_geode_stl_vector_content}")
         endif()
         if (NOT _geode_stl_vector_content STREQUAL _geode_stl_vector_original)
             file(WRITE "${_geode_stl_vector_hpp}" "${_geode_stl_vector_content}")
