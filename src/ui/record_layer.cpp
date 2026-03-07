@@ -393,10 +393,6 @@ void RecordLayer::clear22Percentage(CCObject*) {
             level->m_orbCompletion = 0;
             level->m_attemptTime = 0;
             level->m_bestTime = 0;
-            level->m_ticksTime = 0;
-            level->m_clicksTime = 0;
-            level->m_coinsTime = 0;
-            level->m_savedTime = false;
 
             if (GameLevelManager* glm = GameLevelManager::sharedState()) {
                 glm->updateLevel(level);

@@ -120,10 +120,8 @@ private:
 		ColorChannelSprite* color = static_cast<CCNode*>(obj)->getTag() == 1 ? color1 : color2;
 		ColorPickPopup* popup = ColorPickPopup::create(color->getColor());
 		popup->setColorTarget(color);
-		popup->setCallback([this](const cocos2d::ccColor4B&) {
-			this->onColorChanged({});
-		});
 		popup->show();
+		this->onColorChanged({});
 	}
 
 	void onColorChanged(const cocos2d::ccColor4B&) {
