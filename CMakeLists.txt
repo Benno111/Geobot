@@ -48,6 +48,29 @@ else()
     message(STATUS "Found Geode: $ENV{GEODE_SDK}")
 endif()
 
+if (NOT MSVC)
+    # Geode 4.9's Android toolchain setup can force C++23, which breaks gnustl shim
+    # headers on some clang/libc++ combos. Patch all local SDK CMake files to request C++17.
+    file(GLOB_RECURSE _geode_cmake_files "$ENV{GEODE_SDK}/*.cmake")
+    file(GLOB_RECURSE _geode_cmakelists "$ENV{GEODE_SDK}/CMakeLists.txt")
+    list(APPEND _geode_cmake_files ${_geode_cmakelists})
+    list(REMOVE_DUPLICATES _geode_cmake_files)
+    foreach(_geode_cmake_file IN LISTS _geode_cmake_files)
+        if (EXISTS "${_geode_cmake_file}")
+            file(READ "${_geode_cmake_file}" _geode_cmake_content)
+            set(_geode_cmake_original "${_geode_cmake_content}")
+            string(REPLACE "cxx_std_23" "cxx_std_17" _geode_cmake_content "${_geode_cmake_content}")
+            string(REPLACE "gnu++23" "gnu++17" _geode_cmake_content "${_geode_cmake_content}")
+            string(REPLACE "CMAKE_CXX_STANDARD 23" "CMAKE_CXX_STANDARD 17" _geode_cmake_content "${_geode_cmake_content}")
+            string(REPLACE "CXX_STANDARD 23" "CXX_STANDARD 17" _geode_cmake_content "${_geode_cmake_content}")
+            if (NOT _geode_cmake_content STREQUAL _geode_cmake_original)
+                file(WRITE "${_geode_cmake_file}" "${_geode_cmake_content}")
+                message(STATUS "Applied Android compatibility patch to ${_geode_cmake_file} (force C++17)")
+            endif()
+        endif()
+    endforeach()
+endif()
+
 if (MSVC)
     # Some MSVC toolsets report _MSVC_LANG as 202004L under /std:c++latest.
     # Geode currently hard-requires 202302L, so patch the local SDK check for MSVC.
