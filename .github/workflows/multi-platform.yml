@@ -38,6 +38,8 @@ jobs:
         run: |
           ./scripts/fetch_ffmpeg.ps1 -Target "$env:BUILD_TARGET"
 
+      - name: Install Geode CLI
+        uses: geode-sdk/cli@main
       - name: Install Geode SDK binaries
         run: |
           if [ "${{ matrix.config.target }}" = "Win32" ]; then

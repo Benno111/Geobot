@@ -23,6 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Geode CLI
+        uses: geode-sdk/cli@main
       - name: Install Geode SDK binaries
         run: |
           if [ "${{ matrix.config.target }}" = "Android32" ]; then
