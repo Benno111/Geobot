@@ -1,5 +1,6 @@
 #include "../includes.hpp"
 #include "../ui/record_layer.hpp"
+#include "../utils/node_ids.hpp"
 
 #include <Geode/modify/PlayerObject.hpp>
 #include <Geode/modify/PlayLayer.hpp>
@@ -293,7 +294,7 @@ class $modify(GameLevelOptionsLayer) {
 		btn->setPosition({-174, -114});
 
         if (CCLayer* layer = ret->getChildByType<CCLayer>(0)) {
-            if (CCNode* settingsBtn = layer->getChildByID("settings-button"))
+            if (CCNode* settingsBtn = node_ids::getChildByIDOrRecursive(layer, "settings-button"))
                 if (CCMenu* menu = typeinfo_cast<CCMenu*>(settingsBtn->getParent())) {
                     menu->addChild(btn);
                     menu->updateLayout();

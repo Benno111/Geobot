@@ -1,8 +1,8 @@
 {
     "geode": "4.9.0",
     "gd": {
-        "win": "1.9",
-        "android": "1.9"
+        "win": "1.920",
+        "android": "1.920"
     },
     "version": "1.0.0-alpha.21",
     "id": "benno111.geobot",
@@ -18,11 +18,6 @@
     "issues": {
         "info": "Report bugs and feature requests on the GitHub issue tracker.",
         "url": "https://github.com/Benno111/geobot/issues/new"
-    },
-    "dependencies": {
-        "geode.node-ids": {
-            "version": ">=1.23.0"
-        }
     },
     "settings": {
     },

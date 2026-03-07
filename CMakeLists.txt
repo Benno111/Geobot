@@ -16,6 +16,7 @@ add_library(${PROJECT_NAME} SHARED
     src/macro.cpp
     src/keybinds.cpp
     src/utils/utils.cpp
+    src/utils/node_ids.cpp
     src/gdr/gdr.cpp
     src/renderer/renderer.cpp
 

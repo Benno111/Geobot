@@ -10,6 +10,7 @@
 #include "star_rate_override_layer.hpp"
 #include "../hacks/coin_finder.hpp"
 #include "../hacks/show_trajectory.hpp"
+#include "../utils/node_ids.hpp"
 
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/EditorPauseLayer.hpp>
@@ -251,32 +252,17 @@ public:
     }
 };
 
-CCNode* findNodeByIDRecursive(CCNode* root, const char* id) {
-    if (!root) return nullptr;
-    if (root->getID() == id) return root;
-
-    CCArray* children = root->getChildren();
-    if (!children) return nullptr;
-
-    for (int i = 0; i < children->count(); i++) {
-        CCNode* child = dynamic_cast<CCNode*>(children->objectAtIndex(i));
-        if (CCNode* found = findNodeByIDRecursive(child, id))
-            return found;
-    }
-    return nullptr;
-}
-
 CCMenu* findSettingsMenu(CCLayer* layer) {
-    if (auto settingsBtn = findNodeByIDRecursive(layer, "settings-button")) {
+    if (auto settingsBtn = node_ids::findByIDRecursive(layer, "settings-button")) {
         if (auto menu = typeinfo_cast<CCMenu*>(settingsBtn->getParent()))
             return menu;
     }
 
-    if (CCNode* menu = layer->getChildByID("right-button-menu"))
+    if (CCNode* menu = node_ids::getChildByIDOrRecursive(layer, "right-button-menu"))
         return typeinfo_cast<CCMenu*>(menu);
-    if (CCNode* menu = layer->getChildByID("left-button-menu"))
+    if (CCNode* menu = node_ids::getChildByIDOrRecursive(layer, "left-button-menu"))
         return typeinfo_cast<CCMenu*>(menu);
-    if (CCNode* menu = layer->getChildByID("bottom-button-menu"))
+    if (CCNode* menu = node_ids::getChildByIDOrRecursive(layer, "bottom-button-menu"))
         return typeinfo_cast<CCMenu*>(menu);
 
     // Editor/Pause fallback when node IDs are unavailable.
@@ -305,7 +291,7 @@ void addgeobotPauseButton(cocos2d::CCLayer* layer) {
     );
     btn->setID("geobot-button"_spr);
 
-    if (auto settingsBtn = findNodeByIDRecursive(layer, "settings-button")) {
+    if (auto settingsBtn = node_ids::findByIDRecursive(layer, "settings-button")) {
         if (auto settingsMenu = typeinfo_cast<CCMenu*>(settingsBtn->getParent())) {
             btn->setPosition(settingsBtn->getPosition() + ccp(-42.f, 0.f));
             settingsMenu->addChild(btn);
@@ -797,14 +783,21 @@ void RecordLayer::openKeybinds(CCObject*) {
     CCLayer* mainLayer = layer->getChildByType<CCLayer>(0);
     if (!mainLayer) return showKeybindsWarning();
 
-    CCNode* scrollLayer = mainLayer->getChildByID("ScrollLayer");
+    CCNode* scrollLayer = node_ids::getChildByIDOrRecursive(mainLayer, "ScrollLayer");
     if (!scrollLayer) return showKeybindsWarning();
 
-    CCNode* contentLayer = scrollLayer->getChildByID("content-layer");
+    CCNode* contentLayer = node_ids::getChildByIDOrRecursive(scrollLayer, "content-layer");
+    if (!contentLayer)
+        contentLayer = scrollLayer->getChildByType<CCNode>(0);
     if (!contentLayer) return showKeybindsWarning();
 
-    CCNode* geobot = contentLayer->getChildByID("geobot");
-    if (!geobot) return showKeybindsWarning();
+    CCNode* geobot = node_ids::getChildByIDOrRecursive(contentLayer, "geobot");
+    if (!geobot) {
+        // Internal node-id fallback: scroll to near the bottom where mod entries usually are.
+        float const targetY = std::min(0.f, 220.f - contentLayer->getContentSize().height);
+        contentLayer->setPositionY(targetY);
+        return;
+    }
 
     contentLayer->setPositionY(geobot->getPositionY() - 118);
 
