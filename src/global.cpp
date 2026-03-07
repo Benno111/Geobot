@@ -789,5 +789,5 @@ $execute{
   }
   g.macro.author = defaultAuthor;
   g.macro.description = "N/A";
-  g.macro.gameVersion = 2.208;
+  g.macro.gameVersion = 1.9f;
 };
