@@ -123,6 +123,7 @@ public:
     static PauseLayer* getPauseLayer();
     static std::filesystem::path getFolderSettingPath(std::string const& settingID, bool createIfMissing = true);
     static void triggerFramePerfectOverlay(int button, bool down);
+    static void triggerFramePerfectExpected(int leftWiggle, int rightWiggle);
     static void triggerFramePerfectOverlayCounted(size_t actionIndex, int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle);
 
     Mod* mod = Mod::get();
@@ -220,5 +221,10 @@ public:
     int framePerfectCount60 = 0;
     int framePerfectCount144 = 0;
     int framePerfectCount240 = 0;
+    int framePerfectExpected = 0;
+    int framePerfectExpected60 = 0;
+    int framePerfectExpected144 = 0;
+    int framePerfectExpected240 = 0;
+    bool framePerfectSfxEnabled = true;
     size_t lastFramePerfectAction = std::numeric_limits<size_t>::max();
 };
