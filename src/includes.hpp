@@ -123,6 +123,7 @@ public:
     static PauseLayer* getPauseLayer();
     static std::filesystem::path getFolderSettingPath(std::string const& settingID, bool createIfMissing = true);
     static void triggerFramePerfectOverlay(int button, bool down);
+    static void triggerFramePerfectOverlayProgress(int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle);
     static void triggerFramePerfectExpected(int leftWiggle, int rightWiggle);
     static void triggerFramePerfectOverlayCounted(size_t actionIndex, int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle);
 

@@ -487,6 +487,23 @@ void Global::triggerFramePerfectOverlay(int button, bool down) {
   g.framePerfectOverlayFrames = 30;
 }
 
+void Global::triggerFramePerfectOverlayProgress(int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle) {
+  auto& g = Global::get();
+  const char* buttonName = "Click";
+  if (button == 2) buttonName = "Left";
+  else if (button == 3) buttonName = "Right";
+
+  g.framePerfectOverlayText = fmt::format(
+    "FP {} {} ({}) | Wiggle L:{} R:{} | Scanning...",
+    buttonName,
+    down ? "Press" : "Release",
+    typeName,
+    leftWiggle,
+    rightWiggle
+  );
+  g.framePerfectOverlayFrames = 2;
+}
+
 void Global::triggerFramePerfectExpected(int leftWiggle, int rightWiggle) {
   auto& g = Global::get();
   double tps = std::max(1.0, static_cast<double>(Global::getTPS()));
