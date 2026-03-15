@@ -500,6 +500,48 @@ std::string getFramePerfectFpsTypeText(int leftWiggle, int rightWiggle) {
     return "None";
   return result;
 }
+
+std::string buildFramePerfectOverlayText(
+  std::string const& typeName,
+  std::string const& fpsType,
+  int leftWiggle,
+  int rightWiggle,
+  std::string const& footer
+) {
+  return fmt::format(
+    "FRAME PERFECT\n{} | {}\nWiggle L:{} R:{} | {}",
+    typeName,
+    fpsType,
+    leftWiggle,
+    rightWiggle,
+    footer
+  );
+}
+}
+
+void Global::refreshFramePerfectOverlayText() {
+  auto& g = Global::get();
+  std::string typeName = g.framePerfectOverlayTypeName.empty() ? "Waiting for input" : g.framePerfectOverlayTypeName;
+  std::string fpsType = g.framePerfectOverlayFpsType.empty() ? "None" : g.framePerfectOverlayFpsType;
+  std::string footer = g.framePerfectOverlayScanning
+    ? "Scanning"
+    : fmt::format(
+        "60 {}/{}  144 {}/{}  240 {}/{}",
+        g.framePerfectCount60,
+        g.framePerfectExpected60,
+        g.framePerfectCount144,
+        g.framePerfectExpected144,
+        g.framePerfectCount240,
+        g.framePerfectExpected240
+      );
+
+  g.framePerfectOverlayText = buildFramePerfectOverlayText(
+    typeName,
+    fpsType,
+    g.framePerfectOverlayLeftWiggle,
+    g.framePerfectOverlayRightWiggle,
+    footer
+  );
 }
 
 void Global::triggerFramePerfectOverlay(int button, bool down) {
@@ -514,19 +556,15 @@ void Global::triggerFramePerfectOverlay(int button, bool down) {
 
 void Global::triggerFramePerfectOverlayProgress(int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle) {
   auto& g = Global::get();
-  const char* buttonName = "Click";
-  if (button == 2) buttonName = "Left";
-  else if (button == 3) buttonName = "Right";
+  (void)button;
+  (void)down;
 
-  g.framePerfectOverlayText = fmt::format(
-    "FP {} {} ({}) | Type:{} | Wiggle L:{} R:{} | Scanning...",
-    buttonName,
-    down ? "Press" : "Release",
-    typeName,
-    getFramePerfectFpsTypeText(leftWiggle, rightWiggle),
-    leftWiggle,
-    rightWiggle
-  );
+  g.framePerfectOverlayTypeName = typeName;
+  g.framePerfectOverlayFpsType = getFramePerfectFpsTypeText(leftWiggle, rightWiggle);
+  g.framePerfectOverlayLeftWiggle = leftWiggle;
+  g.framePerfectOverlayRightWiggle = rightWiggle;
+  g.framePerfectOverlayScanning = true;
+  Global::refreshFramePerfectOverlayText();
   g.framePerfectOverlayFrames = 2;
 }
 
@@ -581,25 +619,15 @@ void Global::triggerFramePerfectOverlayCounted(size_t actionIndex, int button, b
 
   g.framePerfectCount = g.framePerfectCount240;
 
-  const char* buttonName = "Click";
-  if (button == 2) buttonName = "Left";
-  else if (button == 3) buttonName = "Right";
+  (void)button;
+  (void)down;
 
-  g.framePerfectOverlayText = fmt::format(
-    "FP {} {} ({}) | Type:{} | Wiggle L:{} R:{} | 60:{}/{} 144:{}/{} 240:{}/{}",
-    buttonName,
-    down ? "Press" : "Release",
-    typeName,
-    getFramePerfectFpsTypeText(leftWiggle, rightWiggle),
-    leftWiggle,
-    rightWiggle,
-    g.framePerfectCount60,
-    g.framePerfectExpected60,
-    g.framePerfectCount144,
-    g.framePerfectExpected144,
-    g.framePerfectCount240,
-    g.framePerfectExpected240
-  );
+  g.framePerfectOverlayTypeName = typeName;
+  g.framePerfectOverlayFpsType = getFramePerfectFpsTypeText(leftWiggle, rightWiggle);
+  g.framePerfectOverlayLeftWiggle = leftWiggle;
+  g.framePerfectOverlayRightWiggle = rightWiggle;
+  g.framePerfectOverlayScanning = false;
+  Global::refreshFramePerfectOverlayText();
   g.framePerfectOverlayFrames = 45;
 }
 

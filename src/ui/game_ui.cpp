@@ -8,6 +8,7 @@ class $modify(PlayLayer) {
     struct Fields {
         CCLabelBMFont* frameLabel = nullptr;
         CCLabelBMFont* framePerfectLabel = nullptr;
+        CCScale9Sprite* framePerfectBg = nullptr;
     };
 
     void postUpdate(float dt) {
@@ -17,7 +18,8 @@ class $modify(PlayLayer) {
         if (g.state != state::none && g.frameLabel && !g.renderer.recording)
             m_fields->frameLabel->setString(("Frame: " + std::to_string(Global::getCurrentFrame())).c_str());
 
-        if (m_fields->framePerfectLabel) {
+        if (m_fields->framePerfectLabel && m_fields->framePerfectBg) {
+            Global::refreshFramePerfectOverlayText();
             std::string mode = g.mod->getSavedValue<std::string>("frame_perfect_overlay_mode");
             if (mode != "Never" && mode != "When" && mode != "Always")
                 mode = "When";
@@ -34,16 +36,25 @@ class $modify(PlayLayer) {
 
             if (canShow && mode == "When") {
                 m_fields->framePerfectLabel->setVisible(true);
+                m_fields->framePerfectBg->setVisible(true);
                 m_fields->framePerfectLabel->setString(g.framePerfectOverlayText.c_str());
+                auto size = m_fields->framePerfectLabel->getContentSize();
+                float scale = m_fields->framePerfectLabel->getScale();
+                m_fields->framePerfectBg->setContentSize({ std::max(210.f, size.width * scale + 18.f), 50.f });
                 g.framePerfectOverlayFrames--;
             } else if (canShow && mode == "Always") {
                 m_fields->framePerfectLabel->setVisible(true);
+                m_fields->framePerfectBg->setVisible(true);
                 if (g.framePerfectOverlayText.empty())
-                    m_fields->framePerfectLabel->setString("Frame Perfect Overlay");
+                    m_fields->framePerfectLabel->setString("FRAME PERFECT\nWaiting for input\nOverlay armed");
                 else
                     m_fields->framePerfectLabel->setString(g.framePerfectOverlayText.c_str());
+                auto size = m_fields->framePerfectLabel->getContentSize();
+                float scale = m_fields->framePerfectLabel->getScale();
+                m_fields->framePerfectBg->setContentSize({ std::max(210.f, size.width * scale + 18.f), 50.f });
             } else {
                 m_fields->framePerfectLabel->setVisible(false);
+                m_fields->framePerfectBg->setVisible(false);
             }
         }
     }
@@ -56,6 +67,7 @@ class $modify(PlayLayer) {
 
         m_fields->frameLabel = static_cast<CCLabelBMFont*>(getChildByID("frame-label"_spr));
         m_fields->framePerfectLabel = static_cast<CCLabelBMFont*>(getChildByID("frame-perfect-label"_spr));
+        m_fields->framePerfectBg = typeinfo_cast<CCScale9Sprite*>(getChildByID("frame-perfect-bg"_spr));
 
         return true;
     }
@@ -86,12 +98,21 @@ void Interface::addLabels(PlayLayer* pl) {
     lbl->setVisible(false);
     pl->addChild(lbl);
 
+    auto bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    bg->setPosition({ CCDirector::sharedDirector()->getWinSize().width / 2.f, 44.f });
+    bg->setContentSize({ 210.f, 50.f });
+    bg->setOpacity(90);
+    bg->setVisible(false);
+    bg->setID("frame-perfect-bg"_spr);
+    bg->setZOrder(300);
+    pl->addChild(bg);
+
     lbl = CCLabelBMFont::create("", "chatFont.fnt");
-    lbl->setPosition({ CCDirector::sharedDirector()->getWinSize().width / 2.f, 30.f });
+    lbl->setPosition({ CCDirector::sharedDirector()->getWinSize().width / 2.f, 44.f });
     lbl->setAnchorPoint({ 0.5f, 0.5f });
     lbl->setID("frame-perfect-label"_spr);
     lbl->setZOrder(301);
-    lbl->setScale(0.7f);
+    lbl->setScale(0.48f);
     lbl->setVisible(false);
     pl->addChild(lbl);
 

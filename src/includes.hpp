@@ -126,6 +126,7 @@ public:
     static void triggerFramePerfectOverlayProgress(int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle);
     static void triggerFramePerfectExpected(int leftWiggle, int rightWiggle);
     static void triggerFramePerfectOverlayCounted(size_t actionIndex, int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle);
+    static void refreshFramePerfectOverlayText();
 
     Mod* mod = Mod::get();
     geode::Popup* layer = nullptr;
@@ -226,6 +227,11 @@ public:
     int framePerfectExpected60 = 0;
     int framePerfectExpected144 = 0;
     int framePerfectExpected240 = 0;
+    std::string framePerfectOverlayTypeName = "";
+    std::string framePerfectOverlayFpsType = "";
+    int framePerfectOverlayLeftWiggle = 0;
+    int framePerfectOverlayRightWiggle = 0;
+    bool framePerfectOverlayScanning = false;
     bool framePerfectSfxEnabled = true;
     size_t lastFramePerfectAction = std::numeric_limits<size_t>::max();
 };
