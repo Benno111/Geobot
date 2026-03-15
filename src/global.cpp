@@ -477,6 +477,31 @@ PauseLayer* Global::getPauseLayer() {
   return nullptr;
 }
 
+namespace {
+std::string getFramePerfectFpsTypeText(int leftWiggle, int rightWiggle) {
+  double tps = std::max(1.0, static_cast<double>(Global::getTPS()));
+  std::string result;
+
+  auto appendType = [&](double targetFps, char const* label) {
+    double stepFrames = tps / targetFps;
+    if (static_cast<double>(leftWiggle) >= stepFrames && static_cast<double>(rightWiggle) >= stepFrames)
+      return;
+
+    if (!result.empty())
+      result += "/";
+    result += label;
+  };
+
+  appendType(60.0, "60");
+  appendType(144.0, "144");
+  appendType(240.0, "240");
+
+  if (result.empty())
+    return "None";
+  return result;
+}
+}
+
 void Global::triggerFramePerfectOverlay(int button, bool down) {
   auto& g = Global::get();
   const char* buttonName = "Click";
@@ -494,10 +519,11 @@ void Global::triggerFramePerfectOverlayProgress(int button, bool down, std::stri
   else if (button == 3) buttonName = "Right";
 
   g.framePerfectOverlayText = fmt::format(
-    "FP {} {} ({}) | Wiggle L:{} R:{} | Scanning...",
+    "FP {} {} ({}) | Type:{} | Wiggle L:{} R:{} | Scanning...",
     buttonName,
     down ? "Press" : "Release",
     typeName,
+    getFramePerfectFpsTypeText(leftWiggle, rightWiggle),
     leftWiggle,
     rightWiggle
   );
@@ -560,10 +586,11 @@ void Global::triggerFramePerfectOverlayCounted(size_t actionIndex, int button, b
   else if (button == 3) buttonName = "Right";
 
   g.framePerfectOverlayText = fmt::format(
-    "FP {} {} ({}) | Wiggle L:{} R:{} | 60:{}/{} 144:{}/{} 240:{}/{}",
+    "FP {} {} ({}) | Type:{} | Wiggle L:{} R:{} | 60:{}/{} 144:{}/{} 240:{}/{}",
     buttonName,
     down ? "Press" : "Release",
     typeName,
+    getFramePerfectFpsTypeText(leftWiggle, rightWiggle),
     leftWiggle,
     rightWiggle,
     g.framePerfectCount60,

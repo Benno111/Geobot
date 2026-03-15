@@ -15,6 +15,31 @@ namespace {
     if (!pl) return false;
     return LevelEditorLayer::get() != nullptr || pl->m_isTestMode;
   }
+
+  std::string getFramePerfectTypeName(PlayerObject* player, int button, bool down) {
+    if (button == 2)
+      return down ? "Left Press" : "Left Release";
+    if (button == 3)
+      return down ? "Right Press" : "Right Release";
+
+    if (!player)
+      return down ? "Jump Press" : "Jump Release";
+
+    if (player->m_isDart)
+      return down ? "Wave Click" : "Wave Release";
+    if (player->m_isRobot)
+      return down ? "Robot Press" : "Robot Release";
+    if (player->m_isSpider)
+      return down ? "Spider Click" : "Spider Release";
+    if (player->m_isBird)
+      return down ? "UFO Click" : "UFO Release";
+    if (player->m_isBall)
+      return down ? "Ball Click" : "Ball Release";
+    if (player->m_isShip)
+      return down ? "Ship Press" : "Ship Release";
+
+    return down ? "Jump Press" : "Jump Release";
+  }
 }
 
 $execute {
@@ -383,7 +408,101 @@ class $modify(BGLHook, GJBaseGameLayer) {
     auto& g = Global::get();
     if (m_levelEndAnimationStarted) return;
 
+    auto updatePendingFramePerfects = [&]() {
+      m_fields->aliveLastFrame[0] = m_player1 && !m_player1->m_isDead;
+      m_fields->aliveLastFrame[1] = m_player2 && !m_player2->m_isDead;
+
+      if (frame <= m_fields->lastAliveHistoryFrame) {
+        m_fields->aliveHistory.clear();
+        m_fields->pendingFramePerfects.clear();
+      }
+
+      m_fields->lastAliveHistoryFrame = frame;
+      m_fields->aliveHistory.push_back({
+        frame,
+        { m_fields->aliveLastFrame[0], m_fields->aliveLastFrame[1] }
+      });
+
+      int const historyFloor = frame - (Fields::kWiggleScanFrames + 6);
+      size_t pruneCount = 0;
+      while (pruneCount < m_fields->aliveHistory.size() && m_fields->aliveHistory[pruneCount].frame < historyFloor)
+        pruneCount++;
+      if (pruneCount > 0)
+        m_fields->aliveHistory.erase(m_fields->aliveHistory.begin(), m_fields->aliveHistory.begin() + pruneCount);
+
+      auto getAliveAt = [&](int targetFrame, bool player2, bool& known) {
+        for (auto it = m_fields->aliveHistory.rbegin(); it != m_fields->aliveHistory.rend(); ++it) {
+          if (it->frame == targetFrame) {
+            known = true;
+            return it->alive[player2 ? 1 : 0];
+          }
+          if (it->frame < targetFrame) break;
+        }
+        known = false;
+        return false;
+      };
+
+      if (!m_fields->pendingFramePerfects.empty()) {
+        size_t write = 0;
+        for (size_t i = 0; i < m_fields->pendingFramePerfects.size(); i++) {
+          auto const& pending = m_fields->pendingFramePerfects[i];
+          int leftWiggle = 0;
+          for (int offset = 1; offset <= Fields::kWiggleScanFrames; offset++) {
+            bool known = false;
+            bool alive = getAliveAt(pending.inputFrame - offset, pending.player2, known);
+            if (!known || !alive) break;
+            leftWiggle++;
+          }
+
+          int rightWiggle = 0;
+          int maxRightOffset = std::min(Fields::kWiggleScanFrames, std::max(0, frame - pending.inputFrame));
+          for (int offset = 1; offset <= maxRightOffset; offset++) {
+            bool known = false;
+            bool alive = getAliveAt(pending.inputFrame + offset, pending.player2, known);
+            if (!known || !alive) break;
+            rightWiggle++;
+          }
+
+          if (frame < pending.resolveFrame) {
+            Global::triggerFramePerfectOverlayProgress(
+              pending.button,
+              pending.down,
+              pending.typeName,
+              leftWiggle,
+              rightWiggle
+            );
+            if (write != i)
+              m_fields->pendingFramePerfects[write] = pending;
+            write++;
+            continue;
+          }
+
+          rightWiggle = 0;
+          for (int offset = 1; offset <= Fields::kWiggleScanFrames; offset++) {
+            bool known = false;
+            bool alive = getAliveAt(pending.inputFrame + offset, pending.player2, known);
+            if (!known || !alive) break;
+            rightWiggle++;
+          }
+
+          if (leftWiggle == 0 || rightWiggle == 0) {
+            Global::triggerFramePerfectOverlayCounted(
+              pending.actionIndex,
+              pending.button,
+              pending.down,
+              pending.typeName,
+              leftWiggle,
+              rightWiggle
+            );
+          }
+        }
+        if (write < m_fields->pendingFramePerfects.size())
+          m_fields->pendingFramePerfects.resize(write);
+      }
+    };
+
     if (m_player1->m_isDead) {
+      updatePendingFramePerfects();
       m_player1->releaseAllButtons();
       m_player2->releaseAllButtons();
 
@@ -406,16 +525,12 @@ class $modify(BGLHook, GJBaseGameLayer) {
           inputPlayer2 = !inputPlayer2;
 
         PlayerObject* inputPlayer = inputPlayer2 ? m_player2 : m_player1;
-        bool isWaveClick = input.button == 1 && input.down && inputPlayer && inputPlayer->m_isDart;
-        bool isWaveRelease = input.button == 1 && !input.down && inputPlayer && inputPlayer->m_isDart;
-        bool isJumpPress = input.button == 1 && input.down && !(inputPlayer && inputPlayer->m_isDart);
-        bool isRobotRelease = input.button == 1 && !input.down && inputPlayer && inputPlayer->m_isRobot;
-        if (isJumpPress || isRobotRelease || isWaveClick || isWaveRelease) {
-          std::string typeName = "Jump";
-          if (isWaveClick) typeName = "Wave Click";
-          else if (isWaveRelease) typeName = "Wave Release";
-          else if (isRobotRelease) typeName = "Robot Release";
+        bool isTrackedFramePerfectInput =
+          input.button == 1 ||
+          (m_levelSettings->m_platformerMode && (input.button == 2 || input.button == 3));
 
+        if (isTrackedFramePerfectInput) {
+          std::string typeName = getFramePerfectTypeName(inputPlayer, input.button, input.down);
           m_fields->pendingFramePerfects.push_back({
             actionIndex,
             frame,
@@ -472,97 +587,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
       }
     }
 
-    m_fields->aliveLastFrame[0] = m_player1 && !m_player1->m_isDead;
-    m_fields->aliveLastFrame[1] = m_player2 && !m_player2->m_isDead;
-
-    if (frame <= m_fields->lastAliveHistoryFrame) {
-      m_fields->aliveHistory.clear();
-      m_fields->pendingFramePerfects.clear();
-    }
-
-    m_fields->lastAliveHistoryFrame = frame;
-    m_fields->aliveHistory.push_back({
-      frame,
-      { m_fields->aliveLastFrame[0], m_fields->aliveLastFrame[1] }
-    });
-
-    int const historyFloor = frame - (Fields::kWiggleScanFrames + 6);
-    size_t pruneCount = 0;
-    while (pruneCount < m_fields->aliveHistory.size() && m_fields->aliveHistory[pruneCount].frame < historyFloor)
-      pruneCount++;
-    if (pruneCount > 0)
-      m_fields->aliveHistory.erase(m_fields->aliveHistory.begin(), m_fields->aliveHistory.begin() + pruneCount);
-
-    auto getAliveAt = [&](int targetFrame, bool player2, bool& known) {
-      for (auto it = m_fields->aliveHistory.rbegin(); it != m_fields->aliveHistory.rend(); ++it) {
-        if (it->frame == targetFrame) {
-          known = true;
-          return it->alive[player2 ? 1 : 0];
-        }
-        if (it->frame < targetFrame) break;
-      }
-      known = false;
-      return false;
-    };
-
-    if (!m_fields->pendingFramePerfects.empty()) {
-      size_t write = 0;
-      for (size_t i = 0; i < m_fields->pendingFramePerfects.size(); i++) {
-        auto const& pending = m_fields->pendingFramePerfects[i];
-        int leftWiggle = 0;
-        for (int offset = 1; offset <= Fields::kWiggleScanFrames; offset++) {
-          bool known = false;
-          bool alive = getAliveAt(pending.inputFrame - offset, pending.player2, known);
-          if (!known || !alive) break;
-          leftWiggle++;
-        }
-
-        int rightWiggle = 0;
-        int maxRightOffset = std::min(Fields::kWiggleScanFrames, std::max(0, frame - pending.inputFrame));
-        for (int offset = 1; offset <= maxRightOffset; offset++) {
-          bool known = false;
-          bool alive = getAliveAt(pending.inputFrame + offset, pending.player2, known);
-          if (!known || !alive) break;
-          rightWiggle++;
-        }
-
-        if (frame < pending.resolveFrame) {
-          Global::triggerFramePerfectOverlayProgress(
-            pending.button,
-            pending.down,
-            pending.typeName,
-            leftWiggle,
-            rightWiggle
-          );
-          if (write != i)
-            m_fields->pendingFramePerfects[write] = pending;
-          write++;
-          continue;
-        }
-
-        rightWiggle = 0;
-        for (int offset = 1; offset <= Fields::kWiggleScanFrames; offset++) {
-          bool known = false;
-          bool alive = getAliveAt(pending.inputFrame + offset, pending.player2, known);
-          if (!known || !alive) break;
-          rightWiggle++;
-        }
-
-        if (leftWiggle == 0 || rightWiggle == 0) {
-          Global::triggerFramePerfectOverlayCounted(
-            pending.actionIndex,
-            pending.button,
-            pending.down,
-            pending.typeName,
-            leftWiggle,
-            rightWiggle
-          );
-        }
-      }
-      if (write < m_fields->pendingFramePerfects.size())
-        m_fields->pendingFramePerfects.resize(write);
-    }
-
+    updatePendingFramePerfects();
   }
 
   void handleButton(bool hold, int button, bool player2) {
