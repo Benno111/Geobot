@@ -10,6 +10,8 @@
 #include <Geode/binding/LevelEditorLayer.hpp>
 
 namespace {
+  constexpr int kFramePerfectMaxGap = 2;
+
   // Prefer explicit editor-layer presence, with m_isTestMode as fallback.
   bool isEditorPlaytestCompat(PlayLayer* pl) {
     if (!pl) return false;
@@ -60,6 +62,16 @@ namespace {
     return down ? "Jump Press" : "Jump Release";
   }
 
+  bool canInputsFormFramePerfect(input const& previous, input const& current) {
+    return current.player2 == previous.player2 &&
+           current.button == previous.button &&
+           current.down != previous.down;
+  }
+
+  int getFramePerfectGap(input const& previous, input const& current) {
+    return current.frame - previous.frame - 1;
+  }
+
   int findLiveFramePerfectWiggle(std::vector<input> const& inputs, size_t currentIndex) {
     if (currentIndex >= inputs.size())
       return -1;
@@ -67,13 +79,11 @@ namespace {
     auto const& current = inputs[currentIndex];
     for (size_t i = currentIndex; i-- > 0;) {
       auto const& previous = inputs[i];
-      int wiggle = current.frame - previous.frame - 1;
-      if (wiggle > 2)
+      int wiggle = getFramePerfectGap(previous, current);
+      if (wiggle > kFramePerfectMaxGap)
         break;
 
-      if (current.player2 != previous.player2 ||
-          current.button != previous.button ||
-          current.down == previous.down)
+      if (!canInputsFormFramePerfect(previous, current))
         continue;
 
       return std::max(0, wiggle);
@@ -290,6 +300,16 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
   struct Fields {
     bool macroInput = false;
+    struct PendingFramePerfect {
+      size_t actionIndex = 0;
+      int inputFrame = 0;
+      int button = 0;
+      bool down = false;
+      bool player2 = false;
+      int leftWiggle = -1;
+      std::string typeName = "";
+    };
+    std::vector<PendingFramePerfect> pendingFramePerfects;
   };
 
   void processCommands(float dt, bool isHalfTick, bool isLastTick) {
@@ -415,6 +435,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
     if (m_levelEndAnimationStarted) return;
 
     if (m_player1->m_isDead) {
+      m_fields->pendingFramePerfects.clear();
       m_player1->releaseAllButtons();
       m_player2->releaseAllButtons();
 
@@ -445,17 +466,57 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
         if (isTrackedFramePerfectInput) {
           std::string typeName = getFramePerfectTypeName(inputPlayer, input.button, input.down);
-          Global::triggerFramePerfectOverlayProgress(input.button, input.down, typeName, 0, 0);
-          int wiggle = findLiveFramePerfectWiggle(g.macro.inputs, actionIndex);
-          if (wiggle != -1) {
+          int leftWiggle = findLiveFramePerfectWiggle(g.macro.inputs, actionIndex);
+          Global::triggerFramePerfectOverlayProgress(input.button, input.down, typeName, std::max(0, leftWiggle), 0);
+
+          size_t write = 0;
+          for (size_t i = 0; i < m_fields->pendingFramePerfects.size(); i++) {
+            auto const& pending = m_fields->pendingFramePerfects[i];
+            input pendingInput(pending.inputFrame, pending.button, pending.player2, pending.down);
+            int rightWiggle = getFramePerfectGap(pendingInput, input);
+
+            if (rightWiggle > kFramePerfectMaxGap)
+              continue;
+
+            if (canInputsFormFramePerfect(pendingInput, input)) {
+              Global::triggerFramePerfectOverlayCounted(
+                pending.actionIndex,
+                pending.button,
+                pending.down,
+                pending.typeName,
+                pending.leftWiggle == -1 ? kFramePerfectMaxGap + 1 : pending.leftWiggle,
+                rightWiggle
+              );
+              continue;
+            }
+
+            if (write != i)
+              m_fields->pendingFramePerfects[write] = pending;
+            write++;
+          }
+          if (write < m_fields->pendingFramePerfects.size())
+            m_fields->pendingFramePerfects.resize(write);
+
+          if (leftWiggle != -1) {
             Global::triggerFramePerfectOverlayCounted(
               actionIndex,
               input.button,
               input.down,
               typeName,
-              wiggle,
-              wiggle
+              leftWiggle,
+              kFramePerfectMaxGap + 1
             );
+          }
+          else {
+            m_fields->pendingFramePerfects.push_back({
+              actionIndex,
+              input.frame,
+              input.button,
+              input.down,
+              input.player2,
+              leftWiggle,
+              typeName
+            });
           }
         }
 
@@ -468,6 +529,20 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
     g.respawnFrame = -1;
     m_fields->macroInput = false;
+
+    if (!m_fields->pendingFramePerfects.empty()) {
+      size_t write = 0;
+      for (size_t i = 0; i < m_fields->pendingFramePerfects.size(); i++) {
+        auto const& pending = m_fields->pendingFramePerfects[i];
+        if (frame > pending.inputFrame + kFramePerfectMaxGap + 1)
+          continue;
+        if (write != i)
+          m_fields->pendingFramePerfects[write] = pending;
+        write++;
+      }
+      if (write < m_fields->pendingFramePerfects.size())
+        m_fields->pendingFramePerfects.resize(write);
+    }
 
     if (g.currentAction == g.macro.inputs.size()) {
       if (g.stopPlaying) {
