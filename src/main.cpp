@@ -60,11 +60,26 @@ namespace {
     return down ? "Jump Press" : "Jump Release";
   }
 
-  bool isLiveFramePerfectInput(input const& previous, input const& current) {
-    return current.player2 == previous.player2 &&
-           current.button == previous.button &&
-           current.frame - previous.frame == 1 &&
-           current.down != previous.down;
+  int findLiveFramePerfectWiggle(std::vector<input> const& inputs, size_t currentIndex) {
+    if (currentIndex >= inputs.size())
+      return -1;
+
+    auto const& current = inputs[currentIndex];
+    for (size_t i = currentIndex; i-- > 0;) {
+      auto const& previous = inputs[i];
+      int wiggle = current.frame - previous.frame - 1;
+      if (wiggle > 2)
+        break;
+
+      if (current.player2 != previous.player2 ||
+          current.button != previous.button ||
+          current.down == previous.down)
+        continue;
+
+      return std::max(0, wiggle);
+    }
+
+    return -1;
   }
 }
 
@@ -431,14 +446,15 @@ class $modify(BGLHook, GJBaseGameLayer) {
         if (isTrackedFramePerfectInput) {
           std::string typeName = getFramePerfectTypeName(inputPlayer, input.button, input.down);
           Global::triggerFramePerfectOverlayProgress(input.button, input.down, typeName, 0, 0);
-          if (actionIndex > 0 && isLiveFramePerfectInput(g.macro.inputs[actionIndex - 1], input)) {
+          int wiggle = findLiveFramePerfectWiggle(g.macro.inputs, actionIndex);
+          if (wiggle != -1) {
             Global::triggerFramePerfectOverlayCounted(
               actionIndex,
               input.button,
               input.down,
               typeName,
-              0,
-              0
+              wiggle,
+              wiggle
             );
           }
         }

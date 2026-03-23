@@ -478,13 +478,15 @@ PauseLayer* Global::getPauseLayer() {
 }
 
 namespace {
+bool isFramePerfectForTier(int leftWiggle, int rightWiggle, int maxGap) {
+  return leftWiggle <= maxGap || rightWiggle <= maxGap;
+}
+
 std::string getFramePerfectFpsTypeText(int leftWiggle, int rightWiggle) {
-  double tps = std::max(1.0, static_cast<double>(Global::getTPS()));
   std::string result;
 
-  auto appendType = [&](double targetFps, char const* label) {
-    double stepFrames = tps / targetFps;
-    if (static_cast<double>(leftWiggle) >= stepFrames && static_cast<double>(rightWiggle) >= stepFrames)
+  auto appendType = [&](int maxGap, char const* label) {
+    if (!isFramePerfectForTier(leftWiggle, rightWiggle, maxGap))
       return;
 
     if (!result.empty())
@@ -492,9 +494,9 @@ std::string getFramePerfectFpsTypeText(int leftWiggle, int rightWiggle) {
     result += label;
   };
 
-  appendType(60.0, "60");
-  appendType(144.0, "144");
-  appendType(240.0, "240");
+  appendType(2, "60");
+  appendType(1, "144");
+  appendType(0, "240");
 
   if (result.empty())
     return "None";
@@ -598,17 +600,12 @@ void Global::triggerFramePerfectOverlayProgress(int button, bool down, std::stri
 
 void Global::triggerFramePerfectExpected(int leftWiggle, int rightWiggle) {
   auto& g = Global::get();
-  double tps = std::max(1.0, static_cast<double>(Global::getTPS()));
-  auto isFramePerfectForFPS = [&](double targetFps) {
-    double stepFrames = tps / targetFps;
-    return static_cast<double>(leftWiggle) < stepFrames || static_cast<double>(rightWiggle) < stepFrames;
-  };
 
-  if (isFramePerfectForFPS(60.0))
+  if (isFramePerfectForTier(leftWiggle, rightWiggle, 2))
     g.framePerfectExpected60++;
-  if (isFramePerfectForFPS(144.0))
+  if (isFramePerfectForTier(leftWiggle, rightWiggle, 1))
     g.framePerfectExpected144++;
-  if (isFramePerfectForFPS(240.0))
+  if (isFramePerfectForTier(leftWiggle, rightWiggle, 0))
     g.framePerfectExpected240++;
 
   g.framePerfectExpected = g.framePerfectExpected240;
@@ -632,17 +629,11 @@ void Global::triggerFramePerfectOverlayCounted(size_t actionIndex, int button, b
     FMODAudioEngine::sharedEngine()->playEffect((Mod::get()->getResourcesDir() / sfx).string());
   }
 
-  double tps = std::max(1.0, static_cast<double>(Global::getTPS()));
-  auto isFramePerfectForFPS = [&](double targetFps) {
-    double stepFrames = tps / targetFps;
-    return static_cast<double>(leftWiggle) < stepFrames || static_cast<double>(rightWiggle) < stepFrames;
-  };
-
-  if (isFramePerfectForFPS(60.0))
+  if (isFramePerfectForTier(leftWiggle, rightWiggle, 2))
     g.framePerfectCount60++;
-  if (isFramePerfectForFPS(144.0))
+  if (isFramePerfectForTier(leftWiggle, rightWiggle, 1))
     g.framePerfectCount144++;
-  if (isFramePerfectForFPS(240.0))
+  if (isFramePerfectForTier(leftWiggle, rightWiggle, 0))
     g.framePerfectCount240++;
 
   g.framePerfectCount = g.framePerfectCount240;
