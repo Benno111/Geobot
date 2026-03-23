@@ -127,6 +127,9 @@ public:
     static void triggerFramePerfectExpected(int leftWiggle, int rightWiggle);
     static void triggerFramePerfectOverlayCounted(size_t actionIndex, int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle);
     static void refreshFramePerfectOverlayText();
+    static bool isDeveloperModeEnabled();
+    static void setDeveloperModeEnabled(bool enabled);
+    static std::string getFramePerfectOverlayMode();
 
     Mod* mod = Mod::get();
     geode::Popup* layer = nullptr;

@@ -59,6 +59,16 @@ namespace {
 
     return down ? "Jump Press" : "Jump Release";
   }
+
+  bool qualifiesAsFramePerfect(int leftWiggle, int rightWiggle) {
+    double tps = std::max(1.0, static_cast<double>(Global::getTPS()));
+    for (double targetFps : { 60.0, 144.0, 240.0 }) {
+      double stepFrames = tps / targetFps;
+      if (static_cast<double>(leftWiggle) < stepFrames || static_cast<double>(rightWiggle) < stepFrames)
+        return true;
+    }
+    return false;
+  }
 }
 
 $execute {
@@ -125,11 +135,11 @@ class $modify(PlayLayer) {
       }
       if (m_levelSettings->m_platformerMode) {
         if (m_player2->m_holdingButtons[2]) {
-          handleButton(false, 2, false);
+          handleButton(false, 2, true);
           g.macro.inputs.push_back(input(frame, 2, true, false));
         }
         if (m_player2->m_holdingButtons[3]) {
-          handleButton(false, 3, false);
+          handleButton(false, 3, true);
           g.macro.inputs.push_back(input(frame, 3, true, false));
         }
       }
@@ -487,7 +497,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
             rightWiggle++;
           }
 
-          if (leftWiggle == 0 || rightWiggle == 0) {
+          if (qualifiesAsFramePerfect(leftWiggle, rightWiggle)) {
             Global::triggerFramePerfectOverlayCounted(
               pending.actionIndex,
               pending.button,
@@ -630,10 +640,10 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
     if (g.state != state::recording) return GJBaseGameLayer::handleButton(hold, button, player2);
 
+    GJBaseGameLayer::handleButton(hold, button, player2);
+
     if (g.inputFixes)
       g.macro.recordFrameFix(frame, m_player1, m_player2);
-
-    GJBaseGameLayer::handleButton(hold, button, player2);
 
     if (!m_levelSettings->m_twoPlayerMode)
       player2 = false;

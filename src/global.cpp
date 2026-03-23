@@ -508,13 +508,15 @@ std::string buildFramePerfectOverlayText(
   int rightWiggle,
   std::string const& footer
 ) {
+  std::string wiggleLine = fmt::format("Wiggle L:{} R:{}", leftWiggle, rightWiggle);
+  if (!footer.empty())
+    wiggleLine += " | " + footer;
+
   return fmt::format(
-    "FRAME PERFECT\n{} | {}\nWiggle L:{} R:{} | {}",
+    "FRAME PERFECT\n{} | {}\n{}",
     typeName,
     fpsType,
-    leftWiggle,
-    rightWiggle,
-    footer
+    wiggleLine
   );
 }
 }
@@ -523,17 +525,15 @@ void Global::refreshFramePerfectOverlayText() {
   auto& g = Global::get();
   std::string typeName = g.framePerfectOverlayTypeName.empty() ? "Waiting for input" : g.framePerfectOverlayTypeName;
   std::string fpsType = g.framePerfectOverlayFpsType.empty() ? "None" : g.framePerfectOverlayFpsType;
-  std::string footer = g.framePerfectOverlayScanning
-    ? "Scanning"
-    : fmt::format(
-        "60 {}/{}  144 {}/{}  240 {}/{}",
-        g.framePerfectCount60,
-        g.framePerfectExpected60,
-        g.framePerfectCount144,
-        g.framePerfectExpected144,
-        g.framePerfectCount240,
-        g.framePerfectExpected240
-      );
+  std::string footer = fmt::format(
+    "60 {}/{}  144 {}/{}  240 {}/{}",
+    g.framePerfectCount60,
+    g.framePerfectExpected60,
+    g.framePerfectCount144,
+    g.framePerfectExpected144,
+    g.framePerfectCount240,
+    g.framePerfectExpected240
+  );
 
   g.framePerfectOverlayText = buildFramePerfectOverlayText(
     typeName,
@@ -542,6 +542,34 @@ void Global::refreshFramePerfectOverlayText() {
     g.framePerfectOverlayRightWiggle,
     footer
   );
+}
+
+bool Global::isDeveloperModeEnabled() {
+  Mod* mod = Mod::get();
+  return mod && mod->getSavedValue<bool>("developer_mode_enabled");
+}
+
+void Global::setDeveloperModeEnabled(bool enabled) {
+  Mod* mod = Mod::get();
+  if (!mod)
+    return;
+
+  mod->setSavedValue("developer_mode_enabled", enabled);
+  if (!enabled && mod->getSavedValue<std::string>("frame_perfect_overlay_mode") == "When")
+    mod->setSavedValue("frame_perfect_overlay_mode", std::string("Always"));
+}
+
+std::string Global::getFramePerfectOverlayMode() {
+  Mod* mod = Mod::get();
+  if (!mod)
+    return "Always";
+
+  std::string value = mod->getSavedValue<std::string>("frame_perfect_overlay_mode");
+  if (value == "Never" || value == "Always")
+    return value;
+  if (value == "When" && Global::isDeveloperModeEnabled())
+    return value;
+  return "Always";
 }
 
 void Global::triggerFramePerfectOverlay(int button, bool down) {
@@ -804,8 +832,14 @@ $execute{
   if (!g.mod->setSavedValue("defaults_set_17", true))
     g.mod->setSavedValue("auto_stop_playing", false);
 
+  if (!g.mod->hasSavedValue("developer_mode_enabled"))
+    g.mod->setSavedValue("developer_mode_enabled", false);
+
   if (!g.mod->hasSavedValue("frame_perfect_overlay_mode"))
-    g.mod->setSavedValue("frame_perfect_overlay_mode", std::string("When"));
+    g.mod->setSavedValue("frame_perfect_overlay_mode", std::string("Always"));
+  else if (!Global::isDeveloperModeEnabled() &&
+           g.mod->getSavedValue<std::string>("frame_perfect_overlay_mode") == "When")
+    g.mod->setSavedValue("frame_perfect_overlay_mode", std::string("Always"));
 
   std::string const currentNoticeVersion = geobotVersion;
   if (!g.mod->hasSavedValue("update_notice_last_seen")) {

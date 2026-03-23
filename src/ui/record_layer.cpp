@@ -126,6 +126,11 @@ const std::vector<std::string> kAccuracyModes = {
 
 const std::vector<std::string> kFramePerfectOverlayModes = {
     "Never",
+    "Always"
+};
+
+const std::vector<std::string> kFramePerfectOverlayDeveloperModes = {
+    "Never",
     "When",
     "Always"
 };
@@ -146,12 +151,14 @@ void applyAccuracyMode(std::string const& value) {
 }
 
 std::string getSavedFramePerfectOverlayMode(Mod* mod) {
-    std::string value = mod->getSavedValue<std::string>("frame_perfect_overlay_mode");
-    for (auto const& mode : kFramePerfectOverlayModes) {
-        if (value == mode)
-            return value;
-    }
-    return "When";
+    (void)mod;
+    return Global::getFramePerfectOverlayMode();
+}
+
+std::vector<std::string> const& getFramePerfectOverlayModes() {
+    if (Global::isDeveloperModeEnabled())
+        return kFramePerfectOverlayDeveloperModes;
+    return kFramePerfectOverlayModes;
 }
 
 int monthFromDateAbbrev(std::string_view month) {
@@ -1304,16 +1311,17 @@ void RecordLayer::onCycleAccuracy(CCObject*) {
 
 void RecordLayer::onCycleFramePerfectMode(CCObject*) {
     std::string current = getSavedFramePerfectOverlayMode(mod);
+    auto const& modes = getFramePerfectOverlayModes();
     size_t index = 0;
-    for (size_t i = 0; i < kFramePerfectOverlayModes.size(); i++) {
-        if (kFramePerfectOverlayModes[i] == current) {
+    for (size_t i = 0; i < modes.size(); i++) {
+        if (modes[i] == current) {
             index = i;
             break;
         }
     }
 
-    index = (index + 1) % kFramePerfectOverlayModes.size();
-    mod->setSavedValue("frame_perfect_overlay_mode", kFramePerfectOverlayModes[index]);
+    index = (index + 1) % modes.size();
+    mod->setSavedValue("frame_perfect_overlay_mode", modes[index]);
 
     if (settingsMenu)
         loadSettingsList();

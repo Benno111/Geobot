@@ -20,9 +20,7 @@ class $modify(PlayLayer) {
 
         if (m_fields->framePerfectLabel && m_fields->framePerfectBg) {
             Global::refreshFramePerfectOverlayText();
-            std::string mode = g.mod->getSavedValue<std::string>("frame_perfect_overlay_mode");
-            if (mode != "Never" && mode != "When" && mode != "Always")
-                mode = "When";
+            std::string mode = Global::getFramePerfectOverlayMode();
 
             bool labelAllowed = !g.renderer.recording &&
                                 !g.mod->getSavedValue<bool>("macro_hide_labels") &&
