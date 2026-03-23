@@ -43,143 +43,14 @@ namespace {
     if (button == 3)
       return down ? "Right Press" : "Right Release";
 
-    if (!player)
-      return down ? "Jump Press" : "Jump Release";
-
-    if (player->m_isDart)
-      return down ? "Wave Click" : "Wave Release";
-    if (player->m_isRobot)
-      return down ? "Robot Press" : "Robot Release";
-    if (player->m_isSpider)
-      return down ? "Spider Click" : "Spider Release";
-    if (player->m_isBird)
-      return down ? "UFO Click" : "UFO Release";
-    if (player->m_isBall)
-      return down ? "Ball Click" : "Ball Release";
-    if (player->m_isShip)
-      return down ? "Ship Press" : "Ship Release";
-
-    return down ? "Jump Press" : "Jump Release";
-  }
-
-  bool canInputsFormFramePerfect(input const& previous, input const& current) {
-    return current.player2 == previous.player2 &&
-           current.button == previous.button &&
-           current.down != previous.down;
-  }
-
-  int getFramePerfectGap(input const& previous, input const& current) {
-    return current.frame - previous.frame - 1;
-  }
-
-  int findLiveFramePerfectWiggle(std::vector<input> const& inputs, size_t currentIndex) {
-    if (currentIndex >= inputs.size())
-      return -1;
-
-    auto const& current = inputs[currentIndex];
-    for (size_t i = currentIndex; i-- > 0;) {
-      auto const& previous = inputs[i];
-      int wiggle = getFramePerfectGap(previous, current);
-      if (wiggle > kFramePerfectMaxGap)
-        break;
-
-      if (!canInputsFormFramePerfect(previous, current))
-        continue;
-
-      return std::max(0, wiggle);
-    }
-
-    return -1;
-  }
-}
-
-$execute {
-};
-
-class $modify(PlayLayer) {
-
-  struct Fields {
-    int delayedLevelRestart = -1;
-  };
-
-  void postUpdate(float dt) { 
-    PlayLayer::postUpdate(dt);
-    auto& g = Global::get();
-
-    if (m_fields->delayedLevelRestart != -1 && m_fields->delayedLevelRestart >= Global::getCurrentFrame()) {
-      m_fields->delayedLevelRestart = -1;
-      resetFramePerfectStats(g);
-      resetLevelFromStart();
-    }
-
-  }
-
-  void onQuit() {
-    if (Mod::get()->getSettingValue<bool>("disable_speedhack") && Global::get().speedhackEnabled)
-      Global::toggleSpeedhack();
-
-    PlayLayer::onQuit();
-  }
-
-  void pauseGame(bool b1) {
-    Global::updateKeybinds();
-
-    if (!Global::get().renderer.tryPause()) return;
-
-    auto& g = Global::get();
-
-    if (!m_player1 || !m_player2) return PlayLayer::pauseGame(b1);
-
-    if (g.state != state::recording) return PlayLayer::pauseGame(b1);
-
-    g.ignoreRecordAction = true;
-    int frame = Global::getCurrentFrame() + 1;
-
-    if (m_player1->m_holdingButtons[1]) {
-      handleButton(false, 1, false);
-      g.macro.inputs.push_back(input(frame, 1, false, false));
-    }
-    if (m_levelSettings->m_platformerMode) {
-      if (m_player1->m_holdingButtons[2]) {
-        handleButton(false, 2, false);
-        g.macro.inputs.push_back(input(frame, 2, false, false));
+      void handleButton(bool hold, int button, bool player2) {
+      auto& g = Global::get();
+      if (g.p2mirror && m_gameState.m_isDualMode && !g.autoclicker) {
+        GJBaseGameLayer::handleButton(g.mod->getSavedValue<bool>("p2_input_mirror_inverted") ? !hold : hold, button, !player2);
+        return;
       }
-      if (m_player1->m_holdingButtons[3]) {
-        handleButton(false, 3, false);
-        g.macro.inputs.push_back(input(frame, 3, false, false));
+      GJBaseGameLayer::handleButton(hold, button, player2);
       }
-    }
-
-    if (m_levelSettings->m_twoPlayerMode) {
-      if (m_player2->m_holdingButtons[1]) {
-        handleButton(false, 1, true);
-        g.macro.inputs.push_back(input(frame, 1, true, false));
-      }
-      if (m_levelSettings->m_platformerMode) {
-        if (m_player2->m_holdingButtons[2]) {
-          handleButton(false, 2, true);
-          g.macro.inputs.push_back(input(frame, 2, true, false));
-        }
-        if (m_player2->m_holdingButtons[3]) {
-          handleButton(false, 3, true);
-          g.macro.inputs.push_back(input(frame, 3, true, false));
-        }
-      }
-    }
-
-    g.ignoreRecordAction = false;
-
-    PlayLayer::pauseGame(b1);
-  }
-
-  bool init(GJGameLevel * level, bool b1, bool b2) {
-    auto& g = Global::get();
-    g.firstAttempt = true;  
-    g.macroUsedInAttempt = false;
-    resetFramePerfectStats(g);
-
-    if (!PlayLayer::init(level, b1, b2)) return false;
-
     if (g.state == state::playing) {
       // Starting a fresh level run or editor playtest should not inherit
       // playback state from any previous run/session.
@@ -498,25 +369,25 @@ class $modify(BGLHook, GJBaseGameLayer) {
                     m_fields->pendingFramePerfects.resize(write);
 
                 if (leftWiggle != -1) {
-                    Global::triggerFramePerfectOverlayCounted(
-                        actionIndex,
-                        macroInput.button,
-                        macroInput.down,
-                        typeName,
-                        leftWiggle,
-                        kFramePerfectMaxGap + 1
-                    );
+                  Global::triggerFramePerfectOverlayCounted(
+                    actionIndex,
+                    macroInput.button,
+                    macroInput.down,
+                    typeName,
+                    leftWiggle,
+                    kFramePerfectMaxGap + 1
+                  );
                 }
                 else {
-                    m_fields->pendingFramePerfects.push_back({
-                        actionIndex,
-                        macroInput.frame,
-                        macroInput.button,
-                        macroInput.down,
-                        macroInput.player2,
-                        leftWiggle,
-                        typeName
-                    });
+                  m_fields->pendingFramePerfects.push_back({
+                    actionIndex,
+                    static_cast<int>(macroInput.frame),
+                    macroInput.button,
+                    macroInput.down,
+                    macroInput.player2,
+                    leftWiggle,
+                    typeName
+                  });
                 }
             }
 
@@ -680,14 +551,14 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
       // Remove expired pending frame-perfects efficiently
       if (!m_fields->pendingFramePerfects.empty()) {
-          auto it = std::remove_if(
-              m_fields->pendingFramePerfects.begin(),
-              m_fields->pendingFramePerfects.end(),
-              [frame](const auto& pending) {
-                  return frame > pending.inputFrame + kFramePerfectMaxGap + 1;
-              }
-          );
-          m_fields->pendingFramePerfects.erase(it, m_fields->pendingFramePerfects.end());
+        auto it = std::remove_if(
+          m_fields->pendingFramePerfects.begin(),
+          m_fields->pendingFramePerfects.end(),
+          [currentFrame=frame](const auto& pending) {
+            return currentFrame > pending.inputFrame + kFramePerfectMaxGap + 1;
+          }
+        );
+        m_fields->pendingFramePerfects.erase(it, m_fields->pendingFramePerfects.end());
       }
 
       if (g.currentAction == g.macro.inputs.size()) {
