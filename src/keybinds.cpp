@@ -16,6 +16,10 @@
 
 namespace {
 using Clock = std::chrono::steady_clock;
+int s_developerKeyProgress = 0;
+int s_developerTapProgress = 0;
+Clock::time_point s_lastDeveloperKeyAt = {};
+Clock::time_point s_lastDeveloperTapAt = {};
 
 bool advanceDeveloperKeySequence(
   int& progress,
@@ -78,6 +82,32 @@ void showDeveloperModeNotification(bool enabled) {
     enabled ? NotificationIcon::Success : NotificationIcon::Warning
   )->show();
 }
+
+void toggleDeveloperMode() {
+  bool enabled = !Global::isDeveloperModeEnabled();
+  Global::setDeveloperModeEnabled(enabled);
+  showDeveloperModeNotification(enabled);
+}
+
+class DeveloperModeTapTarget : public CCNode {
+public:
+  static DeveloperModeTapTarget* create() {
+    auto* ret = new DeveloperModeTapTarget();
+    if (ret && ret->init()) {
+      ret->autorelease();
+      return ret;
+    }
+    delete ret;
+    return nullptr;
+  }
+
+  void onTap(CCObject*) {
+    if (!advanceDeveloperTapSequence(s_developerTapProgress, s_lastDeveloperTapAt))
+      return;
+
+    toggleDeveloperMode();
+  }
+};
 }
 
 class $modify(CCKeyboardDispatcher) {
@@ -98,13 +128,6 @@ class $modify(CCKeyboardDispatcher) {
 };
 
 class $modify(MenuLayer) {
-  struct Fields {
-    int developerKeyProgress = 0;
-    int developerTapProgress = 0;
-    Clock::time_point lastDeveloperKeyAt = {};
-    Clock::time_point lastDeveloperTapAt = {};
-  };
-
   bool init() {
     if (!MenuLayer::init())
       return false;
@@ -113,12 +136,14 @@ class $modify(MenuLayer) {
     auto touchMenu = CCMenu::create();
     touchMenu->setPosition({ 0.f, 0.f });
     touchMenu->setID("developer-mode-unlock-menu"_spr);
+    auto tapTarget = DeveloperModeTapTarget::create();
+    addChild(tapTarget);
 
     auto touchTarget = CCLayerColor::create({ 0, 0, 0, 0 }, 150, 70);
     auto unlockButton = CCMenuItemSpriteExtra::create(
       touchTarget,
-      this,
-      menu_selector(MenuLayer::onDeveloperModeTap)
+      tapTarget,
+      menu_selector(DeveloperModeTapTarget::onTap)
     );
     unlockButton->setPosition({ winSize.width / 2.f, winSize.height - 52.f });
     unlockButton->setID("developer-mode-unlock-button"_spr);
@@ -128,22 +153,10 @@ class $modify(MenuLayer) {
     return true;
   }
 
-  void keyDown(enumKeyCodes key) {
-    MenuLayer::keyDown(key);
-    if (advanceDeveloperKeySequence(m_fields->developerKeyProgress, m_fields->lastDeveloperKeyAt, key)) {
-      bool enabled = !Global::isDeveloperModeEnabled();
-      Global::setDeveloperModeEnabled(enabled);
-      showDeveloperModeNotification(enabled);
-    }
-  }
-
-  void onDeveloperModeTap(CCObject*) {
-    if (!advanceDeveloperTapSequence(m_fields->developerTapProgress, m_fields->lastDeveloperTapAt))
-      return;
-
-    bool enabled = !Global::isDeveloperModeEnabled();
-    Global::setDeveloperModeEnabled(enabled);
-    showDeveloperModeNotification(enabled);
+  void keyDown(enumKeyCodes key, double timestamp) {
+    MenuLayer::keyDown(key, timestamp);
+    if (advanceDeveloperKeySequence(s_developerKeyProgress, s_lastDeveloperKeyAt, key))
+      toggleDeveloperMode();
   }
 };
 
