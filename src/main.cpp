@@ -451,80 +451,80 @@ class $modify(BGLHook, GJBaseGameLayer) {
     m_fields->macroInput = true;
 
     while (g.currentAction < g.macro.inputs.size() && frame >= g.macro.inputs[g.currentAction].frame) {
-      size_t actionIndex = g.currentAction;
-      auto const& input = g.macro.inputs[g.currentAction];
+        size_t actionIndex = g.currentAction;
+        auto const& macroInput = g.macro.inputs[g.currentAction];
 
-      if (frame != g.respawnFrame) {
-        bool inputPlayer2 = input.player2;
-        if (Macro::flipControls())
-          inputPlayer2 = !inputPlayer2;
+        if (frame != g.respawnFrame) {
+            bool inputPlayer2 = macroInput.player2;
+            if (Macro::flipControls())
+                inputPlayer2 = !inputPlayer2;
 
-        PlayerObject* inputPlayer = inputPlayer2 ? m_player2 : m_player1;
-        bool isTrackedFramePerfectInput =
-          input.button == 1 ||
-          (m_levelSettings->m_platformerMode && (input.button == 2 || input.button == 3));
+            PlayerObject* inputPlayer = inputPlayer2 ? m_player2 : m_player1;
+            bool isTrackedFramePerfectInput =
+                macroInput.button == 1 ||
+                (m_levelSettings->m_platformerMode && (macroInput.button == 2 || macroInput.button == 3));
 
-        if (isTrackedFramePerfectInput) {
-          std::string typeName = getFramePerfectTypeName(inputPlayer, input.button, input.down);
-          int leftWiggle = findLiveFramePerfectWiggle(g.macro.inputs, actionIndex);
-          Global::triggerFramePerfectOverlayProgress(input.button, input.down, typeName, std::max(0, leftWiggle), 0);
+            if (isTrackedFramePerfectInput) {
+                std::string typeName = getFramePerfectTypeName(inputPlayer, macroInput.button, macroInput.down);
+                int leftWiggle = findLiveFramePerfectWiggle(g.macro.inputs, actionIndex);
+                Global::triggerFramePerfectOverlayProgress(macroInput.button, macroInput.down, typeName, std::max(0, leftWiggle), 0);
 
-          size_t write = 0;
-          for (size_t i = 0; i < m_fields->pendingFramePerfects.size(); i++) {
-            auto const& pending = m_fields->pendingFramePerfects[i];
-            input pendingInput(pending.inputFrame, pending.button, pending.player2, pending.down);
-            int rightWiggle = getFramePerfectGap(pendingInput, input);
+                size_t write = 0;
+                for (size_t i = 0; i < m_fields->pendingFramePerfects.size(); i++) {
+                    auto const& pending = m_fields->pendingFramePerfects[i];
+                    struct input pendingInputStruct(pending.inputFrame, pending.button, pending.player2, pending.down);
+                    int rightWiggle = getFramePerfectGap(pendingInputStruct, macroInput);
 
-            if (rightWiggle > kFramePerfectMaxGap)
-              continue;
+                    if (rightWiggle > kFramePerfectMaxGap)
+                        continue;
 
-            if (canInputsFormFramePerfect(pendingInput, input)) {
-              Global::triggerFramePerfectOverlayCounted(
-                pending.actionIndex,
-                pending.button,
-                pending.down,
-                pending.typeName,
-                pending.leftWiggle == -1 ? kFramePerfectMaxGap + 1 : pending.leftWiggle,
-                rightWiggle
-              );
-              continue;
+                    if (canInputsFormFramePerfect(pendingInputStruct, macroInput)) {
+                        Global::triggerFramePerfectOverlayCounted(
+                            pending.actionIndex,
+                            pending.button,
+                            pending.down,
+                            pending.typeName,
+                            pending.leftWiggle == -1 ? kFramePerfectMaxGap + 1 : pending.leftWiggle,
+                            rightWiggle
+                        );
+                        continue;
+                    }
+
+                    if (write != i)
+                        m_fields->pendingFramePerfects[write] = pending;
+                    write++;
+                }
+                if (write < m_fields->pendingFramePerfects.size())
+                    m_fields->pendingFramePerfects.resize(write);
+
+                if (leftWiggle != -1) {
+                    Global::triggerFramePerfectOverlayCounted(
+                        actionIndex,
+                        macroInput.button,
+                        macroInput.down,
+                        typeName,
+                        leftWiggle,
+                        kFramePerfectMaxGap + 1
+                    );
+                }
+                else {
+                    m_fields->pendingFramePerfects.push_back({
+                        actionIndex,
+                        macroInput.frame,
+                        macroInput.button,
+                        macroInput.down,
+                        macroInput.player2,
+                        leftWiggle,
+                        typeName
+                    });
+                }
             }
 
-            if (write != i)
-              m_fields->pendingFramePerfects[write] = pending;
-            write++;
-          }
-          if (write < m_fields->pendingFramePerfects.size())
-            m_fields->pendingFramePerfects.resize(write);
-
-          if (leftWiggle != -1) {
-            Global::triggerFramePerfectOverlayCounted(
-              actionIndex,
-              input.button,
-              input.down,
-              typeName,
-              leftWiggle,
-              kFramePerfectMaxGap + 1
-            );
-          }
-          else {
-            m_fields->pendingFramePerfects.push_back({
-              actionIndex,
-              input.frame,
-              input.button,
-              input.down,
-              input.player2,
-              leftWiggle,
-              typeName
-            });
-          }
+            GJBaseGameLayer::handleButton(macroInput.down, macroInput.button, inputPlayer2);
         }
 
-        GJBaseGameLayer::handleButton(input.down, input.button, inputPlayer2);
-      }
-
-      g.currentAction++;
-      g.safeMode = true;
+        g.currentAction++;
+        g.safeMode = true;
     }
 
     g.respawnFrame = -1;
