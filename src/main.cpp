@@ -588,93 +588,131 @@ class $modify(BGLHook, GJBaseGameLayer) {
     }
 
     if (g.state == state::none)
-      return GJBaseGameLayer::handleButton(hold, button, player2);
-
-    if (g.state == state::playing) {
-      if (g.mod->getSavedValue<bool>("macro_ignore_inputs") && !m_fields->macroInput)
-        return;
-      else return GJBaseGameLayer::handleButton(hold, button, player2);
-
-    }
-    else if (g.ignoreFrame != -1 && hold)
-      return;
-
-    int frame = Global::getCurrentFrame();
-
-    if (frame >= 10 && hold)
-      Global::hasIncompatibleMods();
-
-    bool isDelayedInput = g.delayedFrameInput[(m_levelSettings->m_twoPlayerMode ? static_cast<int>(!player2) : 0)] != -1;
-    bool isDelayedRelease = g.delayedFrameReleaseMain[(m_levelSettings->m_twoPlayerMode ? static_cast<int>(!player2) : 0)] != -1;
-
-    if ((isDelayedInput || g.ignoreJumpButton == frame || isDelayedRelease) && button == 1) {
-      if (g.ignoreJumpButton >= frame)
-        g.delayedFrameInput[(m_levelSettings->m_twoPlayerMode ? static_cast<int>(!player2) : 0)] = g.ignoreJumpButton + 1;
-
-      return;
-    }
-
-    if (g.state != state::recording) return GJBaseGameLayer::handleButton(hold, button, player2);
-
-    GJBaseGameLayer::handleButton(hold, button, player2);
-
-    if (g.inputFixes)
-      g.macro.recordFrameFix(frame, m_player1, m_player2);
-
-    if (!m_levelSettings->m_twoPlayerMode)
-      player2 = false;
-
-    if (!g.ignoreRecordAction && !g.creatingTrajectory && !m_player1->m_isDead) {
-      g.macro.recordAction(frame, button, player2, hold);
-      if (g.p2mirror && m_gameState.m_isDualMode)
-        g.macro.recordAction(frame, button, !player2, g.mod->getSavedValue<bool>("p2_input_mirror_inverted") ? !hold : hold);
-    }
-
-  }
-};
-
-class $modify(PauseLayer) {
-
-  void onPracticeMode(CCObject * sender) {
-    PauseLayer::onPracticeMode(sender);
-    if (Global::get().state != state::none) PlayLayer::get()->resetLevel();
-  }
-
-  void onNormalMode(CCObject * sender) {
-    PauseLayer::onNormalMode(sender);
-    auto& g = Global::get();
-
-    g.checkpoints.clear();
-
-    if (g.restart) {
-      if (PlayLayer* pl = PlayLayer::get())
-        pl->resetLevel();
-    }
-
-  }
-
-  void onQuit(CCObject * sender) {
-    PauseLayer::onQuit(sender);
-
-    Macro::resetState();
-
-    Loader::get()->queueInMainThread([] {
       auto& g = Global::get();
-      if (g.renderer.recording) g.renderer.stop();
-      if (g.renderer.recordingAudio) g.renderer.stopAudio();
-    });
-  }
+      if (m_levelEndAnimationStarted) return;
 
-  void goEdit() {
-    PauseLayer::goEdit();
+      if (m_player1->m_isDead) {
+          m_fields->pendingFramePerfects.clear();
+          m_player1->releaseAllButtons();
+          m_player2->releaseAllButtons();
+          PlayLayer* pl = PlayLayer::get();
+          if (pl && !pl->m_isPracticeMode) {
+              resetFramePerfectStats(g);
+              pl->resetLevelFromStart();
+          }
+          return;
+      }
 
-    Macro::resetState();
-    
-    Loader::get()->queueInMainThread([] {
-      auto& g = Global::get();
-      if (g.renderer.recording) g.renderer.stop();
-      if (g.renderer.recordingAudio) g.renderer.stopAudio();
-    });
-  }
+      m_fields->macroInput = true;
 
-};
+      // Cache values outside the loop
+      bool platformerMode = m_levelSettings->m_platformerMode;
+      bool flipControls = Macro::flipControls();
+
+      // Batch process all inputs for this frame
+      while (g.currentAction < g.macro.inputs.size() && frame >= g.macro.inputs[g.currentAction].frame) {
+          size_t actionIndex = g.currentAction;
+          auto const& input = g.macro.inputs[g.currentAction];
+
+          if (frame != g.respawnFrame) {
+              bool inputPlayer2 = flipControls ? !input.player2 : input.player2;
+              PlayerObject* inputPlayer = inputPlayer2 ? m_player2 : m_player1;
+              bool isTrackedFramePerfectInput =
+                  input.button == 1 || (platformerMode && (input.button == 2 || input.button == 3));
+
+              if (isTrackedFramePerfectInput) {
+                  std::string typeName = getFramePerfectTypeName(inputPlayer, input.button, input.down);
+                  int leftWiggle = findLiveFramePerfectWiggle(g.macro.inputs, actionIndex);
+                  Global::triggerFramePerfectOverlayProgress(input.button, input.down, typeName, std::max(0, leftWiggle), 0);
+
+                  // Use a local buffer to avoid repeated vector resizing
+                  std::vector<decltype(m_fields->pendingFramePerfects)::value_type> newPending;
+                  newPending.reserve(m_fields->pendingFramePerfects.size());
+                  for (auto const& pending : m_fields->pendingFramePerfects) {
+                      input pendingInput(pending.inputFrame, pending.button, pending.player2, pending.down);
+                      int rightWiggle = getFramePerfectGap(pendingInput, input);
+                      if (rightWiggle > kFramePerfectMaxGap)
+                          continue;
+                      if (canInputsFormFramePerfect(pendingInput, input)) {
+                          Global::triggerFramePerfectOverlayCounted(
+                              pending.actionIndex,
+                              pending.button,
+                              pending.down,
+                              pending.typeName,
+                              pending.leftWiggle == -1 ? kFramePerfectMaxGap + 1 : pending.leftWiggle,
+                              rightWiggle
+                          );
+                          continue;
+                      }
+                      newPending.push_back(pending);
+                  }
+                  m_fields->pendingFramePerfects = std::move(newPending);
+
+                  if (leftWiggle != -1) {
+                      Global::triggerFramePerfectOverlayCounted(
+                          actionIndex,
+                          input.button,
+                          input.down,
+                          typeName,
+                          leftWiggle,
+                          kFramePerfectMaxGap + 1
+                      );
+                  } else {
+                      m_fields->pendingFramePerfects.push_back({
+                          actionIndex,
+                          input.frame,
+                          input.button,
+                          input.down,
+                          input.player2,
+                          leftWiggle,
+                          typeName
+                      });
+                  }
+              }
+              GJBaseGameLayer::handleButton(input.down, input.button, inputPlayer2);
+          }
+          g.currentAction++;
+          g.safeMode = true;
+      }
+
+      g.respawnFrame = -1;
+      m_fields->macroInput = false;
+
+      // Remove expired pending frame-perfects efficiently
+      if (!m_fields->pendingFramePerfects.empty()) {
+          auto it = std::remove_if(
+              m_fields->pendingFramePerfects.begin(),
+              m_fields->pendingFramePerfects.end(),
+              [frame](const auto& pending) {
+                  return frame > pending.inputFrame + kFramePerfectMaxGap + 1;
+              }
+          );
+          m_fields->pendingFramePerfects.erase(it, m_fields->pendingFramePerfects.end());
+      }
+
+      if (g.currentAction == g.macro.inputs.size()) {
+          if (g.stopPlaying) {
+              Macro::togglePlaying();
+              Macro::resetState(true);
+              return;
+          }
+      }
+
+      if (g.frameFixes || g.inputFixes) {
+          while (g.currentFrameFix < g.macro.frameFixes.size() && frame >= g.macro.frameFixes[g.currentFrameFix].frame) {
+              auto& fix = g.macro.frameFixes[g.currentFrameFix];
+              PlayerObject* p1 = m_player1;
+              PlayerObject* p2 = m_player2;
+              if (fix.p1.pos.x != 0.f && fix.p1.pos.y != 0.f)
+                  p1->setPosition(fix.p1.pos);
+              if (fix.p1.rotate && fix.p1.rotation != 0.f)
+                  p1->setRotation(fix.p1.rotation);
+              if (m_gameState.m_isDualMode) {
+                  if (fix.p2.pos.x != 0.f && fix.p2.pos.y != 0.f)
+                      p2->setPosition(fix.p2.pos);
+                  if (fix.p2.rotate && fix.p2.rotation != 0.f)
+                      p2->setRotation(fix.p2.rotation);
+              }
+              g.currentFrameFix++;
+          }
+      }

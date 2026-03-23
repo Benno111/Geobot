@@ -23,6 +23,8 @@ public:
     Renderer() : width(1920), height(1080), fps(60) {}
 
     volatile bool frameHasData;
+    std::mutex frameMutex;
+    std::condition_variable frameCondVar;
     bool levelFinished = false;
     bool recording = false;
     bool pause = false;

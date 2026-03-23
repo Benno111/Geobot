@@ -867,8 +867,16 @@ void MyRenderTexture::capture(std::mutex& lock, std::vector<uint8_t>& data, vola
 }
 
 void Renderer::captureFrame() {
-    while (frameHasData) {}
+    {
+        std::unique_lock<std::mutex> lk(frameMutex);
+        frameCondVar.wait(lk, [this] { return !frameHasData; });
+    }
     renderer.capture(lock, currentFrame, frameHasData);
+    {
+        std::lock_guard<std::mutex> lk(frameMutex);
+        frameHasData = true;
+    }
+    frameCondVar.notify_one();
 }
 int wa = 0;
 void Renderer::handleRecording(PlayLayer* pl, int frame) {
