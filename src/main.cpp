@@ -51,7 +51,7 @@ bool isTrackedFramePerfectInput(GJBaseGameLayer* layer, input const& currentInpu
 }
 
 int getFramePerfectGap(input const& earlier, input const& later) {
-    return std::max(0, later.frame - earlier.frame - 1);
+    return std::max(0, static_cast<int>(later.frame) - static_cast<int>(earlier.frame) - 1);
 }
 
 bool canInputsFormFramePerfect(input const& earlier, input const& later) {
@@ -468,7 +468,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
         pending.push_back({
             actionIndex,
-            currentInput.frame,
+            static_cast<int>(currentInput.frame),
             currentInput.button,
             currentInput.down,
             currentInput.player2,
