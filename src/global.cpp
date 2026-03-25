@@ -817,6 +817,7 @@ $execute{
     g.mod->setSavedValue("frame_fixes_limit", 240);
     g.mod->setSavedValue("lock_delta", false);
     g.mod->setSavedValue("auto_stop_playing", false);
+    g.mod->setSavedValue("pathfinder_mode", false);
   }
 
   // Hotfix: restore historical playback behavior (do not auto-stop by default).
@@ -831,6 +832,9 @@ $execute{
   else if (!Global::isDeveloperModeEnabled() &&
            g.mod->getSavedValue<std::string>("frame_perfect_overlay_mode") == "When")
     g.mod->setSavedValue("frame_perfect_overlay_mode", std::string("Always"));
+
+  if (!g.mod->hasSavedValue("pathfinder_mode"))
+    g.mod->setSavedValue("pathfinder_mode", false);
 
   std::string const currentNoticeVersion = geobotVersion;
   if (!g.mod->hasSavedValue("update_notice_last_seen")) {
@@ -871,6 +875,9 @@ $execute{
   g.speedhackAudio = g.mod->getSavedValue<bool>("macro_speedhack_audio");
   g.trajectoryBothSides = g.mod->getSavedValue<bool>("macro_trajectory_both_sides");
   g.p2mirror = g.mod->getSavedValue<bool>("p2_input_mirror");
+  g.pathfinderMode = g.mod->getSavedValue<bool>("pathfinder_mode");
+  g.pathfinderSearching = false;
+  g.pathfinderStatus = g.pathfinderMode ? "Armed" : "Idle";
   g.tpsEnabled = g.mod->getSavedValue<bool>("macro_tps_enabled");
   g.tps = g.mod->getSavedValue<double>("macro_tps");
   g.autoclicker = g.mod->getSavedValue<bool>("autoclicker_enabled");

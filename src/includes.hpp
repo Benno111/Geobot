@@ -178,6 +178,8 @@ public:
     bool p2mirror = false;
     bool lockDelta = false;
     bool stopPlaying = false;
+    bool pathfinderMode = false;
+    bool pathfinderSearching = false;
     bool tpsEnabled = false;
     float tps = 240.f;
     bool previousTpsEnabled = false;
@@ -237,4 +239,5 @@ public:
     bool framePerfectOverlayScanning = false;
     bool framePerfectSfxEnabled = true;
     size_t lastFramePerfectAction = std::numeric_limits<size_t>::max();
+    std::string pathfinderStatus = "Idle";
 };

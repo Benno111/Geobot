@@ -67,6 +67,7 @@ const std::vector<std::vector<RecordSetting>> settings {
 		{ "Frame Fix Limit:", "frame_fixes_limit", InputType::FrameFixesLimit, 0.4f },
 		{ "Lock Delta:", "lock_delta", InputType::None },
 		{ "Auto Stop Playing:", "auto_stop_playing", InputType::None },
+		{ "Pathfinder Mode:", "pathfinder_mode", InputType::None, 0.34f },
 		{ "TPS Bypass:", "macro_tps_enabled", InputType::Tps, 0.4f },
 		{ "Speedhack:", "macro_speedhack_enabled", InputType::Speedhack, 0.4f },
 		{ "Seed:", "macro_seed_enabled", InputType::Seed, 0.4f },
@@ -715,6 +716,17 @@ void RecordLayer::toggleSetting(CCObject* obj) {
     if (id == "macro_auto_save") g.autosaveEnabled = value;
     if (id == "lock_delta") g.lockDelta = value;
     if (id == "auto_stop_playing") g.stopPlaying = value;
+    if (id == "pathfinder_mode") {
+        g.pathfinderMode = value;
+        g.pathfinderSearching = false;
+        g.pathfinderStatus = value ? "Armed" : "Idle";
+
+        if (CCLabelBMFont* statusLabel = typeinfo_cast<CCLabelBMFont*>(menu ? menu->getChildByID("pathfinder-status-label"_spr) : nullptr)) {
+            statusLabel->setString(("Pathfinder: " + g.pathfinderStatus).c_str());
+            statusLabel->limitLabelWidth(94.f, 0.5f, 0.01f);
+            statusLabel->updateLabel();
+        }
+    }
 
     if (id == "macro_show_trajectory") {
         g.showTrajectory = value;
@@ -745,6 +757,9 @@ void RecordLayer::toggleSetting(CCObject* obj) {
         Clickbot::updateSounds();
 
     if (id == "macro_hide_recording_label" || id == "macro_hide_playing_label" || id == "render_hide_labels")
+        Interface::updateLabels();
+
+    if (id == "pathfinder_mode")
         Interface::updateLabels();
 
     if (id == "macro_hide_speedhack" || id == "macro_hide_stepper" || id == "macro_always_show_buttons")
@@ -981,6 +996,18 @@ bool RecordLayer::setup() {
     actionsLabel->setOpacity(83);
     actionsLabel->setPosition(ccp(-201, 110));
     menu->addChild(actionsLabel);
+
+    CCLabelBMFont* pathfinderLabel = CCLabelBMFont::create(
+        ("Pathfinder: " + g.pathfinderStatus).c_str(),
+        "chatFont.fnt"
+    );
+    pathfinderLabel->limitLabelWidth(94.f, 0.5f, 0.01f);
+    pathfinderLabel->updateLabel();
+    pathfinderLabel->setAnchorPoint({ 0, 0.5 });
+    pathfinderLabel->setOpacity(83);
+    pathfinderLabel->setPosition(ccp(-201, 96));
+    pathfinderLabel->setID("pathfinder-status-label"_spr);
+    menu->addChild(pathfinderLabel);
 
     CCLabelBMFont* lbl = CCLabelBMFont::create("Macro", "goldFont.fnt");
     lbl->setPosition(ccp(-116.5, 112));

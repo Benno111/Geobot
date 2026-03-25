@@ -193,6 +193,14 @@ void Interface::updateLabels() {
             lbl->setString("");
     }
 
+    if (g.pathfinderMode && !g.renderer.recording) {
+        std::string pathfinderLabel = g.pathfinderSearching ? "Pathfinder" : "Pathfinder Ready";
+        if (labelText.empty())
+            labelText = pathfinderLabel;
+        else
+            labelText += " | " + pathfinderLabel;
+    }
+
     label->setString(labelText.c_str());
 }
 

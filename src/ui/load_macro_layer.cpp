@@ -92,22 +92,23 @@ void LoadMacroLayer::reloadList(int amount) {
 
 void LoadMacroLayer::showLoadingScreen() {
 	if (!loadingOverlay) {
-		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+		CCSize layerSize = m_mainLayer->getContentSize();
 
 		CCLayerColor* dim = CCLayerColor::create({ 0, 0, 0, 110 });
-		dim->setContentSize(winSize);
+		dim->setContentSize(layerSize);
+		dim->setAnchorPoint({ 0.f, 0.f });
 		dim->setPosition({ 0, 0 });
 
 		CCScale9Sprite* panel = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
 		panel->setContentSize({ 175.f, 62.f });
 		panel->setColor({ 0, 0, 0 });
 		panel->setOpacity(165);
-		panel->setPosition(winSize / 2);
+		panel->setPosition(layerSize / 2);
 		dim->addChild(panel);
 
 		loadingLabel = CCLabelBMFont::create(isAutosaves ? "Loading Autosaves..." : "Loading Macros...", "bigFont.fnt");
 		loadingLabel->setScale(0.42f);
-		loadingLabel->setPosition(winSize / 2);
+		loadingLabel->setPosition(layerSize / 2);
 		dim->addChild(loadingLabel);
 
 		loadingOverlay = dim;

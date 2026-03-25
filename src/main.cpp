@@ -50,6 +50,28 @@ bool isTrackedFramePerfectInput(GJBaseGameLayer* layer, input const& currentInpu
             (currentInput.button == 2 || currentInput.button == 3));
 }
 
+bool isFramePerfectForTier(int leftWiggle, int rightWiggle, int maxGap) {
+    return leftWiggle <= maxGap || rightWiggle <= maxGap;
+}
+
+std::string getFramePerfectTierLabel(int leftWiggle, int rightWiggle) {
+    std::string result;
+
+    auto append = [&](int maxGap, char const* label) {
+        if (!isFramePerfectForTier(leftWiggle, rightWiggle, maxGap))
+            return;
+        if (!result.empty())
+            result += "/";
+        result += label;
+    };
+
+    append(2, "60");
+    append(1, "144");
+    append(0, "240");
+
+    return result.empty() ? "None" : result;
+}
+
 int getFramePerfectGap(input const& earlier, input const& later) {
     return std::max(0, static_cast<int>(later.frame) - static_cast<int>(earlier.frame) - 1);
 }
@@ -88,6 +110,65 @@ int findLiveFramePerfectWiggle(std::vector<input> const& inputs, size_t actionIn
     }
 
     return -1;
+}
+
+bool shouldCollectFramePerfectCalibration() {
+    return Global::isDeveloperModeEnabled();
+}
+
+void appendFramePerfectCalibrationRow(
+    char const* eventType,
+    char const* source,
+    size_t actionIndex,
+    int frame,
+    int button,
+    bool player2,
+    bool down,
+    int leftWiggle,
+    int rightWiggle,
+    std::string const& typeName,
+    size_t partnerActionIndex = std::numeric_limits<size_t>::max(),
+    int partnerFrame = -1
+) {
+    if (!shouldCollectFramePerfectCalibration())
+        return;
+
+    auto* mod = Mod::get();
+    if (!mod)
+        return;
+
+    std::filesystem::path path = mod->getSaveDir() / "frameperfect_calibration.csv";
+    bool needsHeader = !std::filesystem::exists(path);
+
+    std::ofstream out(path, std::ios::app);
+    if (!out.is_open())
+        return;
+
+    if (needsHeader) {
+        out << "session,event,source,action_index,partner_action_index,frame,partner_frame,button,player2,down,left_wiggle,right_wiggle,tier,type_name\n";
+    }
+
+    auto& g = Global::get();
+    out << g.currentSession << ','
+        << eventType << ','
+        << source << ','
+        << actionIndex << ',';
+
+    if (partnerActionIndex == std::numeric_limits<size_t>::max())
+        out << -1;
+    else
+        out << partnerActionIndex;
+
+    out << ','
+        << frame << ','
+        << partnerFrame << ','
+        << button << ','
+        << (player2 ? 1 : 0) << ','
+        << (down ? 1 : 0) << ','
+        << leftWiggle << ','
+        << rightWiggle << ','
+        << getFramePerfectTierLabel(leftWiggle, rightWiggle) << ','
+        << '"' << typeName << "\"\n";
 }
 }
 
@@ -413,6 +494,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
         std::string typeName = getFramePerfectTypeName(currentInput.button, currentInput.down);
         int leftWiggle = findLiveFramePerfectWiggle(g.macro.inputs, actionIndex);
+        int currentFrame = static_cast<int>(currentInput.frame);
 
         Global::triggerFramePerfectOverlayProgress(
             currentInput.button,
@@ -420,6 +502,19 @@ class $modify(BGLHook, GJBaseGameLayer) {
             typeName,
             std::max(0, leftWiggle),
             0
+        );
+
+        appendFramePerfectCalibrationRow(
+            "tracked",
+            "current",
+            actionIndex,
+            currentFrame,
+            currentInput.button,
+            currentInput.player2,
+            currentInput.down,
+            leftWiggle,
+            -1,
+            typeName
         );
 
         auto& pending = m_fields->pendingFramePerfects;
@@ -431,13 +526,29 @@ class $modify(BGLHook, GJBaseGameLayer) {
             if (!canInputsFormFramePerfect(pendingInput, currentInput))
                 continue;
 
+            int rightWiggle = getFramePerfectGap(pendingInput, currentInput);
+            appendFramePerfectCalibrationRow(
+                "matched",
+                "pending",
+                candidate.actionIndex,
+                candidate.inputFrame,
+                candidate.button,
+                candidate.player2,
+                candidate.down,
+                candidate.leftWiggle == -1 ? kFramePerfectMaxGap + 1 : candidate.leftWiggle,
+                rightWiggle,
+                candidate.typeName,
+                actionIndex,
+                currentFrame
+            );
+
             Global::triggerFramePerfectOverlayCounted(
                 candidate.actionIndex,
                 candidate.button,
                 candidate.down,
                 candidate.typeName,
                 candidate.leftWiggle == -1 ? kFramePerfectMaxGap + 1 : candidate.leftWiggle,
-                getFramePerfectGap(pendingInput, currentInput)
+                rightWiggle
             );
         }
 
@@ -455,6 +566,19 @@ class $modify(BGLHook, GJBaseGameLayer) {
         pending.resize(write);
 
         if (leftWiggle != -1) {
+            appendFramePerfectCalibrationRow(
+                "matched",
+                "left",
+                actionIndex,
+                currentFrame,
+                currentInput.button,
+                currentInput.player2,
+                currentInput.down,
+                leftWiggle,
+                kFramePerfectMaxGap + 1,
+                typeName
+            );
+
             Global::triggerFramePerfectOverlayCounted(
                 actionIndex,
                 currentInput.button,
@@ -468,19 +592,50 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
         pending.push_back({
             actionIndex,
-            static_cast<int>(currentInput.frame),
+            currentFrame,
             currentInput.button,
             currentInput.down,
             currentInput.player2,
             leftWiggle,
             typeName
         });
+
+        appendFramePerfectCalibrationRow(
+            "pending",
+            "queued",
+            actionIndex,
+            currentFrame,
+            currentInput.button,
+            currentInput.player2,
+            currentInput.down,
+            leftWiggle,
+            -1,
+            typeName
+        );
     }
 
     void trimExpiredPendingFramePerfects(int frame) {
         auto& pending = m_fields->pendingFramePerfects;
         if (pending.empty())
             return;
+
+        for (auto const& candidate : pending) {
+            if (frame <= candidate.inputFrame + kFramePerfectMaxGap + 1)
+                continue;
+
+            appendFramePerfectCalibrationRow(
+                "expired",
+                "timeout",
+                candidate.actionIndex,
+                candidate.inputFrame,
+                candidate.button,
+                candidate.player2,
+                candidate.down,
+                candidate.leftWiggle,
+                -1,
+                candidate.typeName
+            );
+        }
 
         auto it = std::remove_if(
             pending.begin(),
