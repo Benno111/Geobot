@@ -90,6 +90,53 @@ void LoadMacroLayer::reloadList(int amount) {
 	addList(childrenCount > 7 && amount != 0, posY + (35.f * amount));
 }
 
+void LoadMacroLayer::showLoadingScreen() {
+	if (!loadingOverlay) {
+		CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+
+		CCLayerColor* dim = CCLayerColor::create({ 0, 0, 0, 110 });
+		dim->setContentSize(winSize);
+		dim->setPosition({ 0, 0 });
+
+		CCScale9Sprite* panel = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+		panel->setContentSize({ 175.f, 62.f });
+		panel->setColor({ 0, 0, 0 });
+		panel->setOpacity(165);
+		panel->setPosition(winSize / 2);
+		dim->addChild(panel);
+
+		loadingLabel = CCLabelBMFont::create(isAutosaves ? "Loading Autosaves..." : "Loading Macros...", "bigFont.fnt");
+		loadingLabel->setScale(0.42f);
+		loadingLabel->setPosition(winSize / 2);
+		dim->addChild(loadingLabel);
+
+		loadingOverlay = dim;
+		loadingOverlay->setID("loading-overlay");
+		m_mainLayer->addChild(loadingOverlay, 300);
+	}
+
+	if (loadingLabel)
+		loadingLabel->setString((isAutosaves ? "Loading Autosaves..." : "Loading Macros..."));
+
+	if (loadingOverlay)
+		loadingOverlay->setVisible(true);
+
+	if (menu)
+		menu->setEnabled(false);
+	if (m_buttonMenu)
+		m_buttonMenu->setEnabled(false);
+}
+
+void LoadMacroLayer::hideLoadingScreen() {
+	if (loadingOverlay)
+		loadingOverlay->setVisible(false);
+
+	if (menu)
+		menu->setEnabled(true);
+	if (m_buttonMenu)
+		m_buttonMenu->setEnabled(true);
+}
+
 void LoadMacroLayer::deleteSelected(CCObject*) {
 	int amount = selectedMacros.size();
 	if (amount < 1) return;
@@ -339,6 +386,28 @@ void LoadMacroLayer::updateSort(CCObject*) {
 }
 
 void LoadMacroLayer::addList(bool refresh, float prevScroll) {
+	queuedRefresh = refresh;
+	queuedScroll = prevScroll;
+	showLoadingScreen();
+
+	if (listLoadQueued)
+		return;
+
+	listLoadQueued = true;
+	runAction(CCSequence::create(
+		CCDelayTime::create(0.f),
+		CCCallFunc::create(this, callfunc_selector(LoadMacroLayer::performQueuedListLoad)),
+		nullptr
+	));
+}
+
+void LoadMacroLayer::performQueuedListLoad() {
+	listLoadQueued = false;
+	populateList(queuedRefresh, queuedScroll);
+	hideLoadingScreen();
+}
+
+void LoadMacroLayer::populateList(bool refresh, float prevScroll) {
 	cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
 
 	std::filesystem::path path = Global::getFolderSettingPath(isAutosaves ? "autosaves_folder" : "macros_folder");

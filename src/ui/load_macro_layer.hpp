@@ -55,6 +55,8 @@ public:
 
 	CCMenuItemSpriteExtra* searchOff = nullptr;
 	TextInput* searchInput = nullptr;
+	CCNode* loadingOverlay = nullptr;
+	CCLabelBMFont* loadingLabel = nullptr;
 
 	CCLabelBMFont* macroCountLbl = nullptr;
 
@@ -65,6 +67,9 @@ public:
 	bool isAutosaves = false;
 	bool isMerge = false;
 	bool invertSort = false;
+	bool queuedRefresh = false;
+	bool listLoadQueued = false;
+	float queuedScroll = 0.f;
 
 	static LoadMacroLayer* create(geode::Popup* layer, geode::Popup* layer2, bool autosaves);
 
@@ -81,6 +86,10 @@ public:
 	void clearSearch(CCObject*);
 
 	void addList(bool refresh = false, float prevScroll = 0.f);
+	void populateList(bool refresh = false, float prevScroll = 0.f);
+	void performQueuedListLoad();
+	void showLoadingScreen();
+	void hideLoadingScreen();
 
 	void reloadList(int amount = 1);
 
