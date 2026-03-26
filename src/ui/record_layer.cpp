@@ -6,6 +6,7 @@
 #include "noclip_settings_layer.hpp"
 #include "autoclicker_settings_layer.hpp"
 #include "trajectory_settings_layer.hpp"
+#include "pathfinder_settings_layer.hpp"
 #include "mirror_settings_layer.hpp"
 #include "star_rate_override_layer.hpp"
 #include "../hacks/coin_finder.hpp"
@@ -67,7 +68,7 @@ const std::vector<std::vector<RecordSetting>> settings {
 		{ "Frame Fix Limit:", "frame_fixes_limit", InputType::FrameFixesLimit, 0.4f },
 		{ "Lock Delta:", "lock_delta", InputType::None },
 		{ "Auto Stop Playing:", "auto_stop_playing", InputType::None },
-		{ "Pathfinder Mode:", "pathfinder_mode", InputType::None, 0.34f },
+		{ "Pathfinder Mode:", "pathfinder_mode", InputType::Settings, 0.34f, menu_selector(PathfinderSettingsLayer::open) },
 		{ "TPS Bypass:", "macro_tps_enabled", InputType::Tps, 0.4f },
 		{ "Speedhack:", "macro_speedhack_enabled", InputType::Speedhack, 0.4f },
 		{ "Seed:", "macro_seed_enabled", InputType::Seed, 0.4f },
@@ -716,17 +717,7 @@ void RecordLayer::toggleSetting(CCObject* obj) {
     if (id == "macro_auto_save") g.autosaveEnabled = value;
     if (id == "lock_delta") g.lockDelta = value;
     if (id == "auto_stop_playing") g.stopPlaying = value;
-    if (id == "pathfinder_mode") {
-        g.pathfinderMode = value;
-        g.pathfinderSearching = false;
-        g.pathfinderStatus = value ? "Armed" : "Idle";
-
-        if (CCLabelBMFont* statusLabel = typeinfo_cast<CCLabelBMFont*>(menu ? menu->getChildByID("pathfinder-status-label"_spr) : nullptr)) {
-            statusLabel->setString(("Pathfinder: " + g.pathfinderStatus).c_str());
-            statusLabel->limitLabelWidth(94.f, 0.5f, 0.01f);
-            statusLabel->updateLabel();
-        }
-    }
+    if (id == "pathfinder_mode") applyPathfinderState(value, menu);
 
     if (id == "macro_show_trajectory") {
         g.showTrajectory = value;
@@ -757,9 +748,6 @@ void RecordLayer::toggleSetting(CCObject* obj) {
         Clickbot::updateSounds();
 
     if (id == "macro_hide_recording_label" || id == "macro_hide_playing_label" || id == "render_hide_labels")
-        Interface::updateLabels();
-
-    if (id == "pathfinder_mode")
         Interface::updateLabels();
 
     if (id == "macro_hide_speedhack" || id == "macro_hide_stepper" || id == "macro_always_show_buttons")
@@ -1352,6 +1340,33 @@ void RecordLayer::onCycleFramePerfectMode(CCObject*) {
 
     if (settingsMenu)
         loadSettingsList();
+}
+
+void RecordLayer::applyPathfinderState(bool enabled, CCMenu* rootMenu) {
+    auto& g = Global::get();
+    if (g.mod)
+        g.mod->setSavedValue("pathfinder_mode", enabled);
+
+    g.pathfinderMode = enabled;
+    g.pathfinderSearching = false;
+    g.pathfinderStatus = enabled ? "Armed" : "Idle";
+
+    CCNode* searchRoot = rootMenu
+        ? static_cast<CCNode*>(rootMenu)
+        : static_cast<CCNode*>(CCDirector::get()->getRunningScene());
+
+    if (searchRoot) {
+        if (CCMenuItemToggler* toggle = typeinfo_cast<CCMenuItemToggler*>(findNodeByIDRecursive(searchRoot, "pathfinder_mode")))
+            toggle->toggle(enabled);
+
+        if (CCLabelBMFont* statusLabel = typeinfo_cast<CCLabelBMFont*>(findNodeByIDRecursive(searchRoot, "pathfinder-status-label"_spr))) {
+            statusLabel->setString(("Pathfinder: " + g.pathfinderStatus).c_str());
+            statusLabel->limitLabelWidth(94.f, 0.5f, 0.01f);
+            statusLabel->updateLabel();
+        }
+    }
+
+    Interface::updateLabels();
 }
 
 void RecordLayer::setToggleMember(CCMenuItemToggler* toggle, std::string id) {

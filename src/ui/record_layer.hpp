@@ -149,6 +149,7 @@ public:
 	void onDiscord(CCObject*);
 	void onCycleAccuracy(CCObject*);
 	void onCycleFramePerfectMode(CCObject*);
+	static void applyPathfinderState(bool enabled, CCMenu* rootMenu = nullptr);
 
 	void updateTPS();
 
