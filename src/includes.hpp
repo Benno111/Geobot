@@ -220,6 +220,8 @@ public:
 
     int currentPage = 0;
     float currentPitch = 1.f;
+    std::string cachedMacroSeedString = "";
+    uintptr_t cachedMacroSeedValue = 1;
     uintptr_t latestSeed = 0;
     float leftOver = 0.f;
     int framePerfectOverlayFrames = 0;

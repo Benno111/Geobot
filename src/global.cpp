@@ -323,9 +323,12 @@ void Global::updateSeed(bool isRestart) {
     PlayLayer* pl = PlayLayer::get();
     if (!pl) return;
 
-    unsigned long long ull = 1;
-    {
-      std::string raw = g.mod->getSavedValue<std::string>("macro_seed");
+    std::string raw = g.mod->getSavedValue<std::string>("macro_seed");
+    if (raw != g.cachedMacroSeedString) {
+      g.cachedMacroSeedString = raw;
+      g.cachedMacroSeedValue = 1;
+
+      unsigned long long ull = 1;
       auto begin = raw.data();
       auto end = begin + raw.size();
       while (begin < end && std::isspace(static_cast<unsigned char>(*begin))) ++begin;
@@ -344,11 +347,12 @@ void Global::updateSeed(bool isRestart) {
         }
 
         auto [ptr, ec] = std::from_chars(begin, end, ull, base);
-        if (ec != std::errc() || ptr != end)
-          ull = 1;
+        if (ec == std::errc() && ptr == end)
+          g.cachedMacroSeedValue = static_cast<uintptr_t>(ull);
       }
     }
-    uintptr_t seed = static_cast<uintptr_t>(ull);
+
+    uintptr_t seed = g.cachedMacroSeedValue;
     int finalSeed;
 
     if (!pl->m_player1->m_isDead) {

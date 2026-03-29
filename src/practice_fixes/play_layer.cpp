@@ -4,6 +4,23 @@
 #include <Geode/modify/CheckpointObject.hpp>
 #include <Geode/modify/PlayLayer.hpp>
 
+namespace {
+void clearRespawnJumpState(PlayerObject* player) {
+  if (!player) return;
+
+  player->releaseButton(static_cast<PlayerButton>(1));
+  player->m_holdingButtons[1] = false;
+  player->m_jumpBuffered = false;
+  player->m_wasJumpBuffered = false;
+  player->m_stateJumpBuffered = false;
+  player->m_stateRingJump = false;
+  player->m_stateRingJump2 = false;
+  player->m_touchedPad = false;
+  player->m_touchedRing = false;
+  player->m_touchedCustomRing = false;
+}
+}
+
 class $modify(GJBaseGameLayer) {
 
   void toggleFlipped(bool p0, bool p1) {
@@ -97,8 +114,15 @@ class $modify(PlayLayer) {
 
       g.respawnFrame = g.checkpoints[cp].frame;
       g.previousFrame = g.checkpoints[cp].previousFrame;
+      Macro::resetVariables();
       PlayerPracticeFixes::applyData(this->m_player1, p1Data, false);
       PlayerPracticeFixes::applyData(this->m_player2, p2Data, true);
+      clearRespawnJumpState(this->m_player1);
+      clearRespawnJumpState(this->m_player2);
+      g.heldButtons[0] = false;
+      g.heldButtons[3] = false;
+      g.wasHolding[0] = false;
+      g.wasHolding[3] = false;
 
       return;
     }

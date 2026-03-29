@@ -25,6 +25,7 @@ void ShowTrajectory::trajectoryOff() {
         t.trajectoryNode()->clear();
         t.trajectoryNode()->setVisible(false);
     }
+    t.lastTrajectoryFrame = -1;
 }
 
 void ShowTrajectory::updateTrajectory(PlayLayer* pl) {
@@ -245,8 +246,13 @@ class $modify(PlayLayer) {
         PlayLayer::postUpdate(dt);
 
         if (!t.trajectoryNode() || t.creatingTrajectory) return;
+        if (m_isPaused || m_levelEndAnimationStarted || !m_player1 || m_player1->m_isDead) return;
 
         if (Global::get().showTrajectory) {
+            int frame = Global::getCurrentFrame();
+            if (t.lastTrajectoryFrame == frame)
+                return;
+            t.lastTrajectoryFrame = frame;
             ShowTrajectory::updateTrajectory(this);
         }
 
@@ -259,6 +265,7 @@ class $modify(PlayLayer) {
         t.fakePlayer2 = nullptr;
         t.cancelTrajectory = false;
         t.creatingTrajectory = false;
+        t.lastTrajectoryFrame = -1;
 
         t.fakePlayer1 = PlayerObject::create(1, 1, this, this, true);
         t.fakePlayer1->retain();
@@ -293,6 +300,7 @@ class $modify(PlayLayer) {
         t.fakePlayer2 = nullptr;
         t.cancelTrajectory = false;
         t.creatingTrajectory = false;
+        t.lastTrajectoryFrame = -1;
 
         PlayLayer::onQuit();
     }
@@ -313,6 +321,7 @@ class $modify(PauseLayer) {
         t.fakePlayer2 = nullptr;
         t.cancelTrajectory = false;
         t.creatingTrajectory = false;
+        t.lastTrajectoryFrame = -1;
 
         PauseLayer::goEdit();
     }

@@ -66,6 +66,7 @@ public:
     bool cancelTrajectory = false;
     bool miniScale = false;
 
+    int lastTrajectoryFrame = -1;
     float deathRotation = 0.f;
     float delta = 0.25f;
 
