@@ -550,6 +550,26 @@ void Global::refreshFramePerfectOverlayText() {
   );
 }
 
+void Global::resetFramePerfectStats() {
+  auto& g = Global::get();
+  g.framePerfectOverlayFrames = 0;
+  g.framePerfectOverlayText.clear();
+  g.framePerfectOverlayTypeName.clear();
+  g.framePerfectOverlayFpsType.clear();
+  g.framePerfectOverlayLeftWiggle = 0;
+  g.framePerfectOverlayRightWiggle = 0;
+  g.framePerfectOverlayScanning = false;
+  g.framePerfectCount = 0;
+  g.framePerfectCount60 = 0;
+  g.framePerfectCount144 = 0;
+  g.framePerfectCount240 = 0;
+  g.framePerfectExpected = 0;
+  g.framePerfectExpected60 = 0;
+  g.framePerfectExpected144 = 0;
+  g.framePerfectExpected240 = 0;
+  g.lastFramePerfectAction = std::numeric_limits<size_t>::max();
+}
+
 bool Global::isDeveloperModeEnabled() {
   Mod* mod = Mod::get();
   return mod && mod->getSavedValue<bool>("developer_mode_enabled");
@@ -576,6 +596,16 @@ std::string Global::getFramePerfectOverlayMode() {
   if (value == "When" && Global::isDeveloperModeEnabled())
     return value;
   return "Always";
+}
+
+bool Global::isFramePerfectDetectionEnabled() {
+  Mod* mod = Mod::get();
+  return !mod || mod->getSettingValue<bool>("feature_flag_frameperfect_detection");
+}
+
+bool Global::isPathfinderFeatureEnabled() {
+  Mod* mod = Mod::get();
+  return !mod || mod->getSettingValue<bool>("feature_flag_pathfinder");
 }
 
 void Global::triggerFramePerfectOverlay(int button, bool down) {
@@ -840,6 +870,33 @@ $execute{
   if (!g.mod->hasSavedValue("pathfinder_mode"))
     g.mod->setSavedValue("pathfinder_mode", false);
 
+  geode::listenForSettingChanges<bool>("feature_flag_frameperfect_detection", +[](bool enabled) {
+    if (!enabled)
+      Global::resetFramePerfectStats();
+  });
+
+  geode::listenForSettingChanges<bool>("feature_flag_pathfinder", +[](bool enabled) {
+    auto& g = Global::get();
+    if (!enabled) {
+      g.mod->setSavedValue("pathfinder_mode", false);
+      g.pathfinderMode = false;
+      g.pathfinderSearching = false;
+      g.pathfinderStatus = "Disabled";
+    }
+    else {
+      g.pathfinderMode = g.mod->getSavedValue<bool>("pathfinder_mode");
+      g.pathfinderSearching = false;
+      g.pathfinderStatus = g.pathfinderMode ? "Armed" : "Idle";
+    }
+
+    Interface::updateLabels();
+    if (g.layer) {
+      if (auto* layer = typeinfo_cast<RecordLayer*>(g.layer)) {
+        layer->loadSettingsList();
+      }
+    }
+  });
+
   std::string const currentNoticeVersion = geobotVersion;
   if (!g.mod->hasSavedValue("update_notice_last_seen")) {
     g.mod->setSavedValue("update_notice_last_seen", currentNoticeVersion);
@@ -879,9 +936,9 @@ $execute{
   g.speedhackAudio = g.mod->getSavedValue<bool>("macro_speedhack_audio");
   g.trajectoryBothSides = g.mod->getSavedValue<bool>("macro_trajectory_both_sides");
   g.p2mirror = g.mod->getSavedValue<bool>("p2_input_mirror");
-  g.pathfinderMode = g.mod->getSavedValue<bool>("pathfinder_mode");
+  g.pathfinderMode = Global::isPathfinderFeatureEnabled() && g.mod->getSavedValue<bool>("pathfinder_mode");
   g.pathfinderSearching = false;
-  g.pathfinderStatus = g.pathfinderMode ? "Armed" : "Idle";
+  g.pathfinderStatus = !Global::isPathfinderFeatureEnabled() ? "Disabled" : (g.pathfinderMode ? "Armed" : "Idle");
   g.tpsEnabled = g.mod->getSavedValue<bool>("macro_tps_enabled");
   g.tps = g.mod->getSavedValue<double>("macro_tps");
   g.autoclicker = g.mod->getSavedValue<bool>("autoclicker_enabled");

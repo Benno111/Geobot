@@ -4,11 +4,11 @@
         "win": "2.2081",
         "android": "2.2081"
     },
-    "version": "1.0.0-alpha.21",
+    "version": "1.0.0-rc1",
     "id": "benno111.geobot",
     "name": "geobot",
     "developer": "Benno111",
-    "description": "A macro bot and utility toolkit for Geometry Dash 2.2081 on Geode 5. development build",
+    "description": "A macro bot and utility toolkit for Geometry Dash",
     "repository": "https://github.com/Benno111/geobot",
     "links": {
         "source": "https://github.com/Benno111/geobot",
@@ -25,6 +25,18 @@
         }
     },
     "settings": {
+        "feature_flag_frameperfect_detection": {
+            "name": "Enable Frameperfect Detection",
+            "description": "Turns the frameperfect detection system on or off.",
+            "type": "bool",
+            "default": true
+        },
+        "feature_flag_pathfinder": {
+            "name": "Enable Pathfinder",
+            "description": "Turns the pathfinder system on or off.",
+            "type": "bool",
+            "default": true
+        }
     },
     "resources": {
         "sprites": [

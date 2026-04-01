@@ -19,6 +19,7 @@ private:
         Utils::setBackgroundColor(m_bgSprite);
 
         auto& g = Global::get();
+        bool featureEnabled = Global::isPathfinderFeatureEnabled();
 
         CCLabelBMFont* lbl = CCLabelBMFont::create("Enable Pathfinder", "bigFont.fnt");
         lbl->setPosition({ m_size.width / 2.f - 12.f, 113.f });
@@ -34,7 +35,9 @@ private:
         modeToggle->setPosition({ m_size.width / 2.f + 68.f, 113.f });
         modeToggle->setScale(0.5f);
         modeToggle->setID("pathfinder-popup-toggle"_spr);
-        modeToggle->toggle(g.pathfinderMode);
+        modeToggle->toggle(featureEnabled && g.pathfinderMode);
+        modeToggle->setEnabled(featureEnabled);
+        modeToggle->setOpacity(featureEnabled ? 255 : 110);
         m_buttonMenu->addChild(modeToggle);
 
         lbl = CCLabelBMFont::create("Current Status", "goldFont.fnt");
@@ -48,13 +51,13 @@ private:
         statusLabel->setOpacity(190);
         m_mainLayer->addChild(statusLabel);
 
-        lbl = CCLabelBMFont::create("Use this to arm or disable", "chatFont.fnt");
+        lbl = CCLabelBMFont::create(featureEnabled ? "Use this to arm or disable" : "Enable the feature flag in mod settings", "chatFont.fnt");
         lbl->setPosition({ m_size.width / 2.f, 43.f });
         lbl->setScale(0.58f);
         lbl->setOpacity(120);
         m_mainLayer->addChild(lbl);
 
-        lbl = CCLabelBMFont::create("the pathfinder from settings.", "chatFont.fnt");
+        lbl = CCLabelBMFont::create(featureEnabled ? "the pathfinder from settings." : "to use pathfinder controls here.", "chatFont.fnt");
         lbl->setPosition({ m_size.width / 2.f, 29.f });
         lbl->setScale(0.58f);
         lbl->setOpacity(120);

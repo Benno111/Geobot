@@ -17,25 +17,6 @@ bool isEditorPlaytestCompat(PlayLayer* pl) {
     return LevelEditorLayer::get() != nullptr || pl->m_isTestMode;
 }
 
-void resetFramePerfectStats(Global& g) {
-    g.framePerfectOverlayFrames = 0;
-    g.framePerfectOverlayText.clear();
-    g.framePerfectOverlayTypeName.clear();
-    g.framePerfectOverlayFpsType.clear();
-    g.framePerfectOverlayLeftWiggle = 0;
-    g.framePerfectOverlayRightWiggle = 0;
-    g.framePerfectOverlayScanning = false;
-    g.framePerfectCount = 0;
-    g.framePerfectCount60 = 0;
-    g.framePerfectCount144 = 0;
-    g.framePerfectCount240 = 0;
-    g.framePerfectExpected = 0;
-    g.framePerfectExpected60 = 0;
-    g.framePerfectExpected144 = 0;
-    g.framePerfectExpected240 = 0;
-    g.lastFramePerfectAction = std::numeric_limits<size_t>::max();
-}
-
 std::string getFramePerfectTypeName(int button, bool down) {
     if (button == 2)
         return down ? "Left Press" : "Left Release";
@@ -233,7 +214,7 @@ class $modify(PlayLayer) {
         Macro::resetVariables();
 
         g.macroUsedInAttempt = false;
-        resetFramePerfectStats(g);
+        Global::resetFramePerfectStats();
 
         int frame = Global::getCurrentFrame();
 
@@ -332,7 +313,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
                 g.firstAttempt = false;
 
                 if (pl && !m_levelEndAnimationStarted) {
-                    resetFramePerfectStats(g);
+                    Global::resetFramePerfectStats();
                     return pl->resetLevelFromStart();
                 }
             }
@@ -353,7 +334,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
         g.previousFrame = frame;
 
         if (pl && g.macro.geobotMacro && g.restart && !m_levelEndAnimationStarted) {
-            resetFramePerfectStats(g);
+            Global::resetFramePerfectStats();
             return pl->resetLevelFromStart();
         }
 
@@ -427,7 +408,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
             m_player2->releaseAllButtons();
 
             if (PlayLayer* pl = PlayLayer::get(); pl && !pl->m_isPracticeMode) {
-                resetFramePerfectStats(g);
+                Global::resetFramePerfectStats();
                 pl->resetLevelFromStart();
             }
             return;
@@ -489,6 +470,10 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
     void processRealtimeFramePerfect(size_t actionIndex, input const& currentInput) {
         auto& g = Global::get();
+        if (!Global::isFramePerfectDetectionEnabled()) {
+            m_fields->pendingFramePerfects.clear();
+            return;
+        }
         if (!isTrackedFramePerfectInput(this, currentInput))
             return;
 
@@ -615,6 +600,10 @@ class $modify(BGLHook, GJBaseGameLayer) {
     }
 
     void trimExpiredPendingFramePerfects(int frame) {
+        if (!Global::isFramePerfectDetectionEnabled()) {
+            m_fields->pendingFramePerfects.clear();
+            return;
+        }
         auto& pending = m_fields->pendingFramePerfects;
         if (pending.empty())
             return;

@@ -701,6 +701,9 @@ void RecordLayer::toggleSetting(CCObject* obj) {
 
     bool value = !toggle->isToggled(); 
 
+    if (id == "pathfinder_mode" && !Global::isPathfinderFeatureEnabled())
+        value = false;
+
     g.mod->setSavedValue(id, value);
 
     // Some of these get checked every frame so idk i didnt want to do mod->getSavedValue<bool> every time
@@ -1344,12 +1347,14 @@ void RecordLayer::onCycleFramePerfectMode(CCObject*) {
 
 void RecordLayer::applyPathfinderState(bool enabled, CCMenu* rootMenu) {
     auto& g = Global::get();
+    if (!Global::isPathfinderFeatureEnabled())
+        enabled = false;
     if (g.mod)
         g.mod->setSavedValue("pathfinder_mode", enabled);
 
     g.pathfinderMode = enabled;
     g.pathfinderSearching = false;
-    g.pathfinderStatus = enabled ? "Armed" : "Idle";
+    g.pathfinderStatus = !Global::isPathfinderFeatureEnabled() ? "Disabled" : (enabled ? "Armed" : "Idle");
 
     CCNode* searchRoot = rootMenu
         ? static_cast<CCNode*>(rootMenu)
@@ -1378,6 +1383,9 @@ void RecordLayer::setToggleMember(CCMenuItemToggler* toggle, std::string id) {
 }
 
 void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu) {
+    if (sett.id == "pathfinder_mode" && !Global::isPathfinderFeatureEnabled())
+        sett.disabled = true;
+
     CCLabelBMFont* lbl = CCLabelBMFont::create(sett.name.c_str(), "bigFont.fnt");
     lbl->setPosition(ccp(19.f, yPos));
     lbl->setAnchorPoint({ 0, 0.5 });
@@ -1392,15 +1400,20 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     float toggleScale = 0.555f;
 
     if (sett.disabled) {
-        // Code when disabled xD!
+        lbl->setOpacity(110);
     }
 
     if (sett.input != InputType::Action) {
         CCMenuItemToggler* toggle = CCMenuItemToggler::create(spriteOff, spriteOn, this, menu_selector(RecordLayer::toggleSetting));
         toggle->setPosition(ccp(175, yPos));
         toggle->setScale(toggleScale);
-        toggle->toggle(mod->getSavedValue<bool>(sett.id));
+        bool toggled = mod->getSavedValue<bool>(sett.id);
+        if (sett.id == "pathfinder_mode" && !Global::isPathfinderFeatureEnabled())
+            toggled = false;
+        toggle->toggle(toggled);
         toggle->setID(sett.id.c_str());
+        toggle->setEnabled(!sett.disabled);
+        toggle->setOpacity(sett.disabled ? 110 : 255);
 
         nodes.push_back(static_cast<CCNode*>(toggle));
         targetMenu->addChild(toggle);
@@ -1442,6 +1455,8 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             sett.callback
         );
         btn->setPosition(ccp(138, yPos));
+        btn->setEnabled(!sett.disabled);
+        btn->setOpacity(sett.disabled ? 110 : 255);
 
         nodes.push_back(static_cast<CCNode*>(btn));
         targetMenu->addChild(btn);
