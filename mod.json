@@ -25,17 +25,17 @@
         }
     },
     "settings": {
-        "feature_flag_frameperfect_detection": {
+        "feature_flag_frameperfect_detection (Alpha)": {
             "name": "Enable Frameperfect Detection",
             "description": "Turns the frameperfect detection system on or off.",
             "type": "bool",
-            "default": true
+            "default": false
         },
-        "feature_flag_pathfinder": {
+        "feature_flag_pathfinder (Alpha)": {
             "name": "Enable Pathfinder",
             "description": "Turns the pathfinder system on or off.",
             "type": "bool",
-            "default": true
+            "default": false
         }
     },
     "resources": {
