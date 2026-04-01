@@ -5,6 +5,8 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 namespace {
+constexpr int kRespawnMovementClearFrames = 5;
+
 void clearRespawnJumpState(PlayerObject* player) {
   if (!player) return;
 
@@ -119,6 +121,7 @@ class $modify(PlayLayer) {
       PlayerPracticeFixes::applyData(this->m_player2, p2Data, true);
       clearRespawnJumpState(this->m_player1);
       clearRespawnJumpState(this->m_player2);
+      g.clearMovementUntilFrame = g.respawnFrame + (kRespawnMovementClearFrames - 1);
       g.heldButtons[0] = false;
       g.heldButtons[3] = false;
       g.wasHolding[0] = false;
@@ -138,6 +141,7 @@ class $modify(PlayLayer) {
     PlayerData p1Data = g.checkpoints[cp].p1;
     PlayerData p2Data = g.checkpoints[cp].p2;
 
+    g.clearMovementUntilFrame = frame + (kRespawnMovementClearFrames - 1);
     g.ignoreJumpButton = frame + 1;
     g.previousFrame = g.checkpoints[cp].previousFrame;
 

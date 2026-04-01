@@ -11,6 +11,7 @@
 
 namespace {
 constexpr int kFramePerfectMaxGap = 2;
+constexpr int kRespawnMovementClearFrames = 5;
 
 bool isEditorPlaytestCompat(PlayLayer* pl) {
     if (!pl) return false;
@@ -151,6 +152,31 @@ void appendFramePerfectCalibrationRow(
         << getFramePerfectTierLabel(leftWiggle, rightWiggle) << ','
         << '"' << typeName << "\"\n";
 }
+
+void clearMovementStateForRespawnWindow(GJBaseGameLayer* layer) {
+    if (!layer) return;
+
+    auto& g = Global::get();
+    g.heldButtons[1] = false;
+    g.heldButtons[2] = false;
+    g.heldButtons[4] = false;
+    g.heldButtons[5] = false;
+    g.wasHolding[1] = false;
+    g.wasHolding[2] = false;
+    g.wasHolding[4] = false;
+    g.wasHolding[5] = false;
+
+    auto clearPlayer = [](PlayerObject* player) {
+        if (!player) return;
+        player->m_holdingLeft = false;
+        player->m_holdingRight = false;
+        player->m_holdingButtons[2] = false;
+        player->m_holdingButtons[3] = false;
+    };
+
+    clearPlayer(layer->m_player1);
+    clearPlayer(layer->m_player2);
+}
 }
 
 class $modify(PlayLayer) {
@@ -219,6 +245,7 @@ class $modify(PlayLayer) {
         Global::resetFramePerfectStats();
 
         int frame = Global::getCurrentFrame();
+        g.clearMovementUntilFrame = frame + (kRespawnMovementClearFrames - 1);
 
         if (!m_isPracticeMode)
             g.renderer.levelStartFrame = frame;
@@ -326,13 +353,16 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
         GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
 
+        int frame = Global::getCurrentFrame(!pl);
+        if (pl && frame <= g.clearMovementUntilFrame)
+            clearMovementStateForRespawnWindow(this);
+
         if (g.state == state::none)
             return;
 
         if (pl && !m_levelEndAnimationStarted && (g.state == state::playing || g.state == state::recording))
             g.macroUsedInAttempt = true;
 
-        int frame = Global::getCurrentFrame(!pl);
         g.previousFrame = frame;
 
         if (pl && g.macro.geobotMacro && g.restart && !m_levelEndAnimationStarted) {

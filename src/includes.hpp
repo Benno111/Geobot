@@ -209,6 +209,7 @@ public:
     int delayedFrameInput[2] = { -1, -1 };
     int ignoreFrame = -1;
     int respawnFrame = -1;
+    int clearMovementUntilFrame = -1;
     int ignoreJumpButton = -1;
     int frameOffset = 0;
     int previousFrame = 0;
