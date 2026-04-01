@@ -208,7 +208,9 @@ class $modify(PlayLayer) {
         }
 
         for (int i = 0; i < 6; i++) {
-            g.heldButtons[i] = false;
+            bool isJumpButton = i == 0 || i == 3;
+            if (isJumpButton)
+                g.heldButtons[i] = false;
             g.wasHolding[i] = false;
         }
         Macro::resetVariables();
