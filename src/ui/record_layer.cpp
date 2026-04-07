@@ -697,7 +697,6 @@ void RecordLayer::toggleSetting(CCObject* obj) {
     CCMenuItemToggler* toggle = static_cast<CCMenuItemToggler*>(obj);
     std::string id = toggle->getID();
     auto& g = Global::get();
-    mod = g.mod;
 
     bool value = !toggle->isToggled(); 
 
