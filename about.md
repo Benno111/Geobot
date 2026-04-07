@@ -1,6 +1,3 @@
-# Development Warning
-This mod is still under active development.
-
 # geobot
 <cl>geobot</c> is a macro and utility toolkit designed to be easy to use, mainly for <cg>showcases</c>.
 
