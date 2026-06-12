@@ -503,9 +503,14 @@ void RecordLayer::toggleRecording(CCObject*) {
     if (g.state == state::recording) {
         g.currentAction = 0;
         g.currentFrameFix = 0;
-        g.restart = true;
 
         PlayLayer* pl = PlayLayer::get();
+        // Restarting from the beginning clears Geometry Dash's practice
+        // checkpoint stack. When recording is started mid-practice, keep the
+        // existing checkpoints and continue from the current practice state
+        // instead of deleting every checkpoint the player has placed.
+        g.restart = !(pl && pl->m_isPracticeMode && !g.checkpoints.empty());
+
         if (pl) {
             if (!pl->m_isPaused)
                 pl->pauseGame(false);
