@@ -11,6 +11,7 @@ private:
 
     bool setup() override {
         setTitle("Render Presets");
+        adjustForLoadingScreen();
 
         CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
         bg->setColor({ 0,0,0 });
