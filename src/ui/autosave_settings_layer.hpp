@@ -23,6 +23,7 @@ private:
 	
     bool setup() override {
         setTitle("AutoSave");
+        adjustForLoadingScreen();
 		m_title->setScale(0.575f);
 		m_title->setPositionY(171);
 

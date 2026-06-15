@@ -68,7 +68,7 @@ const std::vector<std::vector<RecordSetting>> settings {
 		{ "Frame Fix Limit:", "frame_fixes_limit", InputType::FrameFixesLimit, 0.4f },
 		{ "Lock Delta:", "lock_delta", InputType::None },
 		{ "Auto Stop Playing:", "auto_stop_playing", InputType::None },
-		{ "Pathfinder Mode:", "pathfinder_mode", InputType::Settings, 0.34f, menu_selector(PathfinderSettingsLayer::open) },
+		{ "Pathfinder Mode:", "pathfinder_mode", InputType::Settings, 0.34f, menu_selector(RecordLayer::openPathfinderSettings) },
 		{ "TPS Bypass:", "macro_tps_enabled", InputType::Tps, 0.4f },
 		{ "Speedhack:", "macro_speedhack_enabled", InputType::Speedhack, 0.4f },
 		{ "Seed:", "macro_seed_enabled", InputType::Seed, 0.4f },
@@ -377,6 +377,11 @@ void RecordLayer::openSaveMacro(CCObject*) {
 
 void RecordLayer::openLoadMacro(CCObject*) {
     LoadMacroLayer::open(static_cast<geode::Popup*>(this), nullptr);
+}
+
+void RecordLayer::openPathfinderSettings(CCObject*) {
+    if (auto* layer = PathfinderSettingsLayer::create())
+        layer->show();
 }
 
 void RecordLayer::openStarRateOverride(CCObject*) {

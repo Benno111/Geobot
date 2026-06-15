@@ -26,6 +26,16 @@ class Popup : public geode::Popup {
 protected:
     virtual bool setup(SetupArgs... args) = 0;
 
+    void adjustForLoadingScreen(bool includeTitle = true) {
+        cocos2d::CCPoint offset = (cocos2d::CCDirector::sharedDirector()->getWinSize() - m_mainLayer->getContentSize()) / 2;
+        m_mainLayer->setPosition(m_mainLayer->getPosition() - offset);
+        m_closeBtn->setPosition(m_closeBtn->getPosition() + offset);
+        m_bgSprite->setPosition(m_bgSprite->getPosition() + offset);
+
+        if (includeTitle && m_title)
+            m_title->setPosition(m_title->getPosition() + offset);
+    }
+
 public:
     bool initAnchored(
         float width,

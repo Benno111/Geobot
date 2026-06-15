@@ -20,6 +20,7 @@ private:
 	
     bool setup() override {
         setTitle("Show Trajectory");
+        adjustForLoadingScreen();
 
     	Utils::setBackgroundColor(m_bgSprite);
 

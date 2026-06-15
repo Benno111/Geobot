@@ -16,6 +16,7 @@ private:
 
     bool setup() override {
         setTitle("Pathfinder");
+        adjustForLoadingScreen();
         Utils::setBackgroundColor(m_bgSprite);
 
         auto& g = Global::get();

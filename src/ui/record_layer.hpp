@@ -110,6 +110,7 @@ public:
 	}
 
 	void openLoadMacro(CCObject*);
+	void openPathfinderSettings(CCObject*);
 	void openStarRateOverride(CCObject*);
 
 	void openSaveMacro(CCObject*);

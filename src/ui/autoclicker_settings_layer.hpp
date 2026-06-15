@@ -47,6 +47,7 @@ private:
 	
     bool setup() override {
         setTitle("Autoclicker");
+        adjustForLoadingScreen();
 		m_title->setScale(0.625f);
 		m_title->setPositionY(224);
 
