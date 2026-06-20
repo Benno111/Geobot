@@ -1,3 +1,8 @@
+# 1.1.1-dev
+* rearrange settings into the new split layout
+* re-enable the 30-day dev build expiry lock
+* update version metadata for development builds
+
 # 1.1.0
 * remove alpha/development labels from feature flags
 * fix pathfinder feature flag access

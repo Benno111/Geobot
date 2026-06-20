@@ -69,6 +69,8 @@ public:
 	geode::ScrollLayer* settingsScroll = nullptr;
 	geode::Scrollbar* settingsScrollbar = nullptr;
 	CCMenu* settingsMenu = nullptr;
+	CCLabelBMFont* settingsSectionLabel = nullptr;
+	std::vector<CCMenuItemSpriteExtra*> settingsCategoryButtons;
 
 	std::vector<CCNode*> nodes;
 
@@ -150,7 +152,10 @@ public:
 	void onDiscord(CCObject*);
 	void onCycleAccuracy(CCObject*);
 	void onCycleFramePerfectMode(CCObject*);
+	void onSelectSettingsCategory(CCObject*);
 	static void applyPathfinderState(bool enabled, CCMenu* rootMenu = nullptr);
+	void updateSettingsCategoryButtons();
+	void selectSettingsCategory(size_t index);
 
 	void updateTPS();
 

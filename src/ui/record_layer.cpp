@@ -60,62 +60,77 @@ bool parseIntSafe(std::string const& raw, int& out) {
 }
 }
 
-const std::vector<std::vector<RecordSetting>> settings {
-	{
-		{ "Accuracy:", "macro_accuracy", InputType::Accuracy, 0.4f },
-		{ "FP Overlay:", "frame_perfect_overlay_mode", InputType::FramePerfectMode, 0.4f },
-		{ "Frame Offset:", "frame_offset", InputType::FrameOffset, 0.4f },
-		{ "Frame Fix Limit:", "frame_fixes_limit", InputType::FrameFixesLimit, 0.4f },
-		{ "Lock Delta:", "lock_delta", InputType::None },
-		{ "Auto Stop Playing:", "auto_stop_playing", InputType::None },
-		{ "Pathfinder Mode:", "pathfinder_mode", InputType::Settings, 0.34f, menu_selector(RecordLayer::openPathfinderSettings) },
-		{ "TPS Bypass:", "macro_tps_enabled", InputType::Tps, 0.4f },
-		{ "Speedhack:", "macro_speedhack_enabled", InputType::Speedhack, 0.4f },
-		{ "Seed:", "macro_seed_enabled", InputType::Seed, 0.4f },
-		{ "Enable Noclip:", "macro_noclip", InputType::Settings, 0.325f, menu_selector(NoclipSettingsLayer::open) },
-		{ "Show Trajectory:", "macro_show_trajectory", InputType::Settings, 0.325f, menu_selector(TrajectorySettingsLayer::open)  },
-		{ "Enable Frame Stepper:", "macro_frame_stepper", InputType::None },
-	},
-	{
-		{ "Instant respawn:", "macro_instant_respawn", InputType::None },
-		{ "No death effect:", "macro_no_death_effect", InputType::None },
-		{ "No respawn flash:", "macro_no_respawn_flash", InputType::None },
-		{ "Enable Coin Finder:", "macro_coin_finder", InputType::None },
-		{ "Enable Layout Mode:", "macro_layout_mode", InputType::None },
-		{ "Auto Safe Mode:", "macro_auto_safe_mode", InputType::None }
-	},
-	{
-	#ifdef GEODE_IS_WINDOWS
-		{ "Force cursor on open:", "menu_show_cursor", InputType::None },
-		{ "Button on pause menu:", "menu_show_button", InputType::None },
-		{ "Pause on open:", "menu_pause_on_open", InputType::None },
-	#else
-		{ "Always show buttons:", "macro_always_show_buttons", InputType::None },
-		{ "Hide speedhack button:", "macro_hide_speedhack", InputType::None },
-		{ "Hide Frame Stepper button:", "macro_hide_stepper", InputType::None, 0.3f },
-	#endif
-		{ "Hide labels on render:", "render_hide_labels", InputType::None },
-		{ "Hide playing label:", "macro_hide_playing_label", InputType::None },
-		{ "Hide recording label:", "macro_hide_recording_label", InputType::None }
-	},
-	{
-		{ "Enable Clickbot:", "clickbot_enabled", InputType::Settings, 0.325f, menu_selector(ClickbotLayer::open)},
-		{ "Enable Autoclicker:", "autoclicker_enabled", InputType::Settings, 0.3f, menu_selector(AutoclickerLayer::open) },
-		{ "Always Practice Fixes:", "macro_always_practice_fixes", InputType::None },
-		{ "Ignore inputs:", "macro_ignore_inputs", InputType::None },
-		{ "Show Frame Label:", "macro_show_frame_label", InputType::None },
-		{ "Speedhack Audio:", "macro_speedhack_audio", InputType::None }
-	},
+struct SettingsCategory {
+    std::string title;
+    std::vector<RecordSetting> settings;
+};
+
+const std::vector<SettingsCategory> kSettingsCategories {
     {
-		{ "Macros Folder:", "macros_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openMacrosFolder) },
-		{ "Autosaves Folder:", "autosaves_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openAutosavesFolder) },
-		{ "Renders Folder:", "render_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openRendersFolder) },
-		{ "Respawn Time:", "respawn_time_enabled", InputType::Respawn },
-		{ "Input Mirror:", "p2_input_mirror", InputType::Settings, 0.325f, menu_selector(MirrorSettingsLayer::open) },
-		{ "Disable Shaders:", "disable_shaders", InputType::None },
-		{ "Instant Mirror Portal:", "instant_mirror_portal", InputType::None },
-		{ "No Mirror Portal:", "no_mirror_portal", InputType::None },
-		{ "Enable Auto Saving:", "macro_auto_save", InputType::Autosave }
+        "Macro Settings",
+        {
+            { "Accuracy:", "macro_accuracy", InputType::Accuracy, 0.4f },
+            { "FP Overlay:", "frame_perfect_overlay_mode", InputType::FramePerfectMode, 0.4f },
+            { "Frame Offset:", "frame_offset", InputType::FrameOffset, 0.4f },
+            { "Frame Fix Limit:", "frame_fixes_limit", InputType::FrameFixesLimit, 0.4f },
+            { "Lock Delta:", "lock_delta", InputType::None },
+            { "Auto Stop Playing:", "auto_stop_playing", InputType::None },
+            { "TPS Bypass:", "macro_tps_enabled", InputType::Tps, 0.4f },
+            { "Speedhack:", "macro_speedhack_enabled", InputType::Speedhack, 0.4f },
+            { "Seed:", "macro_seed_enabled", InputType::Seed, 0.4f },
+            { "Enable Noclip:", "macro_noclip", InputType::Settings, 0.325f, menu_selector(NoclipSettingsLayer::open) },
+            { "Show Trajectory:", "macro_show_trajectory", InputType::Settings, 0.325f, menu_selector(TrajectorySettingsLayer::open)  },
+            { "Enable Frame Stepper:", "macro_frame_stepper", InputType::None },
+            { "Instant respawn:", "macro_instant_respawn", InputType::None },
+            { "No death effect:", "macro_no_death_effect", InputType::None },
+            { "No respawn flash:", "macro_no_respawn_flash", InputType::None },
+            { "Enable Coin Finder:", "macro_coin_finder", InputType::None },
+            { "Enable Layout Mode:", "macro_layout_mode", InputType::None },
+            { "Auto Safe Mode:", "macro_auto_safe_mode", InputType::None }
+        }
+    },
+    {
+        "Path Finder Settings",
+        {
+            { "Pathfinder Mode:", "pathfinder_mode", InputType::Settings, 0.34f, menu_selector(RecordLayer::openPathfinderSettings) }
+        }
+    },
+    {
+        "Render Settings",
+        {
+#ifdef GEODE_IS_WINDOWS
+            { "Force cursor on open:", "menu_show_cursor", InputType::None },
+            { "Button on pause menu:", "menu_show_button", InputType::None },
+            { "Pause on open:", "menu_pause_on_open", InputType::None },
+#else
+            { "Always show buttons:", "macro_always_show_buttons", InputType::None },
+            { "Hide speedhack button:", "macro_hide_speedhack", InputType::None },
+            { "Hide Frame Stepper button:", "macro_hide_stepper", InputType::None, 0.3f },
+#endif
+            { "Hide labels on render:", "render_hide_labels", InputType::None },
+            { "Hide playing label:", "macro_hide_playing_label", InputType::None },
+            { "Hide recording label:", "macro_hide_recording_label", InputType::None },
+            { "Renders Folder:", "render_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openRendersFolder) }
+        }
+    },
+    {
+        "Other Settings",
+        {
+            { "Enable Clickbot:", "clickbot_enabled", InputType::Settings, 0.325f, menu_selector(ClickbotLayer::open)},
+            { "Enable Autoclicker:", "autoclicker_enabled", InputType::Settings, 0.3f, menu_selector(AutoclickerLayer::open) },
+            { "Always Practice Fixes:", "macro_always_practice_fixes", InputType::None },
+            { "Ignore inputs:", "macro_ignore_inputs", InputType::None },
+            { "Show Frame Label:", "macro_show_frame_label", InputType::None },
+            { "Speedhack Audio:", "macro_speedhack_audio", InputType::None },
+            { "Macros Folder:", "macros_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openMacrosFolder) },
+            { "Autosaves Folder:", "autosaves_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openAutosavesFolder) },
+            { "Respawn Time:", "respawn_time_enabled", InputType::Respawn },
+            { "Input Mirror:", "p2_input_mirror", InputType::Settings, 0.325f, menu_selector(MirrorSettingsLayer::open) },
+            { "Disable Shaders:", "disable_shaders", InputType::None },
+            { "Instant Mirror Portal:", "instant_mirror_portal", InputType::None },
+            { "No Mirror Portal:", "no_mirror_portal", InputType::None },
+            { "Enable Auto Saving:", "macro_auto_save", InputType::Autosave }
+        }
     }
 };
 
@@ -1021,9 +1036,14 @@ bool RecordLayer::setup() {
 
 
 
-    lbl = CCLabelBMFont::create("Settings", "goldFont.fnt");
-    lbl->setPosition(ccp(103, 111));
-    lbl->setScale(0.7f);
+    lbl = CCLabelBMFont::create("Left Settings", "goldFont.fnt");
+    lbl->setPosition(ccp(12, 111));
+    lbl->setScale(0.56f);
+    menu->addChild(lbl);
+
+    lbl = CCLabelBMFont::create("Right Settings", "goldFont.fnt");
+    lbl->setPosition(ccp(156, 111));
+    lbl->setScale(0.56f);
     menu->addChild(lbl);
 
     CCScale9Sprite* settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
@@ -1032,18 +1052,77 @@ bool RecordLayer::setup() {
     settingsBg->setOpacity(90);
     settingsBg->setPosition({ -20.f, -85.f });
     settingsBg->setAnchorPoint({ 0.f, 0.f });
-    settingsBg->setContentSize({ 246.f, 181.f });
+    settingsBg->setContentSize({ 100.f, 181.f });
     menu->addChild(settingsBg);
 
-    settingsScroll = geode::ScrollLayer::create(cocos2d::CCSize { 246.f, 181.f });
-    settingsScroll->setPosition({ -20.f, -85.f });
+    settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    settingsBg->setScale(0.7f);
+    settingsBg->setColor({ 0,0,0 });
+    settingsBg->setOpacity(90);
+    settingsBg->setPosition({ 91.f, -85.f });
+    settingsBg->setAnchorPoint({ 0.f, 0.f });
+    settingsBg->setContentSize({ 190.f, 181.f });
+    menu->addChild(settingsBg);
+
+    settingsSectionLabel = CCLabelBMFont::create("", "goldFont.fnt");
+    settingsSectionLabel->setPosition({ 186.f, 95.f });
+    settingsSectionLabel->setScale(0.42f);
+    menu->addChild(settingsSectionLabel);
+
+    settingsScroll = geode::ScrollLayer::create(cocos2d::CCSize { 190.f, 150.f });
+    settingsScroll->setPosition({ 91.f, -72.f });
     settingsScroll->setTouchEnabled(true);
     settingsScroll->enableScrollWheel(true);
     menu->addChild(settingsScroll);
 
     settingsScrollbar = geode::Scrollbar::create(settingsScroll);
-    settingsScrollbar->setPosition({ 230.f, 5.f });
+    settingsScrollbar->setPosition({ 186.f, 0.f });
     menu->addChild(settingsScrollbar);
+
+    settingsCategoryButtons.clear();
+    std::array<char const*, 4> categoryTitles = {
+        "Macro Settings",
+        "Path Finder\nSettings",
+        "Render Settings",
+        "Other Settings"
+    };
+    std::array<CCPoint, 4> categoryPositions = {
+        CCPoint { 30.f, 70.f },
+        CCPoint { 30.f, 32.f },
+        CCPoint { 30.f, -7.f },
+        CCPoint { 30.f, -48.f }
+    };
+    std::array<CCSize, 4> categorySizes = {
+        CCSize { 92.f, 31.f },
+        CCSize { 92.f, 25.f },
+        CCSize { 92.f, 25.f },
+        CCSize { 92.f, 30.f }
+    };
+
+    for (size_t i = 0; i < categoryTitles.size(); i++) {
+        auto* cardBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        cardBg->setContentSize(categorySizes[i]);
+        cardBg->setOpacity(135);
+        cardBg->setColor({ 255, 255, 255 });
+
+        auto* cardLabel = CCLabelBMFont::create(categoryTitles[i], "chatFont.fnt");
+        cardLabel->setScale(i == 1 ? 0.42f : 0.5f);
+        cardLabel->setPosition({
+            categorySizes[i].width / 2.f,
+            categorySizes[i].height / 2.f
+        });
+        cardBg->addChild(cardLabel);
+
+        auto* cardBtn = CCMenuItemSpriteExtra::create(
+            cardBg,
+            this,
+            menu_selector(RecordLayer::onSelectSettingsCategory)
+        );
+        cardBtn->setTag(static_cast<int>(i));
+        cardBtn->setPosition(categoryPositions[i]);
+        menu->addChild(cardBtn);
+        settingsCategoryButtons.push_back(cardBtn);
+    }
 
     lbl = CCLabelBMFont::create("Record", "bigFont.fnt");
     lbl->setPosition(ccp(-161.5, 60));
@@ -1311,6 +1390,10 @@ bool RecordLayer::setup() {
     btn->setPosition(ccp(-20, 107));
     menu->addChild(btn);
 
+    if (g.currentPage < 0 || static_cast<size_t>(g.currentPage) >= kSettingsCategories.size())
+        g.currentPage = 0;
+
+    updateSettingsCategoryButtons();
     loadSettingsList();
 
     return true;
@@ -1354,6 +1437,43 @@ void RecordLayer::onCycleFramePerfectMode(CCObject*) {
         loadSettingsList();
 }
 
+void RecordLayer::onSelectSettingsCategory(CCObject* sender) {
+    auto* node = static_cast<CCNode*>(sender);
+    if (!node)
+        return;
+
+    selectSettingsCategory(static_cast<size_t>(std::max(0, node->getTag())));
+}
+
+void RecordLayer::updateSettingsCategoryButtons() {
+    for (size_t i = 0; i < settingsCategoryButtons.size(); i++) {
+        auto* button = settingsCategoryButtons[i];
+        if (!button)
+            continue;
+
+        bool selected = static_cast<size_t>(Global::get().currentPage) == i;
+        button->setScale(selected ? 1.04f : 1.f);
+
+        if (auto* bg = typeinfo_cast<CCScale9Sprite*>(button->getNormalImage())) {
+            bg->setOpacity(selected ? 185 : 135);
+            bg->setColor(selected ? ccColor3B { 230, 213, 147 } : ccColor3B { 255, 255, 255 });
+        }
+    }
+}
+
+void RecordLayer::selectSettingsCategory(size_t index) {
+    auto& g = Global::get();
+    if (index >= kSettingsCategories.size())
+        index = 0;
+
+    g.currentPage = static_cast<int>(index);
+    if (mod)
+        mod->setSavedValue("current_page", std::to_string(g.currentPage));
+
+    updateSettingsCategoryButtons();
+    loadSettingsList();
+}
+
 void RecordLayer::applyPathfinderState(bool enabled, CCMenu* rootMenu) {
     auto& g = Global::get();
     if (!Global::isPathfinderFeatureEnabled())
@@ -1395,11 +1515,24 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     if (sett.id == "pathfinder_mode" && !Global::isPathfinderFeatureEnabled())
         sett.disabled = true;
 
+    float targetWidth = targetMenu ? targetMenu->getContentSize().width : 190.f;
+    float labelX = 10.f;
+    float toggleX = targetWidth - 14.f;
+    float optionButtonX = targetWidth - 46.f;
+    float actionButtonX = targetWidth - 28.f;
+    float compactInputAnchorX = targetWidth - 76.f;
+    float compactInputCenterX = targetWidth - 58.f;
+    float seedInputAnchorX = targetWidth - 128.f;
+    float seedInputCenterX = targetWidth - 82.f;
+    float cycleButtonX = targetWidth - 56.f;
+
     CCLabelBMFont* lbl = CCLabelBMFont::create(sett.name.c_str(), "bigFont.fnt");
-    lbl->setPosition(ccp(19.f, yPos));
+    lbl->setPosition(ccp(labelX, yPos));
     lbl->setAnchorPoint({ 0, 0.5 });
     lbl->setOpacity(200);
     lbl->setScale(sett.labelScale);
+    lbl->limitLabelWidth(targetWidth - 92.f, sett.labelScale, 0.1f);
+    lbl->updateLabel();
 
     nodes.push_back(static_cast<CCNode*>(lbl));
     targetMenu->addChild(lbl);
@@ -1414,7 +1547,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
 
     if (sett.input != InputType::Action) {
         CCMenuItemToggler* toggle = CCMenuItemToggler::create(spriteOff, spriteOn, this, menu_selector(RecordLayer::toggleSetting));
-        toggle->setPosition(ccp(175, yPos));
+        toggle->setPosition(ccp(toggleX, yPos));
         toggle->setScale(toggleScale);
         bool toggled = mod->getSavedValue<bool>(sett.id);
         if (sett.id == "pathfinder_mode" && !Global::isPathfinderFeatureEnabled())
@@ -1446,7 +1579,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             this,
             sett.callback
         );
-        btn->setPosition(ccp(147, yPos));
+        btn->setPosition(ccp(actionButtonX, yPos));
 
         nodes.push_back(static_cast<CCNode*>(btn));
         targetMenu->addChild(btn);
@@ -1463,7 +1596,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             this,
             sett.callback
         );
-        btn->setPosition(ccp(138, yPos));
+        btn->setPosition(ccp(optionButtonX, yPos));
         btn->setEnabled(!sett.disabled);
         btn->setOpacity(sett.disabled ? 110 : 255);
 
@@ -1485,7 +1618,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             this,
             menu_selector(RecordLayer::onAutosaves)
         );
-        btn->setPosition(ccp(147, yPos));
+        btn->setPosition(ccp(actionButtonX, yPos));
 
         nodes.push_back(static_cast<CCNode*>(btn));
         targetMenu->addChild(btn);
@@ -1493,18 +1626,18 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
 
     if (sett.input == InputType::Speedhack) {
         CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-        bg->setPosition(ccp(110, yPos + 10));
+        bg->setPosition(ccp(compactInputAnchorX, yPos + 10));
         bg->setScale(0.355f);
         bg->setColor({ 0,0,0 });
         bg->setOpacity(75);
         bg->setAnchorPoint({ 0, 1 });
-        bg->setContentSize({ 100, 55 });
+        bg->setContentSize({ 88, 55 });
         bg->setZOrder(29);
         nodes.push_back(static_cast<CCNode*>(bg));
         targetMenu->addChild(bg);
 
         speedhackInput = CCTextInputNode::create(150, 30, "SH", "chatFont.fnt");
-        speedhackInput->setPosition(ccp(127.5, yPos));
+        speedhackInput->setPosition(ccp(compactInputCenterX, yPos));
         speedhackInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
         speedhackInput->ignoreAnchorPointForPosition(true);
         speedhackInput->setMaxLabelScale(0.7f);
@@ -1523,18 +1656,18 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
 
     if (sett.input == InputType::Tps) {
         tpsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-        tpsBg->setPosition(ccp(116, yPos + 10));
+        tpsBg->setPosition(ccp(compactInputAnchorX, yPos + 10));
         tpsBg->setScale(0.355f);
         tpsBg->setColor({ 0,0,0 });
         tpsBg->setOpacity(75);
         tpsBg->setAnchorPoint({ 0, 1 });
-        tpsBg->setContentSize({ 100, 55 });
+        tpsBg->setContentSize({ 88, 55 });
         tpsBg->setZOrder(29);
         nodes.push_back(static_cast<CCNode*>(tpsBg));
         targetMenu->addChild(tpsBg);
 
         tpsInput = CCTextInputNode::create(150, 30, "tps", "chatFont.fnt");
-        tpsInput->setPosition(ccp(133.5, yPos));
+        tpsInput->setPosition(ccp(compactInputCenterX, yPos));
         tpsInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
         tpsInput->ignoreAnchorPointForPosition(true);
         tpsInput->setMaxLabelScale(0.7f);
@@ -1553,18 +1686,18 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
 
     if (sett.input == InputType::Seed) {
         CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-        bg->setPosition(ccp(64, yPos + 10));
+        bg->setPosition(ccp(seedInputAnchorX, yPos + 10));
         bg->setScale(0.355f);
         bg->setColor({ 0,0,0 });
         bg->setOpacity(75);
         bg->setAnchorPoint({ 0, 1 });
-        bg->setContentSize({ 258, 55 });
+        bg->setContentSize({ 170, 55 });
         bg->setZOrder(29);
         nodes.push_back(static_cast<CCNode*>(bg));
         targetMenu->addChild(bg);
 
         seedInput = CCTextInputNode::create(150, 30, "Seed", "chatFont.fnt");
-        seedInput->setPosition(ccp(109.5, yPos));
+        seedInput->setPosition(ccp(seedInputCenterX, yPos));
         seedInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
         seedInput->ignoreAnchorPointForPosition(true);
         seedInput->setMaxLabelScale(0.7f);
@@ -1583,18 +1716,18 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
 
     if (sett.input == InputType::Respawn) {
         CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-        bg->setPosition(ccp(110, yPos + 10));
+        bg->setPosition(ccp(compactInputAnchorX, yPos + 10));
         bg->setScale(0.355f);
         bg->setColor({ 0,0,0 });
         bg->setOpacity(75);
         bg->setAnchorPoint({ 0, 1 });
-        bg->setContentSize({ 100, 55 });
+        bg->setContentSize({ 88, 55 });
         bg->setZOrder(29);
         nodes.push_back(static_cast<CCNode*>(bg));
         targetMenu->addChild(bg);
 
         respawnInput = CCTextInputNode::create(150, 30, "sec", "chatFont.fnt");
-        respawnInput->setPosition(ccp(127.5, yPos));
+        respawnInput->setPosition(ccp(compactInputCenterX, yPos));
         respawnInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
         respawnInput->ignoreAnchorPointForPosition(true);
         respawnInput->setMaxLabelScale(0.7f);
@@ -1613,18 +1746,18 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
 
     if (sett.input == InputType::FrameOffset) {
         CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-        bg->setPosition(ccp(110, yPos + 10));
+        bg->setPosition(ccp(compactInputAnchorX, yPos + 10));
         bg->setScale(0.355f);
         bg->setColor({ 0,0,0 });
         bg->setOpacity(75);
         bg->setAnchorPoint({ 0, 1 });
-        bg->setContentSize({ 100, 55 });
+        bg->setContentSize({ 88, 55 });
         bg->setZOrder(29);
         nodes.push_back(static_cast<CCNode*>(bg));
         targetMenu->addChild(bg);
 
         frameOffsetInput = CCTextInputNode::create(150, 30, "offset", "chatFont.fnt");
-        frameOffsetInput->setPosition(ccp(127.5, yPos));
+        frameOffsetInput->setPosition(ccp(compactInputCenterX, yPos));
         frameOffsetInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
         frameOffsetInput->ignoreAnchorPointForPosition(true);
         frameOffsetInput->setMaxLabelScale(0.7f);
@@ -1643,18 +1776,18 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
 
     if (sett.input == InputType::FrameFixesLimit) {
         CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-        bg->setPosition(ccp(110, yPos + 10));
+        bg->setPosition(ccp(compactInputAnchorX, yPos + 10));
         bg->setScale(0.355f);
         bg->setColor({ 0,0,0 });
         bg->setOpacity(75);
         bg->setAnchorPoint({ 0, 1 });
-        bg->setContentSize({ 100, 55 });
+        bg->setContentSize({ 88, 55 });
         bg->setZOrder(29);
         nodes.push_back(static_cast<CCNode*>(bg));
         targetMenu->addChild(bg);
 
         frameFixesLimitInput = CCTextInputNode::create(150, 30, "fps", "chatFont.fnt");
-        frameFixesLimitInput->setPosition(ccp(127.5, yPos));
+        frameFixesLimitInput->setPosition(ccp(compactInputCenterX, yPos));
         frameFixesLimitInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
         frameFixesLimitInput->ignoreAnchorPointForPosition(true);
         frameFixesLimitInput->setMaxLabelScale(0.7f);
@@ -1679,7 +1812,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             this,
             menu_selector(RecordLayer::onCycleAccuracy)
         );
-        btn->setPosition(ccp(127.5, yPos));
+        btn->setPosition(ccp(cycleButtonX, yPos));
 
         nodes.push_back(static_cast<CCNode*>(btn));
         targetMenu->addChild(btn);
@@ -1693,7 +1826,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             this,
             menu_selector(RecordLayer::onCycleFramePerfectMode)
         );
-        btn->setPosition(ccp(127.5, yPos));
+        btn->setPosition(ccp(cycleButtonX, yPos));
 
         nodes.push_back(static_cast<CCNode*>(btn));
         targetMenu->addChild(btn);
@@ -1703,6 +1836,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
 void RecordLayer::loadSettingsList() {
     checkSpeedhack();
 
+    auto& g = Global::get();
     nodes.clear();
 
     speedhackToggle = nullptr;
@@ -1730,14 +1864,19 @@ void RecordLayer::loadSettingsList() {
     constexpr float rowSpacing = 29.f;
     constexpr float topPadding = 16.f;
     constexpr float bottomPadding = 12.f;
-
-    size_t settingCount = 0;
-    for (const auto& page : settings)
-        settingCount += page.size();
+    size_t categoryIndex = static_cast<size_t>(std::clamp(g.currentPage, 0, static_cast<int>(kSettingsCategories.size()) - 1));
+    auto const& category = kSettingsCategories[categoryIndex];
+    size_t settingCount = category.settings.size();
 
     float viewWidth = settingsScroll->getContentSize().width;
     float viewHeight = settingsScroll->getContentSize().height;
     float contentHeight = std::max(viewHeight, topPadding + bottomPadding + settingCount * rowSpacing);
+
+    if (settingsSectionLabel) {
+        settingsSectionLabel->setString(category.title.c_str());
+        settingsSectionLabel->limitLabelWidth(120.f, 0.42f, 0.1f);
+        settingsSectionLabel->updateLabel();
+    }
 
     settingsScroll->m_contentLayer->setAnchorPoint({ 0.f, 0.f });
     settingsScroll->m_contentLayer->setPosition({ 0.f, 0.f });
@@ -1752,13 +1891,9 @@ void RecordLayer::loadSettingsList() {
     settingsMenu->setTouchPriority(menu ? menu->getTouchPriority() - 1 : -129);
     settingsScroll->m_contentLayer->addChild(settingsMenu);
 
-    size_t i = 0;
-    for (const auto& page : settings) {
-        for (const auto& setting : page) {
-            float yPos = contentHeight - topPadding - (static_cast<float>(i) * rowSpacing);
-            loadSetting(setting, yPos, settingsMenu);
-            i++;
-        }
+    for (size_t i = 0; i < category.settings.size(); i++) {
+        float yPos = contentHeight - topPadding - (static_cast<float>(i) * rowSpacing);
+        loadSetting(category.settings[i], yPos, settingsMenu);
     }
 
     settingsScroll->scrollToTop();
