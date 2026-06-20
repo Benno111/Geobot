@@ -523,6 +523,7 @@ void RecordLayer::toggleRecording(CCObject*) {
     if (g.state == state::recording) {
         g.currentAction = 0;
         g.currentFrameFix = 0;
+        Global::resetPathfinderState();
 
         PlayLayer* pl = PlayLayer::get();
         // Restarting from the beginning clears Geometry Dash's practice
@@ -563,6 +564,7 @@ void RecordLayer::togglePlaying(CCObject*) {
     if (g.state == state::playing) {
         g.currentAction = 0;
         g.currentFrameFix = 0;
+        Global::resetPathfinderState();
 
         g.macro.geobotMacro = g.macro.botInfo.name == "geobot";
         
@@ -1482,8 +1484,7 @@ void RecordLayer::applyPathfinderState(bool enabled, CCMenu* rootMenu) {
         g.mod->setSavedValue("pathfinder_mode", enabled);
 
     g.pathfinderMode = enabled;
-    g.pathfinderSearching = false;
-    g.pathfinderStatus = !Global::isPathfinderFeatureEnabled() ? "Disabled" : (enabled ? "Armed" : "Idle");
+    Global::resetPathfinderState();
 
     CCNode* searchRoot = rootMenu
         ? static_cast<CCNode*>(rootMenu)

@@ -18,6 +18,9 @@ class $modify(PlayLayer) {
         if (g.state != state::none && g.frameLabel && !g.renderer.recording)
             m_fields->frameLabel->setString(("Frame: " + std::to_string(Global::getCurrentFrame())).c_str());
 
+        if (g.pathfinderMode && !g.renderer.recording)
+            Interface::updateLabels();
+
         if (m_fields->framePerfectLabel && m_fields->framePerfectBg) {
             Global::refreshFramePerfectOverlayText();
             std::string mode = Global::getFramePerfectOverlayMode();
@@ -194,7 +197,7 @@ void Interface::updateLabels() {
     }
 
     if (g.pathfinderMode && !g.renderer.recording) {
-        std::string pathfinderLabel = g.pathfinderSearching ? "Pathfinder" : "Pathfinder Ready";
+        std::string pathfinderLabel = "Pathfinder: " + g.pathfinderStatus;
         if (labelText.empty())
             labelText = pathfinderLabel;
         else

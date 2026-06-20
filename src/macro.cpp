@@ -327,6 +327,7 @@ void Macro::resetState(bool cp) {
 
     g.restart = false;
     g.state = state::none;
+    Global::resetPathfinderState();
 
     if (!cp)
         g.checkpoints.clear();

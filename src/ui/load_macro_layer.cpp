@@ -740,6 +740,7 @@ void MacroCell::handleLoad() {
 	g.currentFrameFix = 0;
 	g.restart = true;
 	g.macro.canChangeFPS = false;
+	Global::resetPathfinderState();
 
     g.macro.geobotMacro = g.macro.botInfo.name == "geobot";
 

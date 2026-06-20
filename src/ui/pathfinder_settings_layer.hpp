@@ -52,13 +52,13 @@ private:
         statusLabel->setOpacity(190);
         m_mainLayer->addChild(statusLabel);
 
-        lbl = CCLabelBMFont::create(featureEnabled ? "Use this to arm or disable" : "Enable the feature flag in mod settings", "chatFont.fnt");
+        lbl = CCLabelBMFont::create(featureEnabled ? "Armed pathfinder follows the loaded macro" : "Enable the feature flag in mod settings", "chatFont.fnt");
         lbl->setPosition({ m_size.width / 2.f, 43.f });
         lbl->setScale(0.58f);
         lbl->setOpacity(120);
         m_mainLayer->addChild(lbl);
 
-        lbl = CCLabelBMFont::create(featureEnabled ? "the pathfinder from settings." : "to use pathfinder controls here.", "chatFont.fnt");
+        lbl = CCLabelBMFont::create(featureEnabled ? "and shows the next input live in-game." : "to use pathfinder controls here.", "chatFont.fnt");
         lbl->setPosition({ m_size.width / 2.f, 29.f });
         lbl->setScale(0.58f);
         lbl->setOpacity(120);

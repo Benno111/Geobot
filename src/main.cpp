@@ -12,6 +12,7 @@
 namespace {
 constexpr int kFramePerfectMaxGap = 2;
 constexpr int kRespawnMovementClearFrames = 5;
+constexpr int kPathfinderTolerance = 2;
 
 bool isEditorPlaytestCompat(PlayLayer* pl) {
     if (!pl) return false;
@@ -96,6 +97,96 @@ int findLiveFramePerfectWiggle(std::vector<input> const& inputs, size_t actionIn
 
 bool shouldCollectFramePerfectCalibration() {
     return Global::isDeveloperModeEnabled();
+}
+
+std::string getPathfinderInputName(input const& action, bool showPlayer) {
+    std::string result = getFramePerfectTypeName(action.button, action.down);
+    if (showPlayer)
+        result += action.player2 ? " P2" : " P1";
+    return result;
+}
+
+bool shouldShowPlayerForPathfinder(GJBaseGameLayer* layer, input const& action) {
+    return (layer && layer->m_levelSettings->m_twoPlayerMode) || action.player2;
+}
+
+void syncPathfinderToFrame(int frame) {
+    auto& g = Global::get();
+    while (g.pathfinderAction < g.macro.inputs.size() &&
+           static_cast<int>(g.macro.inputs[g.pathfinderAction].frame) < frame - kPathfinderTolerance) {
+        g.pathfinderAction++;
+    }
+}
+
+void updatePathfinderStatusForFrame(GJBaseGameLayer* layer, int frame) {
+    auto& g = Global::get();
+
+    if (!Global::isPathfinderFeatureEnabled()) {
+        g.pathfinderSearching = false;
+        g.pathfinderStatus = "Disabled";
+        return;
+    }
+
+    if (!g.pathfinderMode) {
+        g.pathfinderSearching = false;
+        g.pathfinderStatus = "Idle";
+        return;
+    }
+
+    if (g.macro.inputs.empty()) {
+        g.pathfinderSearching = false;
+        g.pathfinderStatus = "No Macro";
+        return;
+    }
+
+    syncPathfinderToFrame(frame);
+    if (g.pathfinderAction >= g.macro.inputs.size()) {
+        g.pathfinderSearching = false;
+        g.pathfinderStatus = "Complete";
+        return;
+    }
+
+    auto const& next = g.macro.inputs[g.pathfinderAction];
+    g.pathfinderSearching = true;
+
+    int delta = static_cast<int>(next.frame) - frame;
+    std::string actionName = getPathfinderInputName(next, shouldShowPlayerForPathfinder(layer, next));
+    if (delta > 0)
+        g.pathfinderStatus = fmt::format("{} in {}f", actionName, delta);
+    else if (delta < 0)
+        g.pathfinderStatus = fmt::format("Missed {} by {}f", actionName, -delta);
+    else
+        g.pathfinderStatus = fmt::format("{} now", actionName);
+}
+
+bool matchesPathfinderInput(input const& expected, int frame, int button, bool player2, bool down) {
+    bool expectedPlayer2 = Macro::flipControls() ? !expected.player2 : expected.player2;
+    return expected.button == button &&
+           expected.down == down &&
+           expectedPlayer2 == player2 &&
+           std::abs(static_cast<int>(expected.frame) - frame) <= kPathfinderTolerance;
+}
+
+void advancePathfinderFromInput(GJBaseGameLayer* layer, int frame, int button, bool player2, bool down) {
+    auto& g = Global::get();
+    if (!g.pathfinderMode || g.macro.inputs.empty())
+        return;
+
+    syncPathfinderToFrame(frame);
+
+    for (size_t i = g.pathfinderAction; i < g.macro.inputs.size(); i++) {
+        auto const& candidate = g.macro.inputs[i];
+        if (static_cast<int>(candidate.frame) > frame + kPathfinderTolerance)
+            break;
+        if (!matchesPathfinderInput(candidate, frame, button, player2, down))
+            continue;
+
+        g.pathfinderAction = i + 1;
+        updatePathfinderStatusForFrame(layer, frame);
+        return;
+    }
+
+    updatePathfinderStatusForFrame(layer, frame);
 }
 
 void appendFramePerfectCalibrationRow(
@@ -196,6 +287,7 @@ class $modify(PlayLayer) {
             g.previousFrame = 0;
             g.respawnFrame = -1;
             g.leftOver = 0.f;
+            Global::resetPathfinderState();
             Macro::resetVariables();
             if (isEditorPlaytestCompat(this))
                 g.restart = true;
@@ -243,6 +335,7 @@ class $modify(PlayLayer) {
 
         g.macroUsedInAttempt = false;
         Global::resetFramePerfectStats();
+        Global::resetPathfinderState();
 
         int frame = Global::getCurrentFrame();
         g.clearMovementUntilFrame = frame + (kRespawnMovementClearFrames - 1);
@@ -356,6 +449,9 @@ class $modify(BGLHook, GJBaseGameLayer) {
         int frame = Global::getCurrentFrame(!pl);
         if (pl && frame <= g.clearMovementUntilFrame)
             clearMovementStateForRespawnWindow(this);
+
+        if (pl && !m_levelEndAnimationStarted)
+            updatePathfinderStatusForFrame(this, frame);
 
         if (g.state == state::none)
             return;
@@ -686,6 +782,11 @@ class $modify(BGLHook, GJBaseGameLayer) {
             int frame = Global::getCurrentFrame(!PlayLayer::get());
             if (frame != g.ignoreFrame)
                 Macro::recordAction(frame, button, player2, hold);
+        }
+
+        if (!m_fields->macroInput && !m_levelEndAnimationStarted) {
+            int frame = Global::getCurrentFrame(!PlayLayer::get());
+            advancePathfinderFromInput(this, frame, button, player2, hold);
         }
 
         GJBaseGameLayer::handleButton(hold, button, player2);

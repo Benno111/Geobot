@@ -608,6 +608,21 @@ bool Global::isPathfinderFeatureEnabled() {
   return !mod || mod->getSettingValue<bool>("feature_flag_pathfinder");
 }
 
+void Global::resetPathfinderState() {
+  auto& g = Global::get();
+  g.pathfinderAction = 0;
+  g.pathfinderSearching = false;
+
+  if (!Global::isPathfinderFeatureEnabled())
+    g.pathfinderStatus = "Disabled";
+  else if (!g.pathfinderMode)
+    g.pathfinderStatus = "Idle";
+  else if (g.macro.inputs.empty())
+    g.pathfinderStatus = "No Macro";
+  else
+    g.pathfinderStatus = "Armed";
+}
+
 void Global::triggerFramePerfectOverlay(int button, bool down) {
   auto& g = Global::get();
   const char* buttonName = "Click";
@@ -880,14 +895,12 @@ $execute{
     if (!enabled) {
       g.mod->setSavedValue("pathfinder_mode", false);
       g.pathfinderMode = false;
-      g.pathfinderSearching = false;
-      g.pathfinderStatus = "Disabled";
     }
     else {
       g.pathfinderMode = g.mod->getSavedValue<bool>("pathfinder_mode");
-      g.pathfinderSearching = false;
-      g.pathfinderStatus = g.pathfinderMode ? "Armed" : "Idle";
     }
+
+    Global::resetPathfinderState();
 
     Interface::updateLabels();
     if (g.layer) {
@@ -937,8 +950,7 @@ $execute{
   g.trajectoryBothSides = g.mod->getSavedValue<bool>("macro_trajectory_both_sides");
   g.p2mirror = g.mod->getSavedValue<bool>("p2_input_mirror");
   g.pathfinderMode = Global::isPathfinderFeatureEnabled() && g.mod->getSavedValue<bool>("pathfinder_mode");
-  g.pathfinderSearching = false;
-  g.pathfinderStatus = !Global::isPathfinderFeatureEnabled() ? "Disabled" : (g.pathfinderMode ? "Armed" : "Idle");
+  Global::resetPathfinderState();
   g.tpsEnabled = g.mod->getSavedValue<bool>("macro_tps_enabled");
   g.tps = g.mod->getSavedValue<double>("macro_tps");
   g.autoclicker = g.mod->getSavedValue<bool>("autoclicker_enabled");

@@ -143,6 +143,7 @@ public:
     static std::string getFramePerfectOverlayMode();
     static bool isFramePerfectDetectionEnabled();
     static bool isPathfinderFeatureEnabled();
+    static void resetPathfinderState();
 
     Mod* mod = Mod::get();
     geode::Popup* layer = nullptr;
@@ -193,6 +194,7 @@ public:
     bool stopPlaying = false;
     bool pathfinderMode = false;
     bool pathfinderSearching = false;
+    size_t pathfinderAction = 0;
     bool tpsEnabled = false;
     float tps = 240.f;
     bool previousTpsEnabled = false;
