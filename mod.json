@@ -36,6 +36,40 @@
             "description": "Turns the pathfinder system on or off.",
             "type": "bool",
             "default": false
+        },
+        "pathfinder_solver_executable": {
+            "name": "Pathfinder Solver Executable",
+            "description": "Executable or script wrapper that generates a macro from a decompressed level string.",
+            "type": "file",
+            "default": {
+                "win": "{gd_dir}/pathfinder.exe",
+                "android": ""
+            },
+            "control": {
+                "dialog": "open",
+                "filters": [
+                    {
+                        "files": [
+                            "*.exe",
+                            "*.bat",
+                            "*.cmd"
+                        ],
+                        "description": "Executable programs"
+                    }
+                ]
+            }
+        },
+        "pathfinder_solver_args": {
+            "name": "Pathfinder Solver Arguments",
+            "description": "Arguments passed to the solver. Supported placeholders: {input}, {output}, {level_name}.",
+            "type": "string",
+            "default": "--input \"{input}\" --output \"{output}\" --name \"{level_name}\""
+        },
+        "pathfinder_output_folder": {
+            "name": "Pathfinder Output Folder",
+            "description": "Folder used for temporary level exports and generated pathfinder macros.",
+            "type": "folder",
+            "default": "{mod_save_dir}/pathfinder"
         }
     },
     "resources": {

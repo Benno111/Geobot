@@ -82,6 +82,30 @@ namespace subprocess {
             return exit_code;
         }
 
+        bool wait_for(DWORD timeout_ms, DWORD* exit_code = nullptr) {
+            if (!m_proc_info.hProcess)
+                return true;
+
+            DWORD result = WaitForSingleObject(m_proc_info.hProcess, timeout_ms);
+            if (result != WAIT_OBJECT_0)
+                return false;
+
+            DWORD code = 0;
+            GetExitCodeProcess(m_proc_info.hProcess, &code);
+            if (exit_code)
+                *exit_code = code;
+            return true;
+        }
+
+        bool valid() const {
+            return m_proc_info.hProcess != nullptr;
+        }
+
+        void terminate(unsigned int exit_code = 1) {
+            if (m_proc_info.hProcess)
+                TerminateProcess(m_proc_info.hProcess, exit_code);
+        }
+
         int close(bool should_wait = true) {
             int exit_code = 0;
             m_stdin.close();
