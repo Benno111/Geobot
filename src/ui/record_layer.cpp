@@ -556,6 +556,9 @@ void RecordLayer::togglePlaying(CCObject*) {
     if (Global::hasIncompatibleMods())
         return playing->toggle(true);
 
+    if (g.pathfinderAutoSearch && g.state == state::playing)
+        Global::stopPathfinderAutoSearch();
+
     if (g.state == state::recording)
         recording->toggle(false);
 
@@ -1480,6 +1483,8 @@ void RecordLayer::applyPathfinderState(bool enabled, CCMenu* rootMenu) {
     auto& g = Global::get();
     if (!Global::isPathfinderFeatureEnabled())
         enabled = false;
+    if (!enabled && g.pathfinderAutoSearch)
+        Global::stopPathfinderAutoSearch();
     if (g.mod)
         g.mod->setSavedValue("pathfinder_mode", enabled);
 

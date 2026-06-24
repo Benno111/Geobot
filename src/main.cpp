@@ -3,6 +3,7 @@
 #include "ui/record_layer.hpp"
 #include "practice_fixes/practice_fixes.hpp"
 #include "hacks/layout_mode.hpp"
+#include "hacks/show_trajectory.hpp"
 
 #include <Geode/binding/LevelEditorLayer.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
@@ -13,6 +14,25 @@ namespace {
 constexpr int kFramePerfectMaxGap = 2;
 constexpr int kRespawnMovementClearFrames = 5;
 constexpr int kPathfinderTolerance = 2;
+constexpr int kPathfinderSearchTapLength = 2;
+constexpr int kPathfinderSearchMinOffset = -18;
+constexpr int kPathfinderSearchMaxOffset = 6;
+constexpr int kPathfinderSearchMutationWindow = 22;
+constexpr int kPathfinderSearchMaxHoldLength = 14;
+constexpr size_t kPathfinderSearchMaxAttempts = 300;
+constexpr size_t kPathfinderSearchMaxTapCount = 48;
+constexpr int kPathfinderSearchLookaheadFrames = 96;
+constexpr size_t kPathfinderSearchMaxQueuedCandidates = 64;
+constexpr size_t kPathfinderSearchMaxFrontierSize = 160;
+constexpr size_t kPathfinderSearchFallbackCandidates = 8;
+constexpr size_t kPathfinderSearchSnapshotHistory = 96;
+constexpr float kPathfinderSearchMinScoreGain = 4.f;
+constexpr int kPathfinderSearchEarlyDeathFrames = 12;
+constexpr size_t kPathfinderSearchBranchAnchors = 4;
+constexpr int kPathfinderSearchBranchTailWindow = 48;
+constexpr int kPathfinderSearchBranchSpacing = 8;
+constexpr int kPathfinderSearchSecondTapMinGap = 6;
+constexpr int kPathfinderSearchSecondTapMaxGap = 18;
 
 bool isEditorPlaytestCompat(PlayLayer* pl) {
     if (!pl) return false;
@@ -110,6 +130,558 @@ bool shouldShowPlayerForPathfinder(GJBaseGameLayer* layer, input const& action) 
     return (layer && layer->m_levelSettings->m_twoPlayerMode) || action.player2;
 }
 
+std::string buildPathfinderSearchSignature(Macro const& macro) {
+    std::string signature;
+    signature.reserve(macro.inputs.size() * 12);
+
+    for (auto const& action : macro.inputs) {
+        signature += std::to_string(action.frame);
+        signature += ':';
+        signature += std::to_string(action.button);
+        signature += ':';
+        signature += action.player2 ? '1' : '0';
+        signature += ':';
+        signature += action.down ? '1' : '0';
+        signature += ';';
+    }
+
+    return signature;
+}
+
+float getPathfinderSearchProgress(PlayLayer* pl) {
+    if (!pl || !pl->m_player1)
+        return 0.f;
+    return pl->m_player1->getPositionX();
+}
+
+void rememberPathfinderSnapshot(PlayLayer* pl, int frame) {
+    auto& g = Global::get();
+    if (!pl || !g.pathfinderAutoSearch || !pl->m_player1 || pl->m_player1->m_isDead)
+        return;
+
+    if (!g.pathfinderSnapshots.empty() && g.pathfinderSnapshots.back().frame == frame) {
+        g.pathfinderSnapshots.back().actionIndex = g.currentAction;
+        g.pathfinderSnapshots.back().progress = pl->m_player1->getPositionX();
+        g.pathfinderSnapshots.back().player1 = PlayerPracticeFixes::saveData(pl->m_player1);
+        return;
+    }
+
+    g.pathfinderSnapshots.push_back({
+        frame,
+        g.currentAction,
+        pl->m_player1->getPositionX(),
+        PlayerPracticeFixes::saveData(pl->m_player1)
+    });
+
+    while (g.pathfinderSnapshots.size() > kPathfinderSearchSnapshotHistory)
+        g.pathfinderSnapshots.pop_front();
+}
+
+int getPathfinderLastInputFrame(Macro const& macro) {
+    if (macro.inputs.empty())
+        return 0;
+    return static_cast<int>(macro.inputs.back().frame);
+}
+
+bool normalizePathfinderMacro(Macro& macro) {
+    std::sort(macro.inputs.begin(), macro.inputs.end(), [](input const& lhs, input const& rhs) {
+        if (lhs.frame != rhs.frame)
+            return lhs.frame < rhs.frame;
+        if (lhs.button != rhs.button)
+            return lhs.button < rhs.button;
+        if (lhs.player2 != rhs.player2)
+            return lhs.player2 < rhs.player2;
+        return lhs.down && !rhs.down;
+    });
+
+    bool holding = false;
+    int tapCount = 0;
+    for (auto const& action : macro.inputs) {
+        if (action.player2 || action.button != 1)
+            return false;
+        if (action.frame <= 0)
+            return false;
+        if (action.down == holding)
+            return false;
+        holding = action.down;
+        if (action.down)
+            tapCount++;
+    }
+
+    if (holding)
+        return false;
+    return static_cast<size_t>(tapCount) <= kPathfinderSearchMaxTapCount;
+}
+
+bool insertPathfinderTap(Macro& macro, int pressFrame, int releaseFrame) {
+    if (pressFrame <= 0 || releaseFrame <= pressFrame)
+        return false;
+
+    macro.inputs.push_back(input(pressFrame, 1, false, true));
+    macro.inputs.push_back(input(releaseFrame, 1, false, false));
+    return normalizePathfinderMacro(macro);
+}
+
+bool appendPathfinderTap(Macro& macro, int pressFrame) {
+    return insertPathfinderTap(macro, pressFrame, pressFrame + kPathfinderSearchTapLength);
+}
+
+int findPathfinderReleaseIndex(Macro const& macro, size_t pressIndex) {
+    if (pressIndex >= macro.inputs.size() || !macro.inputs[pressIndex].down)
+        return -1;
+
+    for (size_t i = pressIndex + 1; i < macro.inputs.size(); i++) {
+        if (!macro.inputs[i].down)
+            return static_cast<int>(i);
+    }
+
+    return -1;
+}
+
+int getPathfinderFirstDifferenceFrame(Macro const& base, Macro const& candidate) {
+    size_t limit = std::min(base.inputs.size(), candidate.inputs.size());
+    for (size_t i = 0; i < limit; i++) {
+        if (base.inputs[i] == candidate.inputs[i])
+            continue;
+        return std::min(static_cast<int>(base.inputs[i].frame), static_cast<int>(candidate.inputs[i].frame));
+    }
+
+    if (base.inputs.size() == candidate.inputs.size())
+        return std::numeric_limits<int>::max();
+
+    auto const& extra = base.inputs.size() < candidate.inputs.size()
+        ? candidate.inputs[base.inputs.size()]
+        : base.inputs[candidate.inputs.size()];
+    return static_cast<int>(extra.frame);
+}
+
+Global::PathfinderSimulationSnapshot const* findPathfinderSnapshotForFrame(int frame) {
+    auto& snapshots = Global::get().pathfinderSnapshots;
+    for (auto it = snapshots.rbegin(); it != snapshots.rend(); ++it) {
+        if (it->frame <= frame)
+            return &*it;
+    }
+    return nullptr;
+}
+
+struct PathfinderBranchAnchor {
+    int frame = 0;
+    size_t actionIndex = 0;
+};
+
+std::vector<PathfinderBranchAnchor> collectPathfinderBranchAnchors(Macro const& base, int deathFrame) {
+    std::vector<PathfinderBranchAnchor> anchors;
+    anchors.reserve(kPathfinderSearchBranchAnchors);
+    anchors.push_back({ std::max(1, deathFrame), base.inputs.size() });
+
+    auto const& snapshots = Global::get().pathfinderSnapshots;
+    for (auto it = snapshots.rbegin(); it != snapshots.rend(); ++it) {
+        if (deathFrame - it->frame > kPathfinderSearchBranchTailWindow)
+            break;
+
+        int candidateFrame = it->frame;
+        size_t candidateActionIndex = std::min(it->actionIndex, base.inputs.size());
+        if (candidateActionIndex < base.inputs.size())
+            candidateFrame = std::max(candidateFrame, static_cast<int>(base.inputs[candidateActionIndex].frame));
+
+        bool tooClose = false;
+        for (auto const& existing : anchors) {
+            if (std::abs(existing.frame - candidateFrame) < kPathfinderSearchBranchSpacing) {
+                tooClose = true;
+                break;
+            }
+        }
+        if (tooClose)
+            continue;
+
+        anchors.push_back({ std::max(1, candidateFrame), candidateActionIndex });
+        if (anchors.size() >= kPathfinderSearchBranchAnchors)
+            break;
+    }
+
+    std::sort(anchors.begin(), anchors.end(), [](auto const& lhs, auto const& rhs) {
+        if (lhs.frame != rhs.frame)
+            return lhs.frame < rhs.frame;
+        return lhs.actionIndex < rhs.actionIndex;
+    });
+    return anchors;
+}
+
+bool isWithinPathfinderAnchorWindow(int frame, std::vector<PathfinderBranchAnchor> const& anchors) {
+    for (auto const& anchor : anchors) {
+        if (std::abs(frame - anchor.frame) <= kPathfinderSearchMutationWindow)
+            return true;
+    }
+    return false;
+}
+
+Macro makePathfinderBranchBase(Macro const& macro, PathfinderBranchAnchor const& anchor) {
+    Macro branch = macro;
+    if (anchor.actionIndex < branch.inputs.size()) {
+        branch.inputs.erase(
+            branch.inputs.begin() + static_cast<std::ptrdiff_t>(anchor.actionIndex),
+            branch.inputs.end()
+        );
+        return branch;
+    }
+
+    auto it = std::remove_if(
+        branch.inputs.begin(),
+        branch.inputs.end(),
+        [&anchor](auto const& action) {
+            return static_cast<int>(action.frame) >= anchor.frame;
+        }
+    );
+    branch.inputs.erase(it, branch.inputs.end());
+    return branch;
+}
+
+void truncatePathfinderMacroAfterIndex(Macro& macro, size_t lastKeptIndex) {
+    if (lastKeptIndex + 1 >= macro.inputs.size())
+        return;
+    macro.inputs.erase(macro.inputs.begin() + static_cast<std::ptrdiff_t>(lastKeptIndex + 1), macro.inputs.end());
+}
+
+struct PathfinderSearchScore {
+    float progress = 0.f;
+    int survivedFrames = 0;
+    bool died = false;
+};
+
+float getPathfinderSearchPriority(PathfinderSearchScore const& score) {
+    float priority = score.progress;
+    priority += static_cast<float>(score.survivedFrames) * 0.35f;
+    if (score.died)
+        priority -= 6.f;
+    return priority;
+}
+
+PathfinderSearchScore simulatePathfinderCandidateFromSnapshot(
+    PlayLayer* pl,
+    Macro const& candidate,
+    Global::PathfinderSimulationSnapshot const& snapshot
+) {
+    ShowTrajectory& trajectory = ShowTrajectory::get();
+    PlayerObject* fakePlayer = trajectory.fakePlayer1;
+    if (!pl || !fakePlayer)
+        return { snapshot.progress, 0, false };
+
+    auto& g = Global::get();
+    PathfinderSearchScore result;
+    result.progress = snapshot.progress;
+    size_t actionIndex = std::min(snapshot.actionIndex, candidate.inputs.size());
+    while (actionIndex > 0 &&
+           static_cast<int>(candidate.inputs[actionIndex - 1].frame) >= snapshot.frame) {
+        actionIndex--;
+    }
+    while (actionIndex < candidate.inputs.size() &&
+           static_cast<int>(candidate.inputs[actionIndex].frame) < snapshot.frame) {
+        actionIndex++;
+    }
+
+    trajectory.creatingTrajectory = true;
+    trajectory.cancelTrajectory = false;
+    g.creatingTrajectory = true;
+
+    PlayerPracticeFixes::applyData(fakePlayer, snapshot.player1, false, true);
+
+    float dt = 1.f / Global::getTPS();
+    for (int frame = snapshot.frame; frame <= snapshot.frame + kPathfinderSearchLookaheadFrames; frame++) {
+        fakePlayer->m_collisionLogTop->removeAllObjects();
+        fakePlayer->m_collisionLogBottom->removeAllObjects();
+        fakePlayer->m_collisionLogLeft->removeAllObjects();
+        fakePlayer->m_collisionLogRight->removeAllObjects();
+
+        pl->checkCollisions(fakePlayer, dt, false);
+        if (trajectory.cancelTrajectory || fakePlayer->m_isDead) {
+            result.died = true;
+            break;
+        }
+
+        while (actionIndex < candidate.inputs.size() &&
+               static_cast<int>(candidate.inputs[actionIndex].frame) <= frame) {
+            auto const& action = candidate.inputs[actionIndex];
+            if (action.button == 1 && !action.player2) {
+                if (action.down)
+                    fakePlayer->pushButton(static_cast<PlayerButton>(1));
+                else
+                    fakePlayer->releaseButton(static_cast<PlayerButton>(1));
+            }
+            actionIndex++;
+        }
+
+        fakePlayer->update(dt);
+        fakePlayer->updateRotation(dt);
+        fakePlayer->updatePlayerScale();
+        result.survivedFrames++;
+        result.progress = std::max(result.progress, fakePlayer->getPositionX());
+    }
+
+    trajectory.creatingTrajectory = false;
+    trajectory.cancelTrajectory = false;
+    g.creatingTrajectory = false;
+    return result;
+}
+
+void queuePathfinderCandidate(Macro const& candidate, PathfinderSearchScore const& score, int branchFrame);
+
+void queuePathfinderMutationsAroundDeath(Macro const& base, int frame) {
+    struct RankedCandidate {
+        PathfinderSearchScore score;
+        float baseline = 0.f;
+        int diffFrame = 0;
+        Macro macro;
+    };
+
+    std::vector<RankedCandidate> ranked;
+    ranked.reserve(96);
+
+    auto queueRanked = [&](Macro candidate) {
+        if (!normalizePathfinderMacro(candidate))
+            return;
+
+        int diffFrame = getPathfinderFirstDifferenceFrame(base, candidate);
+        float baseline = Global::get().pathfinderBestProgress;
+        PathfinderSearchScore score { baseline, 0, false };
+        if (PlayLayer* pl = PlayLayer::get()) {
+            if (auto const* snapshot = findPathfinderSnapshotForFrame(diffFrame)) {
+                baseline = snapshot->progress;
+                score = simulatePathfinderCandidateFromSnapshot(pl, candidate, *snapshot);
+            }
+        }
+
+        ranked.push_back({ score, baseline, diffFrame, std::move(candidate) });
+    };
+
+    std::vector<PathfinderBranchAnchor> branchAnchors = collectPathfinderBranchAnchors(base, frame);
+
+    for (auto const& branchAnchor : branchAnchors) {
+        int branchCenter = std::max(1, branchAnchor.frame - 1);
+        for (int offset = kPathfinderSearchMinOffset; offset <= kPathfinderSearchMaxOffset; offset++) {
+            Macro candidate = makePathfinderBranchBase(base, branchAnchor);
+            int pressFrame = std::max(1, branchCenter + offset);
+            if (!appendPathfinderTap(candidate, pressFrame))
+                continue;
+            queueRanked(std::move(candidate));
+
+            for (int gap = kPathfinderSearchSecondTapMinGap; gap <= kPathfinderSearchSecondTapMaxGap; gap += 2) {
+                Macro chained = candidate;
+                if (!appendPathfinderTap(chained, pressFrame + gap))
+                    continue;
+                queueRanked(std::move(chained));
+            }
+        }
+    }
+
+    for (size_t pressIndex = 0; pressIndex < base.inputs.size(); pressIndex++) {
+        auto const& press = base.inputs[pressIndex];
+        if (!press.down)
+            continue;
+
+        int releaseIndex = findPathfinderReleaseIndex(base, pressIndex);
+        if (releaseIndex == -1)
+            continue;
+
+        int pressFrame = static_cast<int>(press.frame);
+        if (!isWithinPathfinderAnchorWindow(pressFrame, branchAnchors))
+            continue;
+
+        int releaseFrame = static_cast<int>(base.inputs[releaseIndex].frame);
+
+        for (int offset = -6; offset <= 6; offset++) {
+            if (offset == 0)
+                continue;
+
+            Macro moved = base;
+            moved.inputs[pressIndex].frame = std::max(1, pressFrame + offset);
+            moved.inputs[releaseIndex].frame = std::max(
+                moved.inputs[pressIndex].frame + 1,
+                releaseFrame + offset
+            );
+            truncatePathfinderMacroAfterIndex(moved, static_cast<size_t>(releaseIndex));
+            queueRanked(std::move(moved));
+        }
+
+        for (int holdLength = 1; holdLength <= kPathfinderSearchMaxHoldLength; holdLength++) {
+            Macro stretched = base;
+            stretched.inputs[releaseIndex].frame = stretched.inputs[pressIndex].frame + holdLength;
+            truncatePathfinderMacroAfterIndex(stretched, static_cast<size_t>(releaseIndex));
+            queueRanked(std::move(stretched));
+        }
+
+        if (base.inputs.size() > 2) {
+            Macro removed = base;
+            removed.inputs.erase(removed.inputs.begin() + releaseIndex);
+            removed.inputs.erase(removed.inputs.begin() + pressIndex);
+            queueRanked(std::move(removed));
+        }
+    }
+
+    std::sort(ranked.begin(), ranked.end(), [](auto const& lhs, auto const& rhs) {
+        float lhsPriority = getPathfinderSearchPriority(lhs.score);
+        float rhsPriority = getPathfinderSearchPriority(rhs.score);
+        if (lhsPriority != rhsPriority)
+            return lhsPriority > rhsPriority;
+        if (lhs.score.progress != rhs.score.progress)
+            return lhs.score.progress > rhs.score.progress;
+        if (lhs.score.died != rhs.score.died)
+            return !lhs.score.died;
+        if (lhs.score.survivedFrames != rhs.score.survivedFrames)
+            return lhs.score.survivedFrames > rhs.score.survivedFrames;
+        if (lhs.diffFrame != rhs.diffFrame)
+            return lhs.diffFrame < rhs.diffFrame;
+        return lhs.macro.inputs.size() < rhs.macro.inputs.size();
+    });
+
+    size_t limit = std::min(ranked.size(), kPathfinderSearchMaxQueuedCandidates);
+    size_t queued = 0;
+    for (size_t i = 0; i < limit; i++) {
+        float gain = ranked[i].score.progress - ranked[i].baseline;
+        bool earlyDeath = ranked[i].score.died && ranked[i].score.survivedFrames <= kPathfinderSearchEarlyDeathFrames;
+        if (earlyDeath && gain <= 0.f && queued >= kPathfinderSearchFallbackCandidates)
+            continue;
+        if (gain < kPathfinderSearchMinScoreGain && queued >= kPathfinderSearchFallbackCandidates)
+            continue;
+        queuePathfinderCandidate(ranked[i].macro, ranked[i].score, ranked[i].diffFrame);
+        queued++;
+    }
+}
+
+void queuePathfinderCandidate(Macro const& candidate, PathfinderSearchScore const& score, int branchFrame) {
+    auto& g = Global::get();
+    std::string signature = buildPathfinderSearchSignature(candidate);
+    if (!g.pathfinderSearchVisited.insert(signature).second)
+        return;
+
+    Global::PathfinderQueuedCandidate queued {
+        candidate,
+        getPathfinderSearchPriority(score),
+        score.progress,
+        score.survivedFrames,
+        score.died,
+        branchFrame
+    };
+
+    auto insertAt = std::find_if(
+        g.pathfinderSearchQueue.begin(),
+        g.pathfinderSearchQueue.end(),
+        [queued, branchFrame, &candidate](auto const& existing) {
+            if (queued.priority != existing.priority)
+                return queued.priority > existing.priority;
+            if (queued.progress != existing.progress)
+                return queued.progress > existing.progress;
+            if (branchFrame != existing.branchFrame)
+                return branchFrame < existing.branchFrame;
+            if (queued.survivedFrames != existing.survivedFrames)
+                return queued.survivedFrames > existing.survivedFrames;
+            if (queued.died != existing.died)
+                return !queued.died;
+            return candidate.inputs.size() < existing.macro.inputs.size();
+        }
+    );
+    g.pathfinderSearchQueue.insert(insertAt, std::move(queued));
+
+    while (g.pathfinderSearchQueue.size() > kPathfinderSearchMaxFrontierSize)
+        g.pathfinderSearchQueue.pop_back();
+}
+
+void finishPathfinderSearch(std::string const& status, bool solved) {
+    auto& g = Global::get();
+    g.pathfinderAutoSearch = false;
+    g.pathfinderSearching = false;
+    g.pathfinderStatus = status;
+    g.pathfinderSearchQueue.clear();
+    g.pathfinderSearchVisited.clear();
+
+    if (solved) {
+        Notification::create("Internal pathfinder found a path.", NotificationIcon::Success)->show();
+    }
+    else {
+        Notification::create("Internal pathfinder stopped without a solution.", NotificationIcon::Warning)->show();
+    }
+
+    Interface::updateLabels();
+    Interface::updateButtons();
+}
+
+void startNextPathfinderAttempt(PlayLayer* pl) {
+    auto& g = Global::get();
+    if (!g.pathfinderAutoSearch)
+        return;
+
+    if (g.pathfinderSearchAttempts >= kPathfinderSearchMaxAttempts) {
+        finishPathfinderSearch(
+            fmt::format("Stopped at {} tries", g.pathfinderSearchAttempts),
+            false
+        );
+        return;
+    }
+
+    if (g.pathfinderSearchQueue.empty()) {
+        finishPathfinderSearch(
+            fmt::format("No path found after {} tries", g.pathfinderSearchAttempts),
+            false
+        );
+        return;
+    }
+
+    auto next = std::move(g.pathfinderSearchQueue.front());
+    g.pathfinderSearchQueue.pop_front();
+    g.pathfinderSearchCurrent = std::move(next.macro);
+    g.pathfinderSearchAttempts++;
+    g.pathfinderStatus = fmt::format(
+        "Searching {} | best {:.0f} | {:.0f}/{:.0f} next @{}f | {} queued",
+        g.pathfinderSearchAttempts,
+        g.pathfinderBestProgress,
+        next.priority,
+        next.progress,
+        next.branchFrame,
+        g.pathfinderSearchQueue.size()
+    );
+
+    g.pathfinderSnapshots.clear();
+    (void)pl;
+    Global::applyPathfinderMacro(g.pathfinderSearchCurrent);
+}
+
+void updatePathfinderSearchStatus(PlayLayer* pl, int frame) {
+    auto& g = Global::get();
+    float progress = getPathfinderSearchProgress(pl);
+    if (progress > g.pathfinderBestProgress) {
+        g.pathfinderBestProgress = progress;
+        g.pathfinderBestFrame = frame;
+    }
+
+    g.pathfinderSearching = true;
+    g.pathfinderStatus = fmt::format(
+        "Searching {} | best {:.0f} | {} queued",
+        g.pathfinderSearchAttempts,
+        g.pathfinderBestProgress,
+        g.pathfinderSearchQueue.size()
+    );
+}
+
+void resolvePathfinderAttempt(PlayLayer* pl, int frame, bool success) {
+    auto& g = Global::get();
+    if (!g.pathfinderAutoSearch)
+        return;
+
+    updatePathfinderSearchStatus(pl, frame);
+
+    if (success) {
+        g.pathfinderSearchCurrent = g.macro;
+        finishPathfinderSearch(
+            fmt::format("Solved in {} tries", g.pathfinderSearchAttempts),
+            true
+        );
+        return;
+    }
+
+    queuePathfinderMutationsAroundDeath(g.pathfinderSearchCurrent, frame);
+
+    startNextPathfinderAttempt(pl);
+}
+
 void syncPathfinderToFrame(int frame) {
     auto& g = Global::get();
     while (g.pathfinderAction < g.macro.inputs.size() &&
@@ -120,6 +692,7 @@ void syncPathfinderToFrame(int frame) {
 
 void updatePathfinderStatusForFrame(GJBaseGameLayer* layer, int frame) {
     auto& g = Global::get();
+    PlayLayer* pl = PlayLayer::get();
 
     if (!Global::isPathfinderFeatureEnabled()) {
         g.pathfinderSearching = false;
@@ -130,6 +703,11 @@ void updatePathfinderStatusForFrame(GJBaseGameLayer* layer, int frame) {
     if (!g.pathfinderMode) {
         g.pathfinderSearching = false;
         g.pathfinderStatus = "Idle";
+        return;
+    }
+
+    if (g.pathfinderAutoSearch) {
+        updatePathfinderSearchStatus(pl, frame);
         return;
     }
 
@@ -450,6 +1028,14 @@ class $modify(BGLHook, GJBaseGameLayer) {
         if (pl && frame <= g.clearMovementUntilFrame)
             clearMovementStateForRespawnWindow(this);
 
+        if (pl && g.pathfinderAutoSearch && !pl->m_levelEndAnimationStarted && m_player1 && !m_player1->m_isDead)
+            rememberPathfinderSnapshot(pl, frame);
+
+        if (pl && g.pathfinderAutoSearch && pl->m_levelEndAnimationStarted) {
+            resolvePathfinderAttempt(pl, frame, true);
+            return;
+        }
+
         if (pl && !m_levelEndAnimationStarted)
             updatePathfinderStatusForFrame(this, frame);
 
@@ -534,6 +1120,11 @@ class $modify(BGLHook, GJBaseGameLayer) {
             m_fields->pendingFramePerfects.clear();
             m_player1->releaseAllButtons();
             m_player2->releaseAllButtons();
+
+            if (PlayLayer* pl = PlayLayer::get(); pl && g.pathfinderAutoSearch) {
+                resolvePathfinderAttempt(pl, frame, false);
+                return;
+            }
 
             if (PlayLayer* pl = PlayLayer::get(); pl && !pl->m_isPracticeMode) {
                 Global::resetFramePerfectStats();

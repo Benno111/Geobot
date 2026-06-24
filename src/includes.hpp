@@ -9,9 +9,11 @@
 #include <queue>
 #include <cmath>
 #include <cctype>
+#include <algorithm>
 #include <vector>
 #include <utility>
 #include <filesystem>
+#include <deque>
 #include <limits>
 #include <charconv>
 
@@ -144,6 +146,10 @@ public:
     static bool isFramePerfectDetectionEnabled();
     static bool isPathfinderFeatureEnabled();
     static void resetPathfinderState();
+    static void applyPathfinderMacro(Macro const& macro);
+    static bool isPathfinderAutoSearchActive();
+    static bool startPathfinderAutoSearch();
+    static void stopPathfinderAutoSearch(bool preserveStatus = false);
 
     Mod* mod = Mod::get();
     geode::Popup* layer = nullptr;
@@ -194,7 +200,29 @@ public:
     bool stopPlaying = false;
     bool pathfinderMode = false;
     bool pathfinderSearching = false;
+    bool pathfinderAutoSearch = false;
     size_t pathfinderAction = 0;
+    size_t pathfinderSearchAttempts = 0;
+    float pathfinderBestProgress = 0.f;
+    int pathfinderBestFrame = 0;
+    struct PathfinderSimulationSnapshot {
+        int frame = 0;
+        size_t actionIndex = 0;
+        float progress = 0.f;
+        PlayerData player1;
+    };
+    struct PathfinderQueuedCandidate {
+        Macro macro;
+        float priority = 0.f;
+        float progress = 0.f;
+        int survivedFrames = 0;
+        bool died = false;
+        int branchFrame = 0;
+    };
+    Macro pathfinderSearchCurrent;
+    std::deque<PathfinderQueuedCandidate> pathfinderSearchQueue;
+    std::unordered_set<std::string> pathfinderSearchVisited;
+    std::deque<PathfinderSimulationSnapshot> pathfinderSnapshots;
     bool tpsEnabled = false;
     float tps = 240.f;
     bool previousTpsEnabled = false;

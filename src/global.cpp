@@ -21,6 +21,39 @@ class $modify(CCTextInputNode) {
 };
 
 namespace {
+std::string buildPathfinderSearchSignature(Macro const& macro) {
+  std::string signature;
+  signature.reserve(macro.inputs.size() * 12);
+
+  for (auto const& action : macro.inputs) {
+    signature += std::to_string(action.frame);
+    signature += ':';
+    signature += std::to_string(action.button);
+    signature += ':';
+    signature += action.player2 ? '1' : '0';
+    signature += ':';
+    signature += action.down ? '1' : '0';
+    signature += ';';
+  }
+
+  return signature;
+}
+
+bool canUseMacroAsPathfinderSeed(Macro const& macro) {
+  bool holding = false;
+  for (auto const& action : macro.inputs) {
+    if (action.player2 || action.button != 1)
+      return false;
+    if (action.frame <= 0)
+      return false;
+    if (action.down == holding)
+      return false;
+    holding = action.down;
+  }
+
+  return !holding;
+}
+
 int monthFromDateAbbrev(std::string_view month) {
   static const std::array<std::string_view, 12> months = {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -608,15 +641,119 @@ bool Global::isPathfinderFeatureEnabled() {
   return !mod || mod->getSettingValue<bool>("feature_flag_pathfinder");
 }
 
+void Global::applyPathfinderMacro(Macro const& macro) {
+  auto& g = Global::get();
+
+  g.macro = macro;
+  g.currentAction = 0;
+  g.currentFrameFix = 0;
+  g.restart = true;
+  g.macro.canChangeFPS = false;
+  g.macro.geobotMacro = g.macro.botInfo.name == "geobot";
+
+  Global::resetPathfinderState();
+  Macro::updateTPS();
+
+  if (g.layer)
+    static_cast<RecordLayer*>(g.layer)->updateTPS();
+
+  if (g.state == state::recording) {
+    if (g.layer && static_cast<RecordLayer*>(g.layer)->recording)
+      static_cast<RecordLayer*>(g.layer)->recording->toggle(false);
+    g.state = state::none;
+  }
+
+  if (g.state != state::playing) {
+    Macro::togglePlaying();
+    return;
+  }
+
+  PlayLayer* pl = PlayLayer::get();
+  if (pl) {
+    if (!pl->m_isPaused && !pl->m_levelEndAnimationStarted)
+      pl->resetLevelFromStart();
+    else
+      g.restart = true;
+  }
+
+  Interface::updateLabels();
+  Interface::updateButtons();
+}
+
+bool Global::isPathfinderAutoSearchActive() {
+  return Global::get().pathfinderAutoSearch;
+}
+
+bool Global::startPathfinderAutoSearch() {
+  auto& g = Global::get();
+  PlayLayer* pl = PlayLayer::get();
+  if (!pl || !Global::isPathfinderFeatureEnabled() || !g.pathfinderMode)
+    return false;
+  if (g.pathfinderAutoSearch)
+    return false;
+  if (pl->m_levelSettings->m_platformerMode || pl->m_levelSettings->m_twoPlayerMode)
+    return false;
+
+  g.pathfinderAutoSearch = true;
+  g.pathfinderSearching = true;
+  g.pathfinderSearchAttempts = 0;
+  g.pathfinderBestProgress = 0.f;
+  g.pathfinderBestFrame = 0;
+  g.pathfinderSearchQueue.clear();
+  g.pathfinderSearchVisited.clear();
+  g.pathfinderSnapshots.clear();
+  g.pathfinderSearchCurrent = Macro();
+
+  Macro seedMacro = canUseMacroAsPathfinderSeed(g.macro) ? g.macro : Macro();
+  seedMacro.frameFixes.clear();
+  seedMacro.framerate = 240.f;
+  seedMacro.botInfo.name = "geobot";
+  seedMacro.botInfo.version = geobotVersion;
+  seedMacro.geobotMacro = true;
+  if (pl && pl->m_level) {
+    seedMacro.levelInfo.id = pl->m_level->m_levelID.value();
+    seedMacro.levelInfo.name = pl->m_level->m_levelName;
+    seedMacro.ldm = pl->m_level->m_lowDetailModeToggled;
+  }
+  seedMacro.author = g.macro.author.empty() ? "N/A" : g.macro.author;
+  seedMacro.description = "Internal Pathfinder Seed";
+
+  g.pathfinderSearchVisited.insert(buildPathfinderSearchSignature(seedMacro));
+  g.pathfinderSearchCurrent = seedMacro;
+  g.pathfinderSearchAttempts = 1;
+  g.pathfinderStatus = seedMacro.inputs.empty() ? "Search queued" : "Searching from current macro";
+
+  Global::applyPathfinderMacro(seedMacro);
+  return true;
+}
+
+void Global::stopPathfinderAutoSearch(bool preserveStatus) {
+  auto& g = Global::get();
+  g.pathfinderAutoSearch = false;
+  g.pathfinderSearching = false;
+  g.pathfinderSearchAttempts = 0;
+  g.pathfinderBestProgress = 0.f;
+  g.pathfinderBestFrame = 0;
+  g.pathfinderSearchQueue.clear();
+  g.pathfinderSearchVisited.clear();
+  g.pathfinderSnapshots.clear();
+  g.pathfinderSearchCurrent = Macro();
+
+  if (!preserveStatus)
+    Global::resetPathfinderState();
+}
+
 void Global::resetPathfinderState() {
   auto& g = Global::get();
   g.pathfinderAction = 0;
-  g.pathfinderSearching = false;
+  g.pathfinderSearching = g.pathfinderAutoSearch;
 
   if (!Global::isPathfinderFeatureEnabled())
     g.pathfinderStatus = "Disabled";
   else if (!g.pathfinderMode)
     g.pathfinderStatus = "Idle";
+  else if (g.pathfinderAutoSearch)
+    g.pathfinderStatus = "Searching";
   else if (g.macro.inputs.empty())
     g.pathfinderStatus = "No Macro";
   else
@@ -893,6 +1030,7 @@ $execute{
   geode::listenForSettingChanges<bool>("feature_flag_pathfinder", +[](bool enabled) {
     auto& g = Global::get();
     if (!enabled) {
+      Global::stopPathfinderAutoSearch();
       g.mod->setSavedValue("pathfinder_mode", false);
       g.pathfinderMode = false;
     }
