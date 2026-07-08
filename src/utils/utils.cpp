@@ -1,5 +1,7 @@
 #include "utils.hpp"
 
+#include <cstdlib>
+
 namespace {
 const char* kBlurVertShader = R"(
 attribute vec4 a_position;
@@ -55,26 +57,7 @@ std::string Utils::narrow(const wchar_t* str) {
         return "";
     }
 
-#ifdef GEODE_IS_ANDROID
-    std::string result;
-    size_t len = wcslen(str);
-    
-    if (len == 0) {
-        return result;
-    }
-    
-    result.reserve(len);
-
-    for (size_t i = 0; i < len; ++i) {
-        if (str[i] > 0x7F) {
-            return "";
-        }
-        result.push_back(static_cast<char>(str[i]));
-    }
-
-    return result;
-
-#else
+#ifdef GEODE_IS_WINDOWS
     int size = WideCharToMultiByte(CP_UTF8, 0, str, -1, nullptr, 0, nullptr, nullptr);
     if (size <= 0) {
         return "";
@@ -90,22 +73,30 @@ std::string Utils::narrow(const wchar_t* str) {
     delete[] buffer;
 
     return result;
+
+#else
+    size_t size = std::wcstombs(nullptr, str, 0);
+    if (size == static_cast<size_t>(-1)) {
+        return "";
+    }
+
+    std::string result(size, '\0');
+    if (size == 0) {
+        return result;
+    }
+
+    std::vector<char> buffer(size + 1, '\0');
+    if (std::wcstombs(buffer.data(), str, buffer.size()) == static_cast<size_t>(-1)) {
+        return "";
+    }
+
+    result.assign(buffer.data(), size);
+    return result;
 #endif
 }
 
 std::wstring Utils::widen(const char* str) {
-#ifdef GEODE_IS_ANDROID
-
-    std::wstring result;
-    result.reserve(strlen(str));
-
-    for (size_t i = 0; i < strlen(str); ++i) {
-        result.push_back(static_cast<wchar_t>(str[i]));
-    }
-
-    return result;
-
-#else
+#ifdef GEODE_IS_WINDOWS
 
     if (str == nullptr) {
         return L"Widen Error";
@@ -128,6 +119,29 @@ std::wstring Utils::widen(const char* str) {
 
     std::wstring result(buffer, size_t(size) - 1);
     delete[] buffer;
+    return result;
+
+#else
+    if (!str) {
+        return L"Widen Error";
+    }
+
+    size_t size = std::mbstowcs(nullptr, str, 0);
+    if (size == static_cast<size_t>(-1)) {
+        return L"Widen Error";
+    }
+
+    std::wstring result(size, L'\0');
+    if (size == 0) {
+        return result;
+    }
+
+    std::vector<wchar_t> buffer(size + 1, L'\0');
+    if (std::mbstowcs(buffer.data(), str, buffer.size()) == static_cast<size_t>(-1)) {
+        return L"Widen Error";
+    }
+
+    result.assign(buffer.data(), size);
     return result;
 
 #endif
@@ -168,8 +182,8 @@ std::time_t Utils::getFileCreationTime(const std::filesystem::path& path) {
 
     return ull.QuadPart / 10000000ULL - 11644473600ULL;
 #endif
-    std::time_t ret;
-    return ret;
+    (void)path;
+    return 0;
 }
 
 std::string Utils::formatTime(std::time_t time) {

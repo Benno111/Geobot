@@ -17,6 +17,10 @@ static std::vector<std::string> getHardwareAccelModes() {
         "Off",
         "Android MediaCodec"
     };
+#elif defined(GEODE_IS_IOS)
+    return {
+        "Off"
+    };
 #else
     return {
         "Off",
