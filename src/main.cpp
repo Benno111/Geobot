@@ -1,5 +1,6 @@
 #include "includes.hpp"
 
+#include "ui/game_ui.hpp"
 #include "ui/record_layer.hpp"
 #include "practice_fixes/practice_fixes.hpp"
 #include "hacks/layout_mode.hpp"
@@ -494,10 +495,10 @@ void queuePathfinderMutationsAroundDeath(Macro const& base, int frame) {
 
             Macro moved = base;
             moved.inputs[pressIndex].frame = std::max(1, pressFrame + offset);
-            moved.inputs[releaseIndex].frame = std::max(
-                moved.inputs[pressIndex].frame + 1,
+            moved.inputs[releaseIndex].frame = static_cast<uint32_t>(std::max(
+                static_cast<int>(moved.inputs[pressIndex].frame) + 1,
                 releaseFrame + offset
-            );
+            ));
             truncatePathfinderMacroAfterIndex(moved, static_cast<size_t>(releaseIndex));
             queueRanked(std::move(moved));
         }
