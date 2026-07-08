@@ -1,8 +1,16 @@
 cmake_minimum_required(VERSION 3.21)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+
+if (APPLE)
+    if (CMAKE_SYSTEM_NAME STREQUAL "iOS" OR GEODE_TARGET_PLATFORM STREQUAL "iOS")
+        # Let Geode's iOS toolchain keep a single device architecture.
+        set(CMAKE_OSX_ARCHITECTURES "arm64")
+    else()
+        set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+    endif()
+endif()
 
 project(geobot2 VERSION 1.0.0)
 option(geobot_FAST_BUILD "Optimize build settings for faster compile times" ON)
