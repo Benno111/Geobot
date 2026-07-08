@@ -1,0 +1,2 @@
+This is a placeholder file for non-Windows packaging.
+CI overwrites this file with a real FFmpeg binary for supported render targets.

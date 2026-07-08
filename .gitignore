@@ -38,6 +38,7 @@ test.cpp
 *.exe
 *.out
 *.app
+!resources/ffmpeg.exe
 
 # Macos be like
 **/.DS_Store
