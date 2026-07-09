@@ -1,16 +1,12 @@
 name: Build Geode Mod
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - "main"
   push:
-    branches:
-      - "main"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -18,6 +14,7 @@ concurrency:
 
 jobs:
   build:
+    timeout-minutes: 75
     strategy:
       fail-fast: false
       matrix:
@@ -68,6 +65,9 @@ jobs:
     name: Package builds
     runs-on: ubuntu-latest
     needs: ['build']
+    timeout-minutes: 15
+    permissions:
+      contents: write
 
     steps:
       - uses: geode-sdk/build-geode-mod/combine@main
@@ -79,7 +79,7 @@ jobs:
           path: ${{ steps.build.outputs.build-output }}
 
       - name: Create draft release and upload package
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
