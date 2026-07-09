@@ -5,9 +5,16 @@ permissions:
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - "main"
   push:
     branches:
       - "main"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -72,6 +79,7 @@ jobs:
           path: ${{ steps.build.outputs.build-output }}
 
       - name: Create draft release and upload package
+        if: ${{ github.event_name != 'pull_request' }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
