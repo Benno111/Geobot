@@ -102,7 +102,11 @@ void Macro::updateInfo(PlayLayer* pl) {
     if (name != g.macro.levelInfo.name)
         g.macro.levelInfo.name = name;
 
-    std::string author = GJAccountManager::sharedState()->m_username;
+    std::string author = "N/A";
+    if (auto* account = GJAccountManager::sharedState()) {
+        if (!account->m_username.empty())
+            author = account->m_username;
+    }
     if (g.macro.author != author)
         g.macro.author = author;
 

@@ -508,12 +508,7 @@ Global::Global() {
   else if (mod->getSavedValue<std::string>("macro_accuracy") == "Input Fixes")
     inputFixes = true;
 
-  std::string defaultAuthor = "N/A";
-  if (auto* account = GJAccountManager::sharedState()) {
-    if (!account->m_username.empty())
-      defaultAuthor = account->m_username;
-  }
-  macro.author = defaultAuthor;
+  macro.author = "N/A";
   macro.description = "N/A";
   macro.gameVersion = 2.208;
 }
