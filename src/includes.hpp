@@ -99,7 +99,7 @@ inline int64_t getSavedInt64Safe(Mod* mod, std::string const& key, int64_t fallb
 
 class Global {
 
-    Global() {}
+    Global();
 
 public:
 

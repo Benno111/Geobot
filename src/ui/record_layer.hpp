@@ -100,6 +100,7 @@ public:
 	void textChanged(CCTextInputNode* node) override;
 
 	void checkSpeedhack();
+	static void ensureInitialized();
 
 	static RecordLayer* openMenu(bool instant = false);
 

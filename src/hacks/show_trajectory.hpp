@@ -24,6 +24,7 @@ public:
 };
 
 class ShowTrajectory {
+    ShowTrajectory();
 
 public:
 

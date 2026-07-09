@@ -356,6 +356,20 @@ void addgeobotPauseButton(cocos2d::CCLayer* layer) {
     btn->setPosition({214, 88});
     fallbackMenu->addChild(btn);
 }
+
+void registerRecordLayerListeners() {
+    geode::listenForSettingChanges<cocos2d::ccColor3B>("background_color", +[](cocos2d::ccColor3B) {
+        auto& g = Global::get();
+        if (g.layer) {
+            CCArray* children = CCDirector::sharedDirector()->getRunningScene()->getChildren();
+            if (FLAlertLayer* layer = typeinfo_cast<FLAlertLayer*>(children->lastObject()))
+                layer->removeFromParentAndCleanup(true);
+
+            static_cast<RecordLayer*>(g.layer)->onClose(nullptr);
+            RecordLayer::openMenu(true);
+        }
+    });
+}
 }
 
 class $modify(PauseLayer) {
@@ -372,19 +386,14 @@ class $modify(EditorPauseLayer) {
     }
 };
 
-$execute{
-    geode::listenForSettingChanges<cocos2d::ccColor3B>("background_color", +[](cocos2d::ccColor3B value) {
-        auto& g = Global::get();
-        if (g.layer) {
-            CCArray* children = CCDirector::sharedDirector()->getRunningScene()->getChildren();
-            if (FLAlertLayer* layer = typeinfo_cast<FLAlertLayer*>(children->lastObject()))
-                layer->removeFromParentAndCleanup(true);
+void RecordLayer::ensureInitialized() {
+    static bool initialized = false;
+    if (initialized)
+        return;
 
-            static_cast<RecordLayer*>(g.layer)->onClose(nullptr);
-            RecordLayer::openMenu(true);
-        }
-  });
-};
+    registerRecordLayerListeners();
+    initialized = true;
+}
 
 void RecordLayer::openSaveMacro(CCObject*) {
     SaveMacroLayer::open();
@@ -438,6 +447,7 @@ void RecordLayer::clear22Percentage(CCObject*) {
 }
 
 RecordLayer* RecordLayer::openMenu(bool instant) {
+    RecordLayer::ensureInitialized();
     auto& g = Global::get();
     if (g.buildExpired) {
         Global::showBuildExpiredNotice();
