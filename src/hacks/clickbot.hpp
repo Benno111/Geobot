@@ -60,6 +60,8 @@ public:
 
     static void setSound(std::string, FMOD::Sound*);
 
+    static void ensureInitialized();
+
     static void playSound(std::string);
 
     static void updateSounds();
