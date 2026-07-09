@@ -121,6 +121,7 @@ void Interface::addLabels(PlayLayer* pl) {
 }
 
 void Interface::addButtons(PlayLayer* pl) {
+    ensureButtonDefaultsInitialized();
     cocos2d::CCSize winSize = CCDirector::sharedDirector()->getWinSize();
 
     CCMenu* menu = CCMenu::create();
@@ -210,6 +211,7 @@ void Interface::updateLabels() {
 void Interface::updateButtons() {
     PlayLayer* pl = PlayLayer::get();
     if (!pl) return;
+    ensureButtonDefaultsInitialized();
 
     CCNode* menu = pl->getChildByID("button-menu"_spr);
     if (!menu) return;

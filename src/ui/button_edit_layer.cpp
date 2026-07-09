@@ -3,11 +3,20 @@
 
 #include <Geode/modify/FLAlertLayer.hpp>
 
-$execute{
+void ensureButtonDefaultsInitialized() {
     auto & g = Global::get();
+    if (!g.mod)
+        return;
 
-  if (!g.mod->setSavedValue("button_defaults5", true)) {
-    cocos2d::CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+    if (g.mod->hasSavedValue("button_defaults5"))
+        return;
+
+    auto* director = CCDirector::sharedDirector();
+    if (!director)
+        return;
+    cocos2d::CCSize winSize = director->getWinSize();
+
+    g.mod->setSavedValue("button_defaults5", true);
 
     g.mod->setSavedValue("button_off_pos_x", 62.f);
     g.mod->setSavedValue("button_off_pos_y", winSize.height - 35.f);
@@ -23,7 +32,6 @@ $execute{
     g.mod->setSavedValue("button_speedhack_pos_y", winSize.height - 38.f);
     g.mod->setSavedValue("button_speedhack_scale", 1.f);
     g.mod->setSavedValue("button_speedhack_opacity", 1.f);
-  }
 }
 
 class $modify(FLAlertLayer) {
@@ -170,6 +178,7 @@ void ButtonEditLayer::updateOpacity(CCObject*) {
 
 bool ButtonEditLayer::setup() {
     mod = Mod::get();
+    ensureButtonDefaultsInitialized();
 
     cocos2d::CCPoint offset = (CCDirector::sharedDirector()->getWinSize() - m_mainLayer->getContentSize()) / 2;
     m_mainLayer->setPosition(m_mainLayer->getPosition() - offset);

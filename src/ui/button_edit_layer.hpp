@@ -14,6 +14,8 @@ const std::map<std::string, std::string> IDtoName{
     {"button_off", "Frame Stepper Off"}, {"button_advance_frame", "Advance Frame"}, {"button_speedhack", "Toggle Speedhack"}
 };
 
+void ensureButtonDefaultsInitialized();
+
 struct MovingButton {
     size_t index = 0;
     CCSprite* sprite = nullptr;
