@@ -151,7 +151,7 @@ public:
     static bool startPathfinderAutoSearch();
     static void stopPathfinderAutoSearch(bool preserveStatus = false);
 
-    Mod* mod = Mod::get();
+    Mod* mod = nullptr;
     geode::Popup* layer = nullptr;
 
     Macro macro;
