@@ -234,6 +234,40 @@ void resetPathfinderStateImpl(Global& g) {
   else
     g.pathfinderStatus = "Armed";
 }
+
+void resetFramePerfectStatsImpl(Global& g) {
+  g.framePerfectOverlayFrames = 0;
+  g.framePerfectOverlayText.clear();
+  g.framePerfectOverlayTypeName.clear();
+  g.framePerfectOverlayFpsType.clear();
+  g.framePerfectOverlayLeftWiggle = 0;
+  g.framePerfectOverlayRightWiggle = 0;
+  g.framePerfectOverlayScanning = false;
+  g.framePerfectCount = 0;
+  g.framePerfectCount60 = 0;
+  g.framePerfectCount144 = 0;
+  g.framePerfectCount240 = 0;
+  g.framePerfectExpected = 0;
+  g.framePerfectExpected60 = 0;
+  g.framePerfectExpected144 = 0;
+  g.framePerfectExpected240 = 0;
+  g.lastFramePerfectAction = std::numeric_limits<size_t>::max();
+}
+
+void stopPathfinderAutoSearchImpl(Global& g, bool preserveStatus) {
+  g.pathfinderAutoSearch = false;
+  g.pathfinderSearching = false;
+  g.pathfinderSearchAttempts = 0;
+  g.pathfinderBestProgress = 0.f;
+  g.pathfinderBestFrame = 0;
+  g.pathfinderSearchQueue.clear();
+  g.pathfinderSearchVisited.clear();
+  g.pathfinderSnapshots.clear();
+  g.pathfinderSearchCurrent = Macro();
+
+  if (!preserveStatus)
+    resetPathfinderStateImpl(g);
+}
 }
 
 struct IncompatibleSetting {
@@ -399,15 +433,17 @@ Global::Global() {
   if (!mod->hasSavedValue("pathfinder_mode"))
     mod->setSavedValue("pathfinder_mode", false);
 
-  geode::listenForSettingChanges<bool>("feature_flag_frameperfect_detection", +[](bool enabled) {
+  Global* self = this;
+
+  geode::listenForSettingChanges<bool>("feature_flag_frameperfect_detection", [self](bool enabled) {
     if (!enabled)
-      Global::resetFramePerfectStats();
+      resetFramePerfectStatsImpl(*self);
   });
 
-  geode::listenForSettingChanges<bool>("feature_flag_pathfinder", +[](bool enabled) {
-    auto& g = Global::get();
+  geode::listenForSettingChanges<bool>("feature_flag_pathfinder", [self](bool enabled) {
+    auto& g = *self;
     if (!enabled) {
-      Global::stopPathfinderAutoSearch();
+      stopPathfinderAutoSearchImpl(g, false);
       g.mod->setSavedValue("pathfinder_mode", false);
       g.pathfinderMode = false;
     }
@@ -415,7 +451,7 @@ Global::Global() {
       g.pathfinderMode = g.mod->getSavedValue<bool>("pathfinder_mode");
     }
 
-    Global::resetPathfinderState();
+    resetPathfinderStateImpl(g);
 
     Interface::updateLabels();
     if (g.layer) {
@@ -907,22 +943,7 @@ void Global::refreshFramePerfectOverlayText() {
 
 void Global::resetFramePerfectStats() {
   auto& g = Global::get();
-  g.framePerfectOverlayFrames = 0;
-  g.framePerfectOverlayText.clear();
-  g.framePerfectOverlayTypeName.clear();
-  g.framePerfectOverlayFpsType.clear();
-  g.framePerfectOverlayLeftWiggle = 0;
-  g.framePerfectOverlayRightWiggle = 0;
-  g.framePerfectOverlayScanning = false;
-  g.framePerfectCount = 0;
-  g.framePerfectCount60 = 0;
-  g.framePerfectCount144 = 0;
-  g.framePerfectCount240 = 0;
-  g.framePerfectExpected = 0;
-  g.framePerfectExpected60 = 0;
-  g.framePerfectExpected144 = 0;
-  g.framePerfectExpected240 = 0;
-  g.lastFramePerfectAction = std::numeric_limits<size_t>::max();
+  resetFramePerfectStatsImpl(g);
 }
 
 bool Global::isDeveloperModeEnabled() {
@@ -1051,18 +1072,7 @@ bool Global::startPathfinderAutoSearch() {
 
 void Global::stopPathfinderAutoSearch(bool preserveStatus) {
   auto& g = Global::get();
-  g.pathfinderAutoSearch = false;
-  g.pathfinderSearching = false;
-  g.pathfinderSearchAttempts = 0;
-  g.pathfinderBestProgress = 0.f;
-  g.pathfinderBestFrame = 0;
-  g.pathfinderSearchQueue.clear();
-  g.pathfinderSearchVisited.clear();
-  g.pathfinderSnapshots.clear();
-  g.pathfinderSearchCurrent = Macro();
-
-  if (!preserveStatus)
-    Global::resetPathfinderState();
+  stopPathfinderAutoSearchImpl(g, preserveStatus);
 }
 
 void Global::resetPathfinderState() {
