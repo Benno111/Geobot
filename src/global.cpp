@@ -1,5 +1,6 @@
 #include "ui/record_layer.hpp"
 #include "ui/game_ui.hpp"
+#include "ui/button_setting.hpp"
 
 #include <Geode/modify/CCTextInputNode.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
@@ -441,8 +442,10 @@ Global::Global() {
           ),
           "Later", "Open",
           [](auto, bool open) {
-            if (open)
+            if (open) {
+              ensureButtonSettingRegistered();
               geode::openSettingsPopup(Mod::get(), false);
+            }
           }
         );
       });

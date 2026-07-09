@@ -126,7 +126,6 @@ class $modify(CCKeyboardDispatcher) {
     return CCKeyboardDispatcher::dispatchKeyboardMSG(key, isKeyDown, isKeyRepeat, dt);
   }
 };
-
 class $modify(MenuLayer) {
   bool init() {
     if (!MenuLayer::init())
@@ -159,10 +158,3 @@ class $modify(MenuLayer) {
       toggleDeveloperMode();
   }
 };
-
-$execute {
-#ifdef GEODE_IS_WINDOWS
-  // geode.custom-keybinds is pre-v5 and does not compile with Geode v5 headers.
-  // Keybind registration is temporarily disabled pending migration to the v5 keybind API.
-#endif
-}

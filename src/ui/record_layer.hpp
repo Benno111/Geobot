@@ -4,6 +4,7 @@
 #include <Geode/ui/ScrollLayer.hpp>
 #include <Geode/ui/Scrollbar.hpp>
 #include "../includes.hpp"
+#include "button_setting.hpp"
 
 #include "load_macro_layer.hpp"
 #include "render_settings_layer.hpp"
@@ -109,6 +110,7 @@ public:
 	}
 
 	void moreSettings(CCObject*) {
+		ensureButtonSettingRegistered();
 		geode::openSettingsPopup(mod, false);
 	}
 

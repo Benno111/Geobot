@@ -9,6 +9,7 @@
 #include "pathfinder_settings_layer.hpp"
 #include "mirror_settings_layer.hpp"
 #include "star_rate_override_layer.hpp"
+#include "button_setting.hpp"
 #include "../hacks/coin_finder.hpp"
 #include "../hacks/show_trajectory.hpp"
 
@@ -895,8 +896,10 @@ void RecordLayer::openMacrosFolder(CCObject*) {
         "Open the current macros folder or change its path in mod settings?",
         "Open", "Change",
         [this](auto, bool btn2) {
-            if (btn2)
+            if (btn2) {
+                ensureButtonSettingRegistered();
                 geode::openSettingsPopup(mod, false);
+            }
             else
                 file::openFolder(Global::getFolderSettingPath("macros_folder"));
         }
