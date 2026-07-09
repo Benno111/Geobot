@@ -120,6 +120,11 @@ $root = Resolve-Path (Join-Path $PSScriptRoot "..")
 $resourcesDir = Join-Path $root "resources"
 New-Item -ItemType Directory -Force -Path $resourcesDir | Out-Null
 
+$legacyBundleExePath = Join-Path $resourcesDir "ffmpeg.exe"
+$legacyBundleUnixPath = Join-Path $resourcesDir "ffmpeg"
+Remove-Item -Path $legacyBundleExePath -Force -ErrorAction SilentlyContinue
+Remove-Item -Path $legacyBundleUnixPath -Force -ErrorAction SilentlyContinue
+
 $windowsUrls = @(
     "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip",
     "https://github.com/BtbN/FFmpeg-Builds/releases/latest/download/ffmpeg-master-latest-win64-gpl.zip",
@@ -147,18 +152,26 @@ $extractDir = Join-Path $env:RUNNER_TEMP ("ffmpeg_extract_" + [Guid]::NewGuid().
 $usedDownloadUrl = Download-And-Extract -Urls $downloadUrls -ExtractDir $extractDir
 $ffmpegBinary = Find-FFmpegBinary -Dir $extractDir
 
-$bundleExePath = Join-Path $resourcesDir "ffmpeg.exe"
-$bundleUnixPath = Join-Path $resourcesDir "ffmpeg"
+$bundleDir = switch ($targetNormalized) {
+    "windows" { Join-Path $resourcesDir "ffmpeg/windows" }
+    "android32" { Join-Path $resourcesDir "ffmpeg/android" }
+    "android64" { Join-Path $resourcesDir "ffmpeg/android" }
+    default { throw "Unsupported FFmpeg bundle target: $Target" }
+}
+New-Item -ItemType Directory -Force -Path $bundleDir | Out-Null
 
-Copy-Item -Path $ffmpegBinary -Destination $bundleExePath -Force
-Copy-Item -Path $ffmpegBinary -Destination $bundleUnixPath -Force
+$bundlePath = if ($targetNormalized -eq "windows") {
+    Join-Path $bundleDir "ffmpeg.exe"
+} else {
+    Join-Path $bundleDir "ffmpeg"
+}
 
-if (-not $IsWindows) {
-    chmod +x $bundleExePath
-    chmod +x $bundleUnixPath
+Copy-Item -Path $ffmpegBinary -Destination $bundlePath -Force
+
+if (-not $IsWindows -or $targetNormalized -ne "windows") {
+    chmod +x $bundlePath
 }
 
 Write-Host "Bundled FFmpeg from: $usedDownloadUrl"
-Write-Host "Bundled paths:"
-Write-Host " - $bundleExePath"
-Write-Host " - $bundleUnixPath"
+Write-Host "Bundled path:"
+Write-Host " - $bundlePath"

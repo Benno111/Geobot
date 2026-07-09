@@ -177,21 +177,23 @@ static bool isValidFFmpegBinaryPath(std::filesystem::path const& path) {
     std::transform(fileName.begin(), fileName.end(), fileName.begin(), [](unsigned char c) {
         return static_cast<char>(std::tolower(c));
     });
-    return fileName == "ffmpeg" || fileName == "ffmpeg.exe";
+#ifdef GEODE_IS_WINDOWS
+    return fileName == "ffmpeg.exe" || fileName == "ffmpeg";
+#else
+    return fileName == "ffmpeg";
+#endif
 }
 
 static std::vector<std::filesystem::path> getBundledFFmpegCandidates() {
     std::filesystem::path resources = Mod::get()->getResourcesDir();
-    std::vector<std::filesystem::path> candidates = {
-        resources / "ffmpeg.exe",
-        resources / "ffmpeg",
-    };
+    std::vector<std::filesystem::path> candidates;
 
 #ifdef GEODE_IS_WINDOWS
     candidates.push_back(resources / "ffmpeg" / "windows" / "ffmpeg.exe");
+    // Legacy package path kept as fallback for older installs.
+    candidates.push_back(resources / "ffmpeg.exe");
 #elif defined(GEODE_IS_ANDROID)
     candidates.push_back(resources / "ffmpeg" / "android" / "ffmpeg");
-    candidates.push_back(resources / "ffmpeg" / "android" / "ffmpeg.exe");
 #elif defined(GEODE_IS_MACOS)
     candidates.push_back(resources / "ffmpeg" / "macos" / "ffmpeg");
 #elif defined(GEODE_IS_IOS)
