@@ -1876,6 +1876,7 @@ void RecordLayer::loadSettingsList() {
     if (!settingsScroll) return;
 
     if (settingsMenu) {
+        detachActiveInputsRecursive(settingsMenu);
         settingsMenu->removeFromParentAndCleanup(true);
         settingsMenu = nullptr;
     }

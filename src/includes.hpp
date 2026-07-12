@@ -22,6 +22,32 @@
 
 using namespace geode::prelude;
 
+inline void detachInputNodeSafe(CCTextInputNode* input) {
+    if (!input) return;
+
+    input->detachWithIME();
+    input->onClickTrackNode(false);
+    if (input->m_cursor)
+        input->m_cursor->setVisible(false);
+}
+
+inline void detachActiveInputsRecursive(CCNode* root) {
+    if (!root) return;
+
+    if (auto* input = typeinfo_cast<CCTextInputNode*>(root))
+        detachInputNodeSafe(input);
+
+    if (auto* input = typeinfo_cast<TextInput*>(root))
+        detachInputNodeSafe(input->getInputNode());
+
+    if (CCArray* children = root->getChildren()) {
+        for (int i = 0; i < children->count(); ++i) {
+            if (auto* child = typeinfo_cast<CCNode*>(children->objectAtIndex(i)))
+                detachActiveInputsRecursive(child);
+        }
+    }
+}
+
 namespace xdb {
 template <class... SetupArgs>
 class Popup : public geode::Popup {
@@ -39,6 +65,11 @@ protected:
     }
 
 public:
+    void onExit() override {
+        detachActiveInputsRecursive(this);
+        geode::Popup::onExit();
+    }
+
     bool initAnchored(
         float width,
         float height,
