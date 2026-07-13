@@ -131,6 +131,8 @@ class $modify(MenuLayer) {
     if (!MenuLayer::init())
       return false;
 
+    Global::get().ensureInitialized();
+
     auto winSize = CCDirector::sharedDirector()->getWinSize();
     auto touchMenu = CCMenu::create();
     touchMenu->setPosition({ 0.f, 0.f });

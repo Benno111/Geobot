@@ -139,6 +139,8 @@ public:
         return instance;
     }
 
+    void ensureInitialized();
+
     static bool hasIncompatibleMods();
     static bool isBuildExpired();
     static void showBuildExpiredNotice();
@@ -183,6 +185,8 @@ public:
     static void stopPathfinderAutoSearch(bool preserveStatus = false);
 
     Mod* mod = nullptr;
+    bool initialized = false;
+    bool initializing = false;
     geode::Popup* layer = nullptr;
 
     Macro macro;

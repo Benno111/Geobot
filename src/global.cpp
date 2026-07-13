@@ -290,15 +290,24 @@ const std::vector<IncompatibleMod> incompatibleMods {
   // { "zmx.cbf-lite", false, {  } }
 };
 
-Global::Global() {
-  if (!mod)
-    mod = Mod::get();
-  if (!mod)
+Global::Global() = default;
+
+void Global::ensureInitialized() {
+  if (initialized || initializing)
     return;
+
+  initializing = true;
+  mod = Mod::get();
+  if (!mod) {
+    initializing = false;
+    return;
+  }
 
   buildExpired = hasBuildExpiredBy30Days();
   if (buildExpired) {
     queueBuildExpiredNotice(*this);
+    initialized = true;
+    initializing = false;
     return;
   }
 
@@ -547,6 +556,8 @@ Global::Global() {
   macro.author = "N/A";
   macro.description = "N/A";
   macro.gameVersion = 2.208;
+  initialized = true;
+  initializing = false;
 }
 
 bool Global::hasIncompatibleMods() {

@@ -450,6 +450,7 @@ void RecordLayer::clear22Percentage(CCObject*) {
 RecordLayer* RecordLayer::openMenu(bool instant) {
     RecordLayer::ensureInitialized();
     auto& g = Global::get();
+    g.ensureInitialized();
     if (g.buildExpired) {
         Global::showBuildExpiredNotice();
         return nullptr;
