@@ -132,13 +132,22 @@ namespace impl {
 
 class Recorder {
 public:
-    Recorder() {
+    Recorder() = default;
+
+    bool ensureCreated() {
+        if (m_ptr)
+            return true;
+
         impl::CreateRecorderEvent createEvent;
         createEvent.post();
         m_ptr = static_cast<impl::Dummy*>(createEvent.getPtr());
+        return m_ptr != nullptr;
     }
 
     ~Recorder() {
+        if (!m_ptr)
+            return;
+
         impl::DeleteRecorderEvent deleteEvent(m_ptr);
         deleteEvent.post();
     }
@@ -157,6 +166,9 @@ public:
      * @return true if initialization is successful, false otherwise.
      */
     geode::Result<> init(RenderSettings const& settings) {
+        if (!ensureCreated())
+            return geode::Err("Failed to create FFmpeg recorder.");
+
         impl::InitRecorderEvent initEvent(m_ptr, &settings);
         initEvent.post();
         return initEvent.getResult();
@@ -168,6 +180,9 @@ public:
      * releases allocated resources, and properly closes the output file.
      */
     void stop() {
+        if (!m_ptr)
+            return;
+
         impl::StopRecorderEvent(m_ptr).post();
     }
 
@@ -185,6 +200,9 @@ public:
      * @warning Ensure that the frameData size matches the expected dimensions of the frame.
      */
     geode::Result<> writeFrame(const std::vector<uint8_t>& frameData) {
+        if (!ensureCreated())
+            return geode::Err("Failed to create FFmpeg recorder.");
+
         static auto writeFrame = []{
             impl::GetWriteFrameFunctionEvent event;
             event.post();
