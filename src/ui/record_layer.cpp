@@ -9,7 +9,6 @@
 #include "pathfinder_settings_layer.hpp"
 #include "mirror_settings_layer.hpp"
 #include "star_rate_override_layer.hpp"
-#include "button_setting.hpp"
 #include "../hacks/coin_finder.hpp"
 #include "../hacks/show_trajectory.hpp"
 
@@ -357,20 +356,6 @@ void addgeobotPauseButton(cocos2d::CCLayer* layer) {
     btn->setPosition({214, 88});
     fallbackMenu->addChild(btn);
 }
-
-void registerRecordLayerListeners() {
-    geode::listenForSettingChanges<cocos2d::ccColor3B>("background_color", +[](cocos2d::ccColor3B) {
-        auto& g = Global::get();
-        if (g.layer) {
-            CCArray* children = CCDirector::sharedDirector()->getRunningScene()->getChildren();
-            if (FLAlertLayer* layer = typeinfo_cast<FLAlertLayer*>(children->lastObject()))
-                layer->removeFromParentAndCleanup(true);
-
-            static_cast<RecordLayer*>(g.layer)->onClose(nullptr);
-            RecordLayer::openMenu(true);
-        }
-    });
-}
 }
 
 class $modify(PauseLayer) {
@@ -387,14 +372,19 @@ class $modify(EditorPauseLayer) {
     }
 };
 
-void RecordLayer::ensureInitialized() {
-    static bool initialized = false;
-    if (initialized)
-        return;
+$execute{
+    geode::listenForSettingChanges<cocos2d::ccColor3B>("background_color", +[](cocos2d::ccColor3B value) {
+        auto& g = Global::get();
+        if (g.layer) {
+            CCArray* children = CCDirector::sharedDirector()->getRunningScene()->getChildren();
+            if (FLAlertLayer* layer = typeinfo_cast<FLAlertLayer*>(children->lastObject()))
+                layer->removeFromParentAndCleanup(true);
 
-    registerRecordLayerListeners();
-    initialized = true;
-}
+            static_cast<RecordLayer*>(g.layer)->onClose(nullptr);
+            RecordLayer::openMenu(true);
+        }
+  });
+};
 
 void RecordLayer::openSaveMacro(CCObject*) {
     SaveMacroLayer::open();
@@ -448,9 +438,7 @@ void RecordLayer::clear22Percentage(CCObject*) {
 }
 
 RecordLayer* RecordLayer::openMenu(bool instant) {
-    RecordLayer::ensureInitialized();
     auto& g = Global::get();
-    g.ensureInitialized();
     if (g.buildExpired) {
         Global::showBuildExpiredNotice();
         return nullptr;
@@ -897,10 +885,8 @@ void RecordLayer::openMacrosFolder(CCObject*) {
         "Open the current macros folder or change its path in mod settings?",
         "Open", "Change",
         [this](auto, bool btn2) {
-            if (btn2) {
-                ensureButtonSettingRegistered();
+            if (btn2)
                 geode::openSettingsPopup(mod, false);
-            }
             else
                 file::openFolder(Global::getFolderSettingPath("macros_folder"));
         }

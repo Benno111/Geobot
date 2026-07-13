@@ -1,6 +1,5 @@
 #include "../includes.hpp"
 #include "record_layer.hpp"
-#include "button_setting.hpp"
 
 #include <Geode/loader/SettingV3.hpp>
 #include <Geode/loader/Mod.hpp>
@@ -97,13 +96,6 @@ SettingNodeV3* MyButtonSettingV3::createNode(float width) {
     );
 }
 
-void ensureButtonSettingRegistered() {
-    static bool registered = false;
-    if (registered)
-        return;
-
-    if (auto* mod = Mod::get()) {
-        (void)mod->registerCustomSettingType("button", &MyButtonSettingV3::parse);
-        registered = true;
-    }
+$execute {
+    (void)Mod::get()->registerCustomSettingType("button", &MyButtonSettingV3::parse);
 }

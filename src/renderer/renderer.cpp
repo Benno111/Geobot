@@ -393,14 +393,6 @@ void Renderer::start() {
     ogScaleX = cocos2d::CCEGLView::get()->m_fScaleX;
     ogScaleY = cocos2d::CCEGLView::get()->m_fScaleY;
 
-    // Creating the FFmpeg API bridge posts a Geode event. Keep that work out of
-    // Global's construction during loader startup and perform it here on the main
-    // thread, only after the user explicitly starts a render.
-    if (usingApi && !ffmpeg.ensureCreated()) {
-        FLAlertLayer::create("Error", "FFmpeg API failed to create a recorder.", "Ok")->show();
-        return;
-    }
-
     dontRender = true;
     recording = true;
     frameHasData = false;

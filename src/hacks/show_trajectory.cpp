@@ -9,24 +9,18 @@
 #include <Geode/modify/HardStreak.hpp>
 #include <Geode/modify/CCKeyboardDispatcher.hpp>
 
-namespace {
-ShowTrajectory& trajectoryState() {
-    return ShowTrajectory::get();
-}
-}
+ShowTrajectory& t = ShowTrajectory::get();
 
-ShowTrajectory::ShowTrajectory() {
-    if (auto* mod = Mod::get()) {
-        color1 = ccc4FFromccc3B(mod->getSavedValue<cocos2d::ccColor3B>("trajectory_color1"));
-        color2 = ccc4FFromccc3B(mod->getSavedValue<cocos2d::ccColor3B>("trajectory_color2"));
-        length = geode::utils::numFromString<int>(mod->getSavedValue<std::string>("trajectory_length")).unwrapOr(0);
-    }
+$execute {
 
-    updateMergedColor();
-}
+    t.color1 = ccc4FFromccc3B(Mod::get()->getSavedValue<cocos2d::ccColor3B>("trajectory_color1"));
+    t.color2 = ccc4FFromccc3B(Mod::get()->getSavedValue<cocos2d::ccColor3B>("trajectory_color2"));
+    t.length = geode::utils::numFromString<int>(Mod::get()->getSavedValue<std::string>("trajectory_length")).unwrapOr(0);
+    t.updateMergedColor();
+
+};
 
 void ShowTrajectory::trajectoryOff() {
-    auto& t = trajectoryState();
     if (t.trajectoryNode()) {
         t.trajectoryNode()->clear();
         t.trajectoryNode()->setVisible(false);
@@ -35,7 +29,6 @@ void ShowTrajectory::trajectoryOff() {
 }
 
 void ShowTrajectory::updateTrajectory(PlayLayer* pl) {
-    auto& t = trajectoryState();
     if (!t.fakePlayer1 || !t.fakePlayer2) return;
 
     auto& g = Global::get();
@@ -73,7 +66,6 @@ void ShowTrajectory::updateTrajectory(PlayLayer* pl) {
 }
 float rot = 0.f;
 void ShowTrajectory::createTrajectory(PlayLayer* pl, PlayerObject* fakePlayer, PlayerObject* realPlayer, bool hold, bool inverted) {
-    auto& t = trajectoryState();
 
     bool player2 = pl->m_player2 == realPlayer;
 
@@ -131,7 +123,6 @@ void ShowTrajectory::createTrajectory(PlayLayer* pl, PlayerObject* fakePlayer, P
 }
 
 void ShowTrajectory::drawPlayerHitbox(PlayerObject* player, CCDrawNode* drawNode) {
-    auto& t = trajectoryState();
     cocos2d::CCRect bigRect = player->GameObject::getObjectRect();
     cocos2d::CCRect smallRect = player->GameObject::getObjectRect(0.3, 0.3);
 
@@ -194,7 +185,6 @@ std::vector<cocos2d::CCPoint> ShowTrajectory::getVertices(PlayerObject* player, 
 }
 
 void ShowTrajectory::updateMergedColor() {
-    auto& t = trajectoryState();
     cocos2d::ccColor4F newColor = { 0.f, 0.f, 0.f, 1.f };
 
     newColor.r = (color1.r + color2.r) / 2;
@@ -209,7 +199,6 @@ void ShowTrajectory::updateMergedColor() {
 }
 
 void ShowTrajectory::handlePortal(PlayerObject* player, int id) {
-    auto& t = trajectoryState();
     if (!portalIDs.contains(id)) return;
 
     switch (id) {
@@ -256,7 +245,6 @@ class $modify(PlayLayer) {
     void postUpdate(float dt) {
         PlayLayer::postUpdate(dt);
 
-        auto& t = trajectoryState();
         if (!t.trajectoryNode() || t.creatingTrajectory) return;
         if (m_isPaused || m_levelEndAnimationStarted || !m_player1 || m_player1->m_isDead) return;
 
@@ -273,7 +261,6 @@ class $modify(PlayLayer) {
     void setupHasCompleted() {
         PlayLayer::setupHasCompleted();
 
-        auto& t = trajectoryState();
         t.fakePlayer1 = nullptr;
         t.fakePlayer2 = nullptr;
         t.cancelTrajectory = false;
@@ -296,7 +283,6 @@ class $modify(PlayLayer) {
     }
 
     void destroyPlayer(PlayerObject * player, GameObject * gameObject) {
-        auto& t = trajectoryState();
         if (t.creatingTrajectory || (player == t.fakePlayer1 || player == t.fakePlayer2)) {
             t.deathRotation = player->getRotation();
             t.cancelTrajectory = true;
@@ -307,7 +293,6 @@ class $modify(PlayLayer) {
     }
 
     void onQuit() {
-        auto& t = trajectoryState();
         if (t.trajectoryNode())
             t.trajectoryNode()->clear();
 
@@ -321,7 +306,6 @@ class $modify(PlayLayer) {
     }
 
     void playEndAnimationToPos(cocos2d::CCPoint p0) {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             PlayLayer::playEndAnimationToPos(p0);
     }
@@ -330,7 +314,6 @@ class $modify(PlayLayer) {
 
 class $modify(PauseLayer) {
     void goEdit() {
-        auto& t = trajectoryState();
         if (t.trajectoryNode())
             t.trajectoryNode()->clear();
 
@@ -347,7 +330,6 @@ class $modify(PauseLayer) {
 class $modify(GJBaseGameLayer) {
 
     void collisionCheckObjects(PlayerObject * p0, gd::vector<GameObject*>*objects, int p2, float p3) {
-        auto& t = trajectoryState();
         if (t.creatingTrajectory) {
             std::vector<GameObject*> disabledObjects;
 
@@ -381,7 +363,6 @@ class $modify(GJBaseGameLayer) {
     }
 
     bool canBeActivatedByPlayer(PlayerObject * p0, EffectGameObject * p1) {
-        auto& t = trajectoryState();
         if (t.creatingTrajectory) {
 
             ShowTrajectory::handlePortal(p0, p1->m_objectID);
@@ -393,13 +374,11 @@ class $modify(GJBaseGameLayer) {
     }
 
     void playerTouchedRing(PlayerObject * p0, RingObject * p1) {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             GJBaseGameLayer::playerTouchedRing(p0, p1);
     }
 
     void playerTouchedTrigger(PlayerObject * p0, EffectGameObject * p1) {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             GJBaseGameLayer::playerTouchedTrigger(p0, p1);
         else
@@ -407,13 +386,11 @@ class $modify(GJBaseGameLayer) {
     }
 
     void activateSFXTrigger(SFXTriggerGameObject * p0) {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             GJBaseGameLayer::activateSFXTrigger(p0);
 
     }
     void activateSongEditTrigger(SongTriggerGameObject * p0) {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             GJBaseGameLayer::activateSongEditTrigger(p0);
 
@@ -424,7 +401,6 @@ class $modify(GJBaseGameLayer) {
     // }
 
     void gameEventTriggered(GJGameEvent p0, int p1, int p2) {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             GJBaseGameLayer::gameEventTriggered(p0, p1, p2);
     }
@@ -435,23 +411,20 @@ class $modify(PlayerObject) {
 
     void update(float dt) {
         PlayerObject::update(dt);
-        trajectoryState().delta = dt;
+        t.delta = dt;
     }
 
     void playSpiderDashEffect(cocos2d::CCPoint p0, cocos2d::CCPoint p1) {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             PlayerObject::playSpiderDashEffect(p0, p1);
     }
 
     void incrementJumps() {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             PlayerObject::incrementJumps();
     }
 
     void ringJump(RingObject * p0, bool p1) {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             PlayerObject::ringJump(p0, p1);
     }
@@ -461,7 +434,6 @@ class $modify(PlayerObject) {
 class $modify(HardStreak) {
 
     void addPoint(cocos2d::CCPoint p0) {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             HardStreak::addPoint(p0);
     }
@@ -470,7 +442,6 @@ class $modify(HardStreak) {
 class $modify(GameObject) {
 
     void playShineEffect() {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             GameObject::playShineEffect();
     }
@@ -479,7 +450,6 @@ class $modify(GameObject) {
 class $modify(EffectGameObject) {
 
     void triggerObject(GJBaseGameLayer * p0, int p1, const gd::vector<int>*p2) {
-        auto& t = trajectoryState();
         if (!t.creatingTrajectory)
             EffectGameObject::triggerObject(p0, p1, p2);
     }

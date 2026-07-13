@@ -130,7 +130,7 @@ inline int64_t getSavedInt64Safe(Mod* mod, std::string const& key, int64_t fallb
 
 class Global {
 
-    Global();
+    Global() {}
 
 public:
 
@@ -138,8 +138,6 @@ public:
         static Global instance;
         return instance;
     }
-
-    void ensureInitialized();
 
     static bool hasIncompatibleMods();
     static bool isBuildExpired();
@@ -184,9 +182,7 @@ public:
     static bool startPathfinderAutoSearch();
     static void stopPathfinderAutoSearch(bool preserveStatus = false);
 
-    Mod* mod = nullptr;
-    bool initialized = false;
-    bool initializing = false;
+    Mod* mod = Mod::get();
     geode::Popup* layer = nullptr;
 
     Macro macro;

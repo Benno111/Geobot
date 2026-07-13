@@ -27,12 +27,7 @@ private:
 
         authorInput = TextInput::create(104, "Author", "chatFont.fnt");
         authorInput->setPosition({ 61, 42 });
-        std::string username = "N/A";
-        if (auto* account = GJAccountManager::sharedState()) {
-            if (!account->m_username.empty())
-                username = account->m_username;
-        }
-        authorInput->setString(username.c_str());
+        authorInput->setString(GJAccountManager::sharedState()->m_username.c_str());
         menu->addChild(authorInput);
 
         CCLabelBMFont* lbl = CCLabelBMFont::create("(optional)", "chatFont.fnt");

@@ -859,7 +859,6 @@ class $modify(PlayLayer) {
             return false;
 
         auto& g = Global::get();
-        g.ensureInitialized();
 
         if (g.state == state::playing) {
             g.currentAction = 0;
