@@ -2,135 +2,181 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="dark" />
-  <title>Geobot — Geode Mod</title>
-  <meta name="description" content="Geobot — a macro bot and utility toolkit for Geometry Dash on Geode." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f2f2ed" />
+  <title>Geobot — Deterministic Geometry Dash tooling</title>
+  <meta name="description" content="Geobot is a macro bot and utility toolkit for Geometry Dash on Geode." />
   <link rel="stylesheet" href="./assets/styles.css" />
 </head>
 
 <body>
-  <div class="ambient ambient--one"></div>
-  <div class="ambient ambient--two"></div>
-
-  <header class="top">
-    <div class="wrap top__inner">
-      <a class="brand" href="./" aria-label="Geobot home">
-        <span class="brand__mark"><img id="brandLogo" class="brand__logo" alt="Geobot logo" /></span>
-        <span class="brand__text">
-          <span class="brand__eyebrow">Geode interface</span>
-          <span class="brand__name" id="modName">Geobot</span>
+  <header class="site-header">
+    <div class="container nav-shell">
+      <a class="wordmark" href="#top" aria-label="Geobot home">
+        <span class="wordmark__icon" aria-hidden="true">
+          <img id="brandLogo" class="wordmark__logo" alt="" />
         </span>
+        <span id="modName">geobot</span>
       </a>
 
-      <nav class="nav" aria-label="Primary navigation">
-        <a href="#download">Overview</a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#features">Features</a>
         <a href="#latest">Latest</a>
-        <a href="#changelog">Changelog</a>
         <a href="#about">About</a>
+        <a class="pill pill--dark pill--small" id="btnSource" href="#" target="_blank" rel="noreferrer">GitHub ↗</a>
       </nav>
     </div>
   </header>
 
-  <main class="wrap shell">
-    <section class="hero" id="download">
+  <main id="top">
+    <section class="hero container">
       <div class="hero__copy">
-        <div class="statusbar" aria-label="Mod metadata">
-          <span class="statusbar__item statusbar__item--hot" id="modVersion">…</span>
-          <span class="statusbar__item" id="modId">…</span>
-          <span class="statusbar__item" id="gdCompat">GD …</span>
+        <div class="eyebrow-row" aria-label="Project metadata">
+          <span class="tag tag--live"><i></i><span id="modVersion">Loading</span></span>
+          <span class="tag" id="modId">benno111.geobot</span>
         </div>
 
-        <p class="kicker">Featured Geode Mod</p>
-        <h1 id="heroTitle">Geobot</h1>
-        <p class="lead" id="modDesc">Loading…</p>
+        <h1>Replay every move.<br />Refine every run.</h1>
+        <p class="hero__lead" id="modDesc">A deterministic macro bot and utility toolkit built for Geometry Dash.</p>
 
-        <div class="cta">
-          <a class="btn btn--primary" id="btnDownloadLatest" href="#" target="_blank" rel="noreferrer">
-            <span class="btn__icon">↓</span> Download latest
-          </a>
-          <a class="btn" id="btnReleasePage" href="#" target="_blank" rel="noreferrer">Release page</a>
-          <a class="btn" id="btnSource" href="#" target="_blank" rel="noreferrer">Source</a>
-          <a class="btn" id="btnIssues" href="#" target="_blank" rel="noreferrer">Issues</a>
+        <div class="hero__actions">
+          <a class="pill pill--dark" id="btnDownloadLatest" href="#" target="_blank" rel="noreferrer">Download latest <span>↓</span></a>
+          <a class="pill" id="btnReleasePage" href="#" target="_blank" rel="noreferrer">View release</a>
         </div>
-
-        <div class="release-card" id="releaseHint">Finding latest build…</div>
+        <p class="release-line" id="releaseHint">Finding the latest build…</p>
       </div>
 
-      <aside class="install-card" aria-labelledby="installTitle">
-        <div class="install-card__chrome">
-          <span></span><span></span><span></span>
+      <div class="compatibility" aria-label="Compatibility">
+        <p>Built for the tools you already use</p>
+        <div class="compatibility__row">
+          <div><span>GEODE</span><strong id="geodeVer">—</strong></div>
+          <div><span>GEOMETRY DASH</span><strong id="gdVers">—</strong></div>
+          <div><span>DEVELOPER</span><strong id="developer">—</strong></div>
         </div>
-        <div class="install-card__content">
-          <p class="panel-label">Install with Geode</p>
-          <h2 id="installTitle">Drop into your mod list in seconds.</h2>
-          <ol class="steps">
-            <li>Install <strong>Geode</strong> for Geometry Dash.</li>
-            <li>Open the Geode mod browser and search <code id="installId">…</code>.</li>
-            <li>Install from the browser, or place the downloaded <code>.geode</code> file in your mods folder.</li>
-          </ol>
-        </div>
-      </aside>
-    </section>
-
-    <section class="quick-grid" aria-label="Compatibility">
-      <article class="metric">
-        <span class="metric__label">Geode</span>
-        <strong class="metric__value" id="geodeVer">…</strong>
-      </article>
-      <article class="metric">
-        <span class="metric__label">Geometry Dash</span>
-        <strong class="metric__value" id="gdVers">…</strong>
-      </article>
-      <article class="metric">
-        <span class="metric__label">Developer</span>
-        <strong class="metric__value" id="developer">…</strong>
-      </article>
-    </section>
-
-    <section class="section" id="latest">
-      <div class="section__heading">
-        <p class="kicker">Release feed</p>
-        <h2>Latest update preview</h2>
+        <span class="visually-hidden" id="gdCompat">Geometry Dash compatible</span>
       </div>
-      <div class="content-grid">
-        <article class="panel">
-          <h3>Latest release notes</h3>
-          <div class="prose" id="latestReleaseNotes">Loading latest release notes…</div>
+    </section>
+
+    <section class="product-stage" aria-label="Geobot macro preview">
+      <div class="product-stage__glow"></div>
+      <div class="product-window">
+        <div class="product-window__topbar">
+          <div class="window-brand"><span class="window-brand__mark">G</span><strong>geobot</strong></div>
+          <div class="window-status"><i></i> Ready to record</div>
+          <div class="window-controls"><span></span><span></span><span></span></div>
+        </div>
+
+        <div class="product-window__body">
+          <aside class="mock-sidebar">
+            <p class="mock-label">Workspace</p>
+            <button class="mock-nav mock-nav--active"><span>⌁</span> Macro</button>
+            <button class="mock-nav"><span>◇</span> Playback</button>
+            <button class="mock-nav"><span>◎</span> Renderer</button>
+            <button class="mock-nav"><span>⚙</span> Utilities</button>
+            <div class="mock-sidebar__footer">
+              <span>TPS</span>
+              <strong>240.000</strong>
+            </div>
+          </aside>
+
+          <div class="mock-workspace">
+            <div class="mock-workspace__header">
+              <div><span class="mock-label">Current macro</span><h2>Precision run</h2></div>
+              <div class="mock-actions"><button>Import</button><button class="mock-record"><i></i> Record</button></div>
+            </div>
+
+            <div class="timeline-ruler"><span>0</span><span>120</span><span>240</span><span>360</span><span>480</span></div>
+            <div class="timeline">
+              <div class="timeline__cursor"><span>284</span></div>
+              <div class="timeline__track"><span>P1</span><i class="event event--a"></i><i class="event event--b"></i><i class="event event--c"></i><i class="event event--d"></i></div>
+              <div class="timeline__track"><span>P2</span><i class="event event--e"></i><i class="event event--f"></i></div>
+              <svg class="timeline__path" viewBox="0 0 800 150" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0,116 C85,114 92,72 168,74 S255,112 320,78 420,34 485,62 590,116 800,28" />
+              </svg>
+            </div>
+
+            <div class="mock-stats">
+              <div><span>Actions</span><strong>148</strong><small>+12 this run</small></div>
+              <div><span>Current frame</span><strong>284</strong><small>1.18 seconds</small></div>
+              <div><span>Accuracy</span><strong>100%</strong><small>Frame perfect</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="split-intro container" id="about">
+      <div class="numbered-heading"><span>00</span><h2>Purpose</h2></div>
+      <div class="split-intro__statement">
+        <p>Geometry Dash runs are precise. Your tools should be too.</p>
+        <div class="prose prose--plain" id="aboutHtml">Loading about information…</div>
+      </div>
+    </section>
+
+    <section class="features container" id="features">
+      <div class="numbered-heading"><span>01</span><h2>Built for control</h2></div>
+      <div class="features__headline">
+        <h2>One toolkit from first input to final render.</h2>
+        <p>Record deterministic inputs, inspect the details, and replay with confidence.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card feature-card--wide feature-card--green">
+          <span class="feature-card__index">01</span>
+          <div class="feature-card__copy"><h3>Frame-accurate macros</h3><p>Capture and replay every press against a stable TPS, with practice fixes and frame corrections built in.</p></div>
+          <div class="signal-visual" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
         </article>
 
-        <article class="panel">
-          <h3>Latest changelog entry</h3>
+        <article class="feature-card feature-card--ink">
+          <span class="feature-card__index">02</span>
+          <div class="feature-card__copy"><h3>Useful at a glance</h3><p>Overlay frames, trajectory data, and playback state without leaving the level.</p></div>
+          <div class="orbit-visual" aria-hidden="true"><i></i><i></i><i></i></div>
+        </article>
+
+        <article class="feature-card feature-card--paper">
+          <span class="feature-card__index">03</span>
+          <div class="feature-card__copy"><h3>Render the result</h3><p>Export polished runs with configurable resolution, framerate, audio, and hardware acceleration.</p></div>
+          <div class="render-visual" aria-hidden="true"><span>1920 × 1080</span><strong>60 FPS</strong><i></i></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="updates container" id="latest">
+      <div class="numbered-heading"><span>02</span><h2>Latest</h2></div>
+      <div class="updates__grid">
+        <article class="update-card">
+          <div class="update-card__heading"><span>Release notes</span><span>Live from GitHub</span></div>
+          <div class="prose" id="latestReleaseNotes">Loading latest release notes…</div>
+        </article>
+        <article class="update-card update-card--accent">
+          <div class="update-card__heading"><span>Changelog preview</span><span>Most recent</span></div>
           <div class="prose" id="latestChangelogEntry">Loading changelog…</div>
         </article>
       </div>
-      <p class="fine">Release notes are pulled from GitHub’s <code>releases/latest</code>. If none exist, the page falls back to <code>changelog.md</code>.</p>
     </section>
 
-    <section class="section" id="changelog">
-      <div class="section__heading">
-        <p class="kicker">History</p>
-        <h2>Changelog</h2>
-      </div>
-      <article class="panel prose" id="changelogHtml">Loading…</article>
+    <section class="history container" id="changelog">
+      <div class="numbered-heading"><span>03</span><h2>Release history</h2></div>
+      <article class="history-panel prose" id="changelogHtml">Loading changelog…</article>
     </section>
 
-    <section class="section" id="about">
-      <div class="section__heading">
-        <p class="kicker">Details</p>
-        <h2>About</h2>
+    <section class="install container">
+      <div class="install__copy">
+        <span class="section-label">GET STARTED</span>
+        <h2>Put every run under your control.</h2>
+        <p>Install Geode, find <code id="installId">benno111.geobot</code> in the mod browser, and start building your next macro.</p>
       </div>
-      <article class="panel prose" id="aboutHtml">Loading…</article>
+      <div class="install__actions">
+        <a class="pill pill--light" id="btnIssues" href="#" target="_blank" rel="noreferrer">Report an issue ↗</a>
+        <a class="pill pill--outline-light" href="#top">Back to top ↑</a>
+      </div>
     </section>
-
-    <footer class="footer">
-      <div class="fine">
-        <span>© <span id="year"></span> <span id="footerAuthor">Benno111</span></span>
-        <span class="dot">•</span>
-        <a id="footerRepo" href="#" target="_blank" rel="noreferrer">Repository</a>
-      </div>
-    </footer>
   </main>
+
+  <footer class="site-footer container">
+    <span>© <span id="year"></span> <span id="footerAuthor">Benno111</span></span>
+    <a id="footerRepo" href="#" target="_blank" rel="noreferrer">Repository</a>
+  </footer>
 
   <script src="./assets/main.js"></script>
 </body>
