@@ -7,6 +7,7 @@
 #include "hacks/show_trajectory.hpp"
 
 #include <Geode/binding/LevelEditorLayer.hpp>
+#include <Geode/modify/AppDelegate.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
@@ -39,6 +40,93 @@ bool isEditorPlaytestCompat(PlayLayer* pl) {
     if (!pl) return false;
     return LevelEditorLayer::get() != nullptr || pl->m_isTestMode;
 }
+
+#ifdef GEODE_IS_IOS
+void clearRuntimeInputState(GJBaseGameLayer* layer) {
+    if (!layer) return;
+
+    auto clearPlayer = [](PlayerObject* player) {
+        if (!player) return;
+        player->releaseAllButtons();
+        player->m_holdingLeft = false;
+        player->m_holdingRight = false;
+        player->m_holdingButtons[1] = false;
+        player->m_holdingButtons[2] = false;
+        player->m_holdingButtons[3] = false;
+    };
+
+    clearPlayer(layer->m_player1);
+    clearPlayer(layer->m_player2);
+
+    auto& g = Global::get();
+    for (int i = 0; i < 6; i++) {
+        g.heldButtons[i] = false;
+        g.wasHolding[i] = false;
+    }
+
+    g.delayedFrameRelease[0][0] = -1;
+    g.delayedFrameRelease[0][1] = -1;
+    g.delayedFrameRelease[1][0] = -1;
+    g.delayedFrameRelease[1][1] = -1;
+    g.delayedFrameReleaseMain[0] = -1;
+    g.delayedFrameReleaseMain[1] = -1;
+    g.delayedFrameInput[0] = -1;
+    g.delayedFrameInput[1] = -1;
+    g.ignoreFrame = -1;
+    g.ignoreJumpButton = -1;
+}
+
+void handleIOSAppInterrupted() {
+    auto& g = Global::get();
+
+    if (g.layer)
+        detachActiveInputsRecursive(g.layer);
+    if (CCScene* scene = CCDirector::sharedDirector()->getRunningScene())
+        detachActiveInputsRecursive(scene);
+    if (g.layer) {
+        if (auto* recordLayer = typeinfo_cast<RecordLayer*>(g.layer))
+            recordLayer->onClose(nullptr);
+        else
+            g.layer->removeFromParentAndCleanup(true);
+        g.layer = nullptr;
+    }
+
+    PlayLayer* pl = PlayLayer::get();
+    LevelEditorLayer* editor = LevelEditorLayer::get();
+    clearRuntimeInputState(pl ? static_cast<GJBaseGameLayer*>(pl) : static_cast<GJBaseGameLayer*>(editor));
+
+    bool wasActive = g.state != state::none ||
+        g.renderer.recording ||
+        g.renderer.recordingAudio ||
+        g.pathfinderAutoSearch;
+
+    if (g.pathfinderAutoSearch)
+        Global::stopPathfinderAutoSearch();
+
+    if (g.renderer.recordingAudio)
+        g.renderer.stopAudio();
+    if (g.renderer.recording)
+        g.renderer.stop(Global::getCurrentFrame(pl == nullptr));
+
+    g.state = state::none;
+    g.restart = false;
+    g.restartLater = false;
+    g.leftOver = 0.f;
+    g.currentAction = 0;
+    g.currentFrameFix = 0;
+    Global::resetPathfinderState();
+    Macro::resetVariables();
+
+    if (pl && !pl->m_isPaused && !pl->m_levelEndAnimationStarted)
+        pl->pauseGame(false);
+
+    Interface::updateLabels();
+    Interface::updateButtons();
+
+    if (wasActive)
+        log::info("Stopped active geobot session for iOS app interruption");
+}
+#endif
 
 std::string getFramePerfectTypeName(int button, bool down) {
     if (button == 2)
@@ -975,6 +1063,26 @@ class $modify(PlayLayer) {
         g.ignoreRecordAction = false;
     }
 };
+
+#ifdef GEODE_IS_IOS
+class $modify(AppDelegate) {
+    void applicationDidEnterBackground() {
+        handleIOSAppInterrupted();
+        AppDelegate::applicationDidEnterBackground();
+    }
+
+    void applicationWillEnterForeground() {
+        AppDelegate::applicationWillEnterForeground();
+
+        auto& g = Global::get();
+        g.leftOver = 0.f;
+        if (PlayLayer* pl = PlayLayer::get())
+            clearRuntimeInputState(pl);
+        else if (LevelEditorLayer* editor = LevelEditorLayer::get())
+            clearRuntimeInputState(editor);
+    }
+};
+#endif
 
 class $modify(BGLHook, GJBaseGameLayer) {
     struct Fields {

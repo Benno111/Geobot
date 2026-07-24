@@ -1084,7 +1084,6 @@ bool RecordLayer::setup() {
     settingsScrollbar->setPosition({ 186.f, 0.f });
     menu->addChild(settingsScrollbar);
 
-    settingsCategoryButtons.clear();
     std::array<char const*, 4> categoryTitles = {
         "Macro Settings",
         "Path Finder\nSettings",
@@ -1104,6 +1103,9 @@ bool RecordLayer::setup() {
         CCSize { 92.f, 30.f }
     };
 
+    settingsCategoryButtons.clear();
+    settingsCategoryButtons.reserve(categoryTitles.size());
+
     for (size_t i = 0; i < categoryTitles.size(); i++) {
         auto* cardBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
         cardBg->setContentSize(categorySizes[i]);
@@ -1116,6 +1118,9 @@ bool RecordLayer::setup() {
             categorySizes[i].width / 2.f,
             categorySizes[i].height / 2.f
         });
+        cardLabel->limitLabelWidth(categorySizes[i].width - 10.f, cardLabel->getScale(), 0.1f);
+        cardLabel->updateLabel();
+        cardLabel->setID("category-label"_spr);
         cardBg->addChild(cardLabel);
 
         auto* cardBtn = CCMenuItemSpriteExtra::create(
@@ -1124,6 +1129,7 @@ bool RecordLayer::setup() {
             menu_selector(RecordLayer::onSelectSettingsCategory)
         );
         cardBtn->setTag(static_cast<int>(i));
+        cardBtn->setID(fmt::format("settings-category-{}", i).c_str());
         cardBtn->setPosition(categoryPositions[i]);
         menu->addChild(cardBtn);
         settingsCategoryButtons.push_back(cardBtn);
@@ -1451,17 +1457,29 @@ void RecordLayer::onSelectSettingsCategory(CCObject* sender) {
 }
 
 void RecordLayer::updateSettingsCategoryButtons() {
+    int selectedIndex = std::clamp(
+        Global::get().currentPage,
+        0,
+        static_cast<int>(settingsCategoryButtons.empty() ? 0 : settingsCategoryButtons.size() - 1)
+    );
+
     for (size_t i = 0; i < settingsCategoryButtons.size(); i++) {
         auto* button = settingsCategoryButtons[i];
         if (!button)
             continue;
 
-        bool selected = static_cast<size_t>(Global::get().currentPage) == i;
+        bool selected = selectedIndex == static_cast<int>(i);
         button->setScale(selected ? 1.04f : 1.f);
+        button->setEnabled(!selected);
 
         if (auto* bg = typeinfo_cast<CCScale9Sprite*>(button->getNormalImage())) {
-            bg->setOpacity(selected ? 185 : 135);
-            bg->setColor(selected ? ccColor3B { 230, 213, 147 } : ccColor3B { 255, 255, 255 });
+            bg->setOpacity(selected ? 205 : 120);
+            bg->setColor(selected ? ccColor3B { 244, 221, 142 } : ccColor3B { 214, 229, 241 });
+
+            if (auto* label = typeinfo_cast<CCLabelBMFont*>(bg->getChildByID("category-label"_spr))) {
+                label->setOpacity(selected ? 255 : 175);
+                label->setColor(selected ? ccColor3B { 92, 65, 23 } : ccColor3B { 255, 255, 255 });
+            }
         }
     }
 }
@@ -1470,6 +1488,11 @@ void RecordLayer::selectSettingsCategory(size_t index) {
     auto& g = Global::get();
     if (index >= kSettingsCategories.size())
         index = 0;
+
+    if (g.currentPage == static_cast<int>(index)) {
+        updateSettingsCategoryButtons();
+        return;
+    }
 
     g.currentPage = static_cast<int>(index);
     if (mod)
@@ -1531,13 +1554,20 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     float seedInputAnchorX = targetWidth - 128.f;
     float seedInputCenterX = targetWidth - 82.f;
     float cycleButtonX = targetWidth - 56.f;
+    float labelWidth = targetWidth - 92.f;
+    if (sett.input == InputType::Action)
+        labelWidth = targetWidth - 58.f;
+    else if (sett.input == InputType::Accuracy || sett.input == InputType::FramePerfectMode)
+        labelWidth = targetWidth - 118.f;
+    else if (sett.input == InputType::Seed)
+        labelWidth = targetWidth - 144.f;
 
     CCLabelBMFont* lbl = CCLabelBMFont::create(sett.name.c_str(), "bigFont.fnt");
     lbl->setPosition(ccp(labelX, yPos));
     lbl->setAnchorPoint({ 0, 0.5 });
     lbl->setOpacity(200);
     lbl->setScale(sett.labelScale);
-    lbl->limitLabelWidth(targetWidth - 92.f, sett.labelScale, 0.1f);
+    lbl->limitLabelWidth(labelWidth, sett.labelScale, 0.1f);
     lbl->updateLabel();
 
     nodes.push_back(static_cast<CCNode*>(lbl));
@@ -1586,6 +1616,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             sett.callback
         );
         btn->setPosition(ccp(actionButtonX, yPos));
+        btn->setID(sett.id.c_str());
 
         nodes.push_back(static_cast<CCNode*>(btn));
         targetMenu->addChild(btn);
@@ -1603,6 +1634,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             sett.callback
         );
         btn->setPosition(ccp(optionButtonX, yPos));
+        btn->setID((sett.id + "_settings").c_str());
         btn->setEnabled(!sett.disabled);
         btn->setOpacity(sett.disabled ? 110 : 255);
 
@@ -1625,6 +1657,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             menu_selector(RecordLayer::onAutosaves)
         );
         btn->setPosition(ccp(actionButtonX, yPos));
+        btn->setID((sett.id + "_folder").c_str());
 
         nodes.push_back(static_cast<CCNode*>(btn));
         targetMenu->addChild(btn);
@@ -1819,6 +1852,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             menu_selector(RecordLayer::onCycleAccuracy)
         );
         btn->setPosition(ccp(cycleButtonX, yPos));
+        btn->setID("macro_accuracy_cycle"_spr);
 
         nodes.push_back(static_cast<CCNode*>(btn));
         targetMenu->addChild(btn);
@@ -1833,6 +1867,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
             menu_selector(RecordLayer::onCycleFramePerfectMode)
         );
         btn->setPosition(ccp(cycleButtonX, yPos));
+        btn->setID("frame_perfect_overlay_mode_cycle"_spr);
 
         nodes.push_back(static_cast<CCNode*>(btn));
         targetMenu->addChild(btn);
@@ -1878,6 +1913,10 @@ void RecordLayer::loadSettingsList() {
     float viewWidth = settingsScroll->getContentSize().width;
     float viewHeight = settingsScroll->getContentSize().height;
     float contentHeight = std::max(viewHeight, topPadding + bottomPadding + settingCount * rowSpacing);
+    bool canScroll = contentHeight > viewHeight + 1.f;
+
+    if (settingsScrollbar)
+        settingsScrollbar->setVisible(canScroll);
 
     if (settingsSectionLabel) {
         settingsSectionLabel->setString(category.title.c_str());
