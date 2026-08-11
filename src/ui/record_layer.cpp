@@ -135,6 +135,19 @@ const std::vector<SettingsCategory> kSettingsCategories {
 };
 
 namespace {
+bool isMacroMenuRewriteEnabled() {
+    Mod* mod = Mod::get();
+    return mod && mod->getSettingValue<bool>("feature_flag_macro_menu_rewrite");
+}
+
+std::vector<RecordSetting> getLegacySettingsList() {
+    std::vector<RecordSetting> settings;
+    for (auto const& category : kSettingsCategories) {
+        settings.insert(settings.end(), category.settings.begin(), category.settings.end());
+    }
+    return settings;
+}
+
 const std::vector<std::string> kAccuracyModes = {
     "Vanilla",
     "Input Fixes",
@@ -1041,98 +1054,122 @@ bool RecordLayer::setup() {
 
 
 
-    lbl = CCLabelBMFont::create("Left Settings", "goldFont.fnt");
-    lbl->setPosition(ccp(12, 111));
-    lbl->setScale(0.56f);
-    menu->addChild(lbl);
+    bool macroMenuRewrite = isMacroMenuRewriteEnabled();
 
-    lbl = CCLabelBMFont::create("Right Settings", "goldFont.fnt");
-    lbl->setPosition(ccp(156, 111));
-    lbl->setScale(0.56f);
-    menu->addChild(lbl);
+    if (macroMenuRewrite) {
+        lbl = CCLabelBMFont::create("Left Settings", "goldFont.fnt");
+        lbl->setPosition(ccp(12, 111));
+        lbl->setScale(0.56f);
+        menu->addChild(lbl);
 
-    CCScale9Sprite* settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-    settingsBg->setScale(0.7f);
-    settingsBg->setColor({ 0,0,0 });
-    settingsBg->setOpacity(90);
-    settingsBg->setPosition({ -20.f, -85.f });
-    settingsBg->setAnchorPoint({ 0.f, 0.f });
-    settingsBg->setContentSize({ 100.f, 181.f });
-    menu->addChild(settingsBg);
+        lbl = CCLabelBMFont::create("Right Settings", "goldFont.fnt");
+        lbl->setPosition(ccp(156, 111));
+        lbl->setScale(0.56f);
+        menu->addChild(lbl);
+    }
+    else {
+        lbl = CCLabelBMFont::create("Settings", "goldFont.fnt");
+        lbl->setPosition(ccp(130, 111));
+        lbl->setScale(0.56f);
+        menu->addChild(lbl);
+    }
 
-    settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-    settingsBg->setScale(0.7f);
-    settingsBg->setColor({ 0,0,0 });
-    settingsBg->setOpacity(90);
-    settingsBg->setPosition({ 91.f, -85.f });
-    settingsBg->setAnchorPoint({ 0.f, 0.f });
-    settingsBg->setContentSize({ 190.f, 181.f });
-    menu->addChild(settingsBg);
+    if (macroMenuRewrite) {
+        CCScale9Sprite* settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        settingsBg->setScale(0.7f);
+        settingsBg->setColor({ 0,0,0 });
+        settingsBg->setOpacity(90);
+        settingsBg->setPosition({ -20.f, -85.f });
+        settingsBg->setAnchorPoint({ 0.f, 0.f });
+        settingsBg->setContentSize({ 100.f, 181.f });
+        menu->addChild(settingsBg);
+
+        settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        settingsBg->setScale(0.7f);
+        settingsBg->setColor({ 0,0,0 });
+        settingsBg->setOpacity(90);
+        settingsBg->setPosition({ 91.f, -85.f });
+        settingsBg->setAnchorPoint({ 0.f, 0.f });
+        settingsBg->setContentSize({ 190.f, 181.f });
+        menu->addChild(settingsBg);
+    }
+    else {
+        CCScale9Sprite* settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        settingsBg->setScale(0.7f);
+        settingsBg->setColor({ 0,0,0 });
+        settingsBg->setOpacity(90);
+        settingsBg->setPosition({ -20.f, -85.f });
+        settingsBg->setAnchorPoint({ 0.f, 0.f });
+        settingsBg->setContentSize({ 301.f, 181.f });
+        menu->addChild(settingsBg);
+    }
 
     settingsSectionLabel = CCLabelBMFont::create("", "goldFont.fnt");
-    settingsSectionLabel->setPosition({ 186.f, 95.f });
+    settingsSectionLabel->setPosition(macroMenuRewrite ? CCPoint { 186.f, 95.f } : CCPoint { 130.f, 95.f });
     settingsSectionLabel->setScale(0.42f);
     menu->addChild(settingsSectionLabel);
 
-    settingsScroll = geode::ScrollLayer::create(cocos2d::CCSize { 190.f, 150.f });
-    settingsScroll->setPosition({ 91.f, -72.f });
+    settingsScroll = geode::ScrollLayer::create(macroMenuRewrite ? cocos2d::CCSize { 190.f, 150.f } : cocos2d::CCSize { 301.f, 150.f });
+    settingsScroll->setPosition(macroMenuRewrite ? CCPoint { 91.f, -72.f } : CCPoint { -20.f, -72.f });
     settingsScroll->setTouchEnabled(true);
     settingsScroll->enableScrollWheel(true);
     menu->addChild(settingsScroll);
 
     settingsScrollbar = geode::Scrollbar::create(settingsScroll);
-    settingsScrollbar->setPosition({ 186.f, 0.f });
+    settingsScrollbar->setPosition(macroMenuRewrite ? CCPoint { 186.f, 0.f } : CCPoint { 274.f, 0.f });
     menu->addChild(settingsScrollbar);
 
-    std::array<char const*, 4> categoryTitles = {
-        "Macro Settings",
-        "Path Finder\nSettings",
-        "Render Settings",
-        "Other Settings"
-    };
-    std::array<CCPoint, 4> categoryPositions = {
-        CCPoint { 30.f, 70.f },
-        CCPoint { 30.f, 32.f },
-        CCPoint { 30.f, -7.f },
-        CCPoint { 30.f, -48.f }
-    };
-    std::array<CCSize, 4> categorySizes = {
-        CCSize { 92.f, 31.f },
-        CCSize { 92.f, 25.f },
-        CCSize { 92.f, 25.f },
-        CCSize { 92.f, 30.f }
-    };
-
     settingsCategoryButtons.clear();
-    settingsCategoryButtons.reserve(categoryTitles.size());
+    if (macroMenuRewrite) {
+        std::array<char const*, 4> categoryTitles = {
+            "Macro Settings",
+            "Path Finder\nSettings",
+            "Render Settings",
+            "Other Settings"
+        };
+        std::array<CCPoint, 4> categoryPositions = {
+            CCPoint { 30.f, 70.f },
+            CCPoint { 30.f, 32.f },
+            CCPoint { 30.f, -7.f },
+            CCPoint { 30.f, -48.f }
+        };
+        std::array<CCSize, 4> categorySizes = {
+            CCSize { 92.f, 31.f },
+            CCSize { 92.f, 25.f },
+            CCSize { 92.f, 25.f },
+            CCSize { 92.f, 30.f }
+        };
 
-    for (size_t i = 0; i < categoryTitles.size(); i++) {
-        auto* cardBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
-        cardBg->setContentSize(categorySizes[i]);
-        cardBg->setOpacity(135);
-        cardBg->setColor({ 255, 255, 255 });
+        settingsCategoryButtons.reserve(categoryTitles.size());
 
-        auto* cardLabel = CCLabelBMFont::create(categoryTitles[i], "chatFont.fnt");
-        cardLabel->setScale(i == 1 ? 0.42f : 0.5f);
-        cardLabel->setPosition({
-            categorySizes[i].width / 2.f,
-            categorySizes[i].height / 2.f
-        });
-        cardLabel->limitLabelWidth(categorySizes[i].width - 10.f, cardLabel->getScale(), 0.1f);
-        cardLabel->updateLabel();
-        cardLabel->setID("category-label"_spr);
-        cardBg->addChild(cardLabel);
+        for (size_t i = 0; i < categoryTitles.size(); i++) {
+            auto* cardBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+            cardBg->setContentSize(categorySizes[i]);
+            cardBg->setOpacity(135);
+            cardBg->setColor({ 255, 255, 255 });
 
-        auto* cardBtn = CCMenuItemSpriteExtra::create(
-            cardBg,
-            this,
-            menu_selector(RecordLayer::onSelectSettingsCategory)
-        );
-        cardBtn->setTag(static_cast<int>(i));
-        cardBtn->setID(fmt::format("settings-category-{}", i).c_str());
-        cardBtn->setPosition(categoryPositions[i]);
-        menu->addChild(cardBtn);
-        settingsCategoryButtons.push_back(cardBtn);
+            auto* cardLabel = CCLabelBMFont::create(categoryTitles[i], "chatFont.fnt");
+            cardLabel->setScale(i == 1 ? 0.42f : 0.5f);
+            cardLabel->setPosition({
+                categorySizes[i].width / 2.f,
+                categorySizes[i].height / 2.f
+            });
+            cardLabel->limitLabelWidth(categorySizes[i].width - 10.f, cardLabel->getScale(), 0.1f);
+            cardLabel->updateLabel();
+            cardLabel->setID("category-label"_spr);
+            cardBg->addChild(cardLabel);
+
+            auto* cardBtn = CCMenuItemSpriteExtra::create(
+                cardBg,
+                this,
+                menu_selector(RecordLayer::onSelectSettingsCategory)
+            );
+            cardBtn->setTag(static_cast<int>(i));
+            cardBtn->setID(fmt::format("settings-category-{}", i).c_str());
+            cardBtn->setPosition(categoryPositions[i]);
+            menu->addChild(cardBtn);
+            settingsCategoryButtons.push_back(cardBtn);
+        }
     }
 
     lbl = CCLabelBMFont::create("Record", "bigFont.fnt");
@@ -1457,6 +1494,9 @@ void RecordLayer::onSelectSettingsCategory(CCObject* sender) {
 }
 
 void RecordLayer::updateSettingsCategoryButtons() {
+    if (settingsCategoryButtons.empty())
+        return;
+
     int selectedIndex = std::clamp(
         Global::get().currentPage,
         0,
@@ -1485,6 +1525,9 @@ void RecordLayer::updateSettingsCategoryButtons() {
 }
 
 void RecordLayer::selectSettingsCategory(size_t index) {
+    if (!isMacroMenuRewriteEnabled())
+        return;
+
     auto& g = Global::get();
     if (index >= kSettingsCategories.size())
         index = 0;
@@ -1897,6 +1940,21 @@ void RecordLayer::loadSettingsList() {
 
     if (!settingsScroll) return;
 
+    bool macroMenuRewrite = isMacroMenuRewriteEnabled();
+    std::vector<RecordSetting> legacySettings;
+    SettingsCategory legacyCategory;
+    SettingsCategory const* categoryPtr = nullptr;
+
+    if (macroMenuRewrite) {
+        size_t categoryIndex = static_cast<size_t>(std::clamp(g.currentPage, 0, static_cast<int>(kSettingsCategories.size()) - 1));
+        categoryPtr = &kSettingsCategories[categoryIndex];
+    }
+    else {
+        legacySettings = getLegacySettingsList();
+        legacyCategory = { "Settings", std::move(legacySettings) };
+        categoryPtr = &legacyCategory;
+    }
+
     if (settingsMenu) {
         detachActiveInputsRecursive(settingsMenu);
         settingsMenu->removeFromParentAndCleanup(true);
@@ -1906,8 +1964,7 @@ void RecordLayer::loadSettingsList() {
     constexpr float rowSpacing = 29.f;
     constexpr float topPadding = 16.f;
     constexpr float bottomPadding = 12.f;
-    size_t categoryIndex = static_cast<size_t>(std::clamp(g.currentPage, 0, static_cast<int>(kSettingsCategories.size()) - 1));
-    auto const& category = kSettingsCategories[categoryIndex];
+    auto const& category = *categoryPtr;
     size_t settingCount = category.settings.size();
 
     float viewWidth = settingsScroll->getContentSize().width;

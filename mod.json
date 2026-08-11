@@ -38,6 +38,12 @@
             "type": "bool",
             "default": false
         },
+        "feature_flag_macro_menu_rewrite": {
+            "name": "Enable Macro Menu Rewrite",
+            "description": "Uses the rewritten category-based macro menu layout.",
+            "type": "bool",
+            "default": false
+        },
         "pathfinder_solver_executable": {
             "name": "Pathfinder Solver Executable",
             "description": "Executable or script wrapper that generates a macro from a decompressed level string.",
