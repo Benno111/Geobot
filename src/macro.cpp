@@ -22,6 +22,8 @@ void Macro::recordAction(int frame, int button, bool player2, bool hold) {
 }
 
 void Macro::recordFrameFix(int frame, PlayerObject* p1, PlayerObject* p2) {
+    if (!p1 || !p2) return;
+
     float p1Rotation = p1->getRotation();
     float p2Rotation = p2->getRotation();
 

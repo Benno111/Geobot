@@ -1212,10 +1212,8 @@ class $modify(BGLHook, GJBaseGameLayer) {
         if (!g.frameFixes || g.macro.inputs.empty())
             return;
 
-        if (!g.macro.frameFixes.empty()) {
-            if (1.f / Global::getTPS() * (frame - g.macro.frameFixes.back().frame) < 1.f / g.frameFixesLimit)
-                return;
-        }
+        if (!g.macro.frameFixes.empty() && g.macro.frameFixes.back().frame == frame)
+            return;
 
         g.macro.recordFrameFix(frame, m_player1, m_player2);
     }
