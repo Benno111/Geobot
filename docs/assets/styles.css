@@ -104,8 +104,6 @@ button { color: inherit; }
 .event--a { left: 18%; }.event--b { left: 31%; }.event--c { left: 58%; }.event--d { left: 83%; }.event--e { left: 40%; }.event--f { left: 70%; }
 .timeline__cursor { position: absolute; z-index: 3; top: 0; bottom: 0; left: 59%; width: 1px; background: var(--orange); }
 .timeline__cursor span { position: absolute; top: 5px; left: 5px; padding: 3px 5px; border-radius: 3px; background: var(--orange); color: #fff; font-size: 8px; }
-.timeline__path { position: absolute; inset: 22px 0 0 46px; width: calc(100% - 46px); height: 145px; }
-.timeline__path path { fill: none; stroke: rgba(33,220,114,.35); stroke-width: 2; }
 .mock-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-top: 14px; }
 .mock-stats > div { display: grid; gap: 7px; padding: 14px; border: 1px solid #292e26; border-radius: 8px; background: #171a15; }
 .mock-stats span { color: #778074; font-size: 9px; }
