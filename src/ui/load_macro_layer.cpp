@@ -99,7 +99,7 @@ void LoadMacroLayer::showLoadingScreen() {
 		dim->setAnchorPoint({ 0.f, 0.f });
 		dim->setPosition({ 0, 0 });
 
-		CCScale9Sprite* panel = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+		CCScale9Sprite* panel = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
 		panel->setContentSize({ 175.f, 62.f });
 		panel->setColor({ 0, 0, 0 });
 		panel->setOpacity(165);
@@ -525,7 +525,7 @@ void LoadMacroLayer::populateList(bool refresh, float prevScroll) {
 	leftBorder->setScaleY(5.6f);
 	leftBorder->setPosition({ -5.45, -1 });
 
-	CCScale9Sprite* listBackground = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+	CCScale9Sprite* listBackground = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
 	listBackground->setScale(0.7f);
 	listBackground->setColor({ 0,0,0 });
 	listBackground->setOpacity(75);

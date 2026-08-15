@@ -99,7 +99,7 @@ void Interface::addLabels(PlayLayer* pl) {
     lbl->setVisible(false);
     pl->addChild(lbl);
 
-    auto bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    auto bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setPosition({ CCDirector::sharedDirector()->getWinSize().width / 2.f, 44.f });
     bg->setContentSize({ 210.f, 50.f });
     bg->setOpacity(90);

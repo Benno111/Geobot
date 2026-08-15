@@ -38,7 +38,7 @@ private:
         lbl->setPosition({ 18.f, 32.f });
         menu->addChild(lbl);
 
-        CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         bg->setColor({ 0, 0, 0 });
         bg->setOpacity(80);
         bg->setScale(0.45f);

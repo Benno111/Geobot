@@ -982,7 +982,7 @@ bool RecordLayer::setup() {
 
 #endif
 
-    CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setScale(0.7f);
     bg->setColor({ 0,0,0 });
     bg->setOpacity(75);
@@ -991,7 +991,7 @@ bool RecordLayer::setup() {
     bg->setContentSize({ 275, 151 });
     menu->addChild(bg);
 
-    bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setScale(0.7f);
     bg->setColor({ 0,0,0 });
     bg->setOpacity(75);
@@ -1000,7 +1000,7 @@ bool RecordLayer::setup() {
     bg->setContentSize({ 275, 169 });
     menu->addChild(bg);
 
-    bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setScale(0.7f);
     bg->setColor({ 0,0,0 });
     bg->setOpacity(75);
@@ -1075,7 +1075,7 @@ bool RecordLayer::setup() {
     }
 
     if (macroMenuRewrite) {
-        CCScale9Sprite* settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        CCScale9Sprite* settingsBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         settingsBg->setScale(0.7f);
         settingsBg->setColor({ 0,0,0 });
         settingsBg->setOpacity(90);
@@ -1084,7 +1084,7 @@ bool RecordLayer::setup() {
         settingsBg->setContentSize({ 100.f, 181.f });
         menu->addChild(settingsBg);
 
-        settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        settingsBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         settingsBg->setScale(0.7f);
         settingsBg->setColor({ 0,0,0 });
         settingsBg->setOpacity(90);
@@ -1094,7 +1094,7 @@ bool RecordLayer::setup() {
         menu->addChild(settingsBg);
     }
     else {
-        CCScale9Sprite* settingsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        CCScale9Sprite* settingsBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         settingsBg->setScale(0.7f);
         settingsBg->setColor({ 0,0,0 });
         settingsBg->setOpacity(90);
@@ -1143,7 +1143,7 @@ bool RecordLayer::setup() {
         settingsCategoryButtons.reserve(categoryTitles.size());
 
         for (size_t i = 0; i < categoryTitles.size(); i++) {
-            auto* cardBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+            auto* cardBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
             cardBg->setContentSize(categorySizes[i]);
             cardBg->setOpacity(135);
             cardBg->setColor({ 255, 255, 255 });
@@ -1357,7 +1357,7 @@ bool RecordLayer::setup() {
     fpsInput->setDelegate(this);
     menu->addChild(fpsInput);
 
-    bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setScale(0.375f);
     bg->setColor({ 0,0,0 });
     bg->setOpacity(75);
@@ -1367,7 +1367,7 @@ bool RecordLayer::setup() {
     bg->setZOrder(29);
     menu->addChild(bg);
 
-    bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setScale(0.375f);
     bg->setColor({ 0,0,0 });
     bg->setOpacity(75);
@@ -1377,7 +1377,7 @@ bool RecordLayer::setup() {
     bg->setZOrder(29);
     menu->addChild(bg);
 
-    bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setScale(0.375f);
     bg->setColor({ 0,0,0 });
     bg->setOpacity(75);
@@ -1387,7 +1387,7 @@ bool RecordLayer::setup() {
     bg->setZOrder(29);
     menu->addChild(bg);
 
-    bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setScale(0.375f);
     bg->setColor({ 0,0,0 });
     bg->setOpacity(75);
@@ -1397,7 +1397,7 @@ bool RecordLayer::setup() {
     bg->setZOrder(29);
     menu->addChild(bg);
 
-    bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setScale(0.375f);
     bg->setColor({ 0,0,0 });
     bg->setOpacity(75);
@@ -1707,7 +1707,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     }
 
     if (sett.input == InputType::Speedhack) {
-        CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         bg->setPosition(ccp(compactInputAnchorX, yPos + 10));
         bg->setScale(0.355f);
         bg->setColor({ 0,0,0 });
@@ -1737,7 +1737,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     }
 
     if (sett.input == InputType::Tps) {
-        tpsBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        tpsBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         tpsBg->setPosition(ccp(compactInputAnchorX, yPos + 10));
         tpsBg->setScale(0.355f);
         tpsBg->setColor({ 0,0,0 });
@@ -1767,7 +1767,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     }
 
     if (sett.input == InputType::Seed) {
-        CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         bg->setPosition(ccp(seedInputAnchorX, yPos + 10));
         bg->setScale(0.355f);
         bg->setColor({ 0,0,0 });
@@ -1797,7 +1797,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     }
 
     if (sett.input == InputType::Respawn) {
-        CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         bg->setPosition(ccp(compactInputAnchorX, yPos + 10));
         bg->setScale(0.355f);
         bg->setColor({ 0,0,0 });
@@ -1827,7 +1827,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     }
 
     if (sett.input == InputType::FrameOffset) {
-        CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         bg->setPosition(ccp(compactInputAnchorX, yPos + 10));
         bg->setScale(0.355f);
         bg->setColor({ 0,0,0 });
@@ -1857,7 +1857,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     }
 
     if (sett.input == InputType::FrameFixesLimit) {
-        CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         bg->setPosition(ccp(compactInputAnchorX, yPos + 10));
         bg->setScale(0.355f);
         bg->setColor({ 0,0,0 });
@@ -2000,6 +2000,45 @@ void RecordLayer::loadSettingsList() {
     }
 
     settingsScroll->scrollToTop();
+    // Resize popup to fit content width and recenter on screen
+    {
+        CCArray* children = m_mainLayer->getChildren();
+        if (children && children->count() > 0) {
+            bool first = true;
+            float minX = 0.f, maxX = 0.f;
+            for (int i = 0; i < children->count(); ++i) {
+                if (auto* child = typeinfo_cast<CCNode*>(children->objectAtIndex(i))) {
+                    CCSize cs = child->getContentSize();
+                    if (cs.width <= 0.f) continue;
+                    float sx = child->getScaleX();
+                    CCPoint ap = child->getAnchorPoint();
+                    float left = child->getPositionX() - cs.width * sx * ap.x;
+                    float right = child->getPositionX() + cs.width * sx * (1.f - ap.x);
+                    if (first) {
+                        minX = left; maxX = right; first = false;
+                    } else {
+                        minX = std::min(minX, left);
+                        maxX = std::max(maxX, right);
+                    }
+                }
+            }
+
+            if (!first) {
+                float padding = 12.f;
+                float desiredWidth = (maxX - minX) + padding * 2.f;
+                auto cur = m_mainLayer->getContentSize();
+                if (desiredWidth > 0.f && std::abs(desiredWidth - cur.width) > 0.5f) {
+                    m_mainLayer->setContentSize({ desiredWidth, cur.height });
+
+                    cocos2d::CCPoint offset = (cocos2d::CCDirector::sharedDirector()->getWinSize() - m_mainLayer->getContentSize()) / 2;
+                    m_mainLayer->setPosition(m_mainLayer->getPosition() - offset);
+                    m_closeBtn->setPosition(m_closeBtn->getPosition() + offset);
+                    m_bgSprite->setPosition(m_bgSprite->getPosition() + offset);
+                }
+            }
+        }
+    }
+
     updateTPS();
 }
 

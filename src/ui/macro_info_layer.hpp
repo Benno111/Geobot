@@ -8,7 +8,7 @@ public:
 
     static MacroInfoLayer* create() {
         MacroInfoLayer* ret = new MacroInfoLayer();
-        if (ret->initAnchored(417, 268, "square01_001.png", CCRectZero)) {
+        if (ret->initAnchored(417, 268, WINDOW_BG, CCRectZero)) {
             ret->autorelease();
             return ret;
         }
@@ -47,7 +47,7 @@ private:
             else framePerfectRelease++;
         }
 
-        CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         bg->setColor({ 0,0,0 });
         bg->setOpacity(75);
         bg->setPosition(ccp(29, 225));
@@ -55,7 +55,7 @@ private:
         bg->setContentSize({ 162, 202 });
         m_mainLayer->addChild(bg);
 
-        bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+        bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         bg->setColor({ 0,0,0 });
         bg->setOpacity(75);
         bg->setPosition(ccp(226, 225));

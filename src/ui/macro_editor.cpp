@@ -133,7 +133,7 @@ bool MacroEditLayer::setup() {
     noInputsLabel2->setScale(0.625f);
     menu->addChild(noInputsLabel2);
 
-    hoveredBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    hoveredBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     hoveredBg->setColor({ 255, 255, 255 });
     hoveredBg->setOpacity(44);
     hoveredBg->setScale(0.375f);
@@ -143,7 +143,7 @@ bool MacroEditLayer::setup() {
     hoveredBg->setVisible(false);
     menu->addChild(hoveredBg);
 
-    selectedBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    selectedBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     selectedBg->setColor({ 232, 255, 0 });
     selectedBg->setOpacity(44);
     selectedBg->setScale(0.375f);
@@ -152,7 +152,7 @@ bool MacroEditLayer::setup() {
     selectedBg->setContentSize({ 471, 65 });
     menu->addChild(selectedBg);
 
-    listBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    listBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     listBg->setColor({ 0,0,0 });
     listBg->setOpacity(78);
     listBg->setPositionX(-91);
@@ -160,7 +160,7 @@ bool MacroEditLayer::setup() {
     listBg->setContentSize({ 194, 209 });
     menu->addChild(listBg);
 
-    selectedInputBg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    selectedInputBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     selectedInputBg->setColor({ 0,0,0 });
     selectedInputBg->setOpacity(78);
     selectedInputBg->setPosition({117, 4});
@@ -280,7 +280,7 @@ bool MacroEditLayer::setup() {
     btn->setPosition({xPos + 120, yPos - 35});
     selectedInputMenu->addChild(btn);
     
-    CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setColor({ 0,0,0 });
     bg->setScale(0.3125f);
     bg->setOpacity(90);
@@ -312,7 +312,7 @@ bool MacroEditLayer::setup() {
     btn->setPosition({xPos + 120, yPos - 66});
     selectedInputMenu->addChild(btn);
     
-    bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setColor({ 0,0,0 });
     bg->setScale(0.3125f);
     bg->setOpacity(90);
@@ -344,7 +344,7 @@ bool MacroEditLayer::setup() {
     btn->setPosition({xPos + 120, yPos - 97});
     selectedInputMenu->addChild(btn);
 
-    bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setColor({ 0,0,0 });
     bg->setScale(0.3125f);
     bg->setOpacity(90);

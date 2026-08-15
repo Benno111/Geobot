@@ -199,7 +199,7 @@ bool ButtonEditLayer::setup() {
     selectedLbl->setPositionY(121);
     menu->addChild(selectedLbl);
 
-    CCScale9Sprite* bg = CCScale9Sprite::create("square02b_001.png", { 0, 0, 80, 80 });
+    CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setColor({ 0,0,0 });
     bg->setOpacity(78);
     bg->setPositionY(77);

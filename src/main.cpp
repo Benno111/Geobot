@@ -1478,7 +1478,9 @@ class $modify(BGLHook, GJBaseGameLayer) {
             !g.ignoreRecordAction &&
             !m_levelEndAnimationStarted) {
             int frame = Global::getCurrentFrame(!PlayLayer::get());
-            if (frame != g.ignoreFrame)
+            // Respect ignoreFrame for a range: skip recording while
+            // frame <= g.ignoreFrame (g.ignoreFrame == -1 means disabled).
+            if (g.ignoreFrame == -1 || frame > g.ignoreFrame)
                 Macro::recordAction(frame, button, player2, hold);
         }
 
