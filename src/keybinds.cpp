@@ -7,7 +7,9 @@
 #include "hacks/layout_mode.hpp"
 #include "hacks/show_trajectory.hpp"
 
+#ifndef GEODE_IS_IOS
 #include <Geode/modify/CCKeyboardDispatcher.hpp>
+#endif
 #include <Geode/modify/CCTouchDispatcher.hpp>
 #include <Geode/modify/MenuLayer.hpp>
 
@@ -110,6 +112,7 @@ public:
 };
 }
 
+#ifndef GEODE_IS_IOS
 class $modify(CCKeyboardDispatcher) {
   bool dispatchKeyboardMSG(enumKeyCodes key, bool isKeyDown, bool isKeyRepeat, double dt) {
     auto& g = Global::get();
@@ -126,6 +129,7 @@ class $modify(CCKeyboardDispatcher) {
     return CCKeyboardDispatcher::dispatchKeyboardMSG(key, isKeyDown, isKeyRepeat, dt);
   }
 };
+#endif
 
 class $modify(MenuLayer) {
   bool init() {
