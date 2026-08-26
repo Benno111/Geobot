@@ -300,7 +300,9 @@ public:
     std::string cachedMacroSeedString = "";
     uintptr_t cachedMacroSeedValue = 1;
     uintptr_t latestSeed = 0;
-    float leftOver = 0.f;
+    // Keep the fixed-step accumulator in double precision. A float accumulator
+    // can round a nominal 4-step 60 Hz update down to 3 steps on some targets.
+    double leftOver = 0.0;
     int framePerfectOverlayFrames = 0;
     std::string framePerfectOverlayText = "";
     int framePerfectCount = 0;

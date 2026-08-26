@@ -328,15 +328,20 @@ int Global::getCurrentFrame(bool editor) {
 
   auto& g = Global::get();
   int frame;
+  const double exactFrame = static_cast<double>(bgl->m_gameState.m_levelTime) *
+                            static_cast<double>(getTPS());
 
   if (!editor && pl) {
     // Use levelTime as the frame source to avoid progress-based jumps that
     // can fast-forward playback and skip actions.
-    frame = static_cast<int>(bgl->m_gameState.m_levelTime * getTPS());
+    // Playback advances in fixed-size ticks. Round to the nearest tick instead
+    // of truncating so small, platform-specific level-time errors cannot move
+    // an input one frame later.
+    frame = static_cast<int>(std::llround(exactFrame));
     if (g.macro.geobotMacro)
       frame++;
   } else {
-    frame = static_cast<int>(bgl->m_gameState.m_levelTime * getTPS());
+    frame = static_cast<int>(std::llround(exactFrame));
     frame++;
   }
 

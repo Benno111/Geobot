@@ -28,18 +28,22 @@ class $modify(GJBaseGameLayer) {
         if (!pl || pl != typeinfo_cast<PlayLayer*>(this))
             return GJBaseGameLayer::update(dt);
         
-        float newDt = 1.f / Global::getTPS();
+        const double newDt = 1.0 / static_cast<double>(Global::getTPS());
 
-        if (g.frameStepper) return GJBaseGameLayer::update(newDt);
+        if (g.frameStepper) return GJBaseGameLayer::update(static_cast<float>(newDt));
 
-        float realDt = dt + g.leftOver;
+        const double realDt = static_cast<double>(dt) + g.leftOver;
 
-        auto startTime = std::chrono::high_resolution_clock::now();
-        int mult = static_cast<int>(realDt / newDt);
+        const auto startTime = std::chrono::steady_clock::now();
+        // Account for representation error at exact tick boundaries. Without
+        // this, identical deltas can produce a different step count depending
+        // on the platform's floating-point implementation.
+        constexpr double tickBoundaryEpsilon = 1e-6;
+        int mult = static_cast<int>(std::floor((realDt / newDt) + tickBoundaryEpsilon));
 
         for (int i = 0; i < mult; ++i) {
-            GJBaseGameLayer::update(newDt);
-            if (std::chrono::high_resolution_clock::now() - startTime > std::chrono::duration<double, std::milli>(16.666f)) {
+            GJBaseGameLayer::update(static_cast<float>(newDt));
+            if (std::chrono::steady_clock::now() - startTime > std::chrono::duration<double, std::milli>(16.666)) {
                 mult = i + 1;
                 break;
             }
@@ -48,7 +52,10 @@ class $modify(GJBaseGameLayer) {
         // Keep the fractional remainder for the next frame.  Using
         // realDt (not just dt) as the base ensures the leftOver stays
         // in [0, newDt) and never grows unboundedly.
-        g.leftOver = realDt - newDt * mult;
+        g.leftOver = realDt - newDt * static_cast<double>(mult);
+        // Do not carry a tiny negative value created by the boundary epsilon.
+        if (g.leftOver < 0.0 && g.leftOver > -(newDt * tickBoundaryEpsilon))
+            g.leftOver = 0.0;
         
     }
 
