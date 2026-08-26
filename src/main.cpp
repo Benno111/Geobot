@@ -13,8 +13,11 @@
 #include <Geode/modify/PlayLayer.hpp>
 
 namespace {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
 constexpr int kFramePerfectMaxGap = 2;
+#endif
 constexpr int kRespawnMovementClearFrames = 5;
+#if GEOBOT_ENABLE_PATHFINDER
 constexpr int kPathfinderTolerance = 2;
 constexpr int kPathfinderSearchTapLength = 2;
 constexpr int kPathfinderSearchMinOffset = -18;
@@ -35,6 +38,7 @@ constexpr int kPathfinderSearchBranchTailWindow = 48;
 constexpr int kPathfinderSearchBranchSpacing = 8;
 constexpr int kPathfinderSearchSecondTapMinGap = 6;
 constexpr int kPathfinderSearchSecondTapMaxGap = 18;
+#endif
 
 bool isEditorPlaytestCompat(PlayLayer* pl) {
     if (!pl) return false;
@@ -136,6 +140,7 @@ std::string getFramePerfectTypeName(int button, bool down) {
     return down ? "Click Press" : "Click Release";
 }
 
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
 bool isTrackedFramePerfectInput(GJBaseGameLayer* layer, input const& currentInput) {
     return currentInput.button == 1 ||
            (layer->m_levelSettings->m_platformerMode &&
@@ -207,7 +212,9 @@ int findLiveFramePerfectWiggle(std::vector<input> const& inputs, size_t actionIn
 bool shouldCollectFramePerfectCalibration() {
     return Global::isDeveloperModeEnabled();
 }
+#endif
 
+#if GEOBOT_ENABLE_PATHFINDER
 std::string getPathfinderInputName(input const& action, bool showPlayer) {
     std::string result = getFramePerfectTypeName(action.button, action.down);
     if (showPlayer)
@@ -855,7 +862,9 @@ void advancePathfinderFromInput(GJBaseGameLayer* layer, int frame, int button, b
 
     updatePathfinderStatusForFrame(layer, frame);
 }
+#endif
 
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
 void appendFramePerfectCalibrationRow(
     char const* eventType,
     char const* source,
@@ -910,6 +919,7 @@ void appendFramePerfectCalibrationRow(
         << getFramePerfectTierLabel(leftWiggle, rightWiggle) << ','
         << '"' << typeName << "\"\n";
 }
+#endif
 
 void clearMovementStateForRespawnWindow(GJBaseGameLayer* layer) {
     if (!layer) return;
@@ -1088,6 +1098,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
     struct Fields {
         bool macroInput = false;
 
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
         struct PendingFramePerfect {
             size_t actionIndex = 0;
             int inputFrame = 0;
@@ -1099,6 +1110,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
         };
 
         std::vector<PendingFramePerfect> pendingFramePerfects;
+#endif
     };
 
     void processCommands(float dt, bool isHalfTick, bool isLastTick) {
@@ -1137,6 +1149,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
         if (pl && frame <= g.clearMovementUntilFrame)
             clearMovementStateForRespawnWindow(this);
 
+#if GEOBOT_ENABLE_PATHFINDER
         if (pl && g.pathfinderAutoSearch && !pl->m_levelEndAnimationStarted && m_player1 && !m_player1->m_isDead)
             rememberPathfinderSnapshot(pl, frame);
 
@@ -1147,6 +1160,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
         if (pl && !m_levelEndAnimationStarted)
             updatePathfinderStatusForFrame(this, frame);
+#endif
 
         if (g.state == state::none)
             return;
@@ -1224,14 +1238,18 @@ class $modify(BGLHook, GJBaseGameLayer) {
             return;
 
         if (m_player1->m_isDead) {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
             m_fields->pendingFramePerfects.clear();
+#endif
             m_player1->releaseAllButtons();
             m_player2->releaseAllButtons();
 
+#if GEOBOT_ENABLE_PATHFINDER
             if (PlayLayer* pl = PlayLayer::get(); pl && g.pathfinderAutoSearch) {
                 resolvePathfinderAttempt(pl, frame, false);
                 return;
             }
+#endif
 
             if (PlayLayer* pl = PlayLayer::get(); pl && !pl->m_isPracticeMode) {
                 Global::resetFramePerfectStats();
@@ -1248,7 +1266,11 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
             if (frame != g.respawnFrame) {
                 bool inputPlayer2 = Macro::flipControls() ? !macroInput.player2 : macroInput.player2;
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
                 processRealtimeFramePerfect(actionIndex, macroInput);
+#else
+                (void)actionIndex;
+#endif
                 GJBaseGameLayer::handleButton(macroInput.down, macroInput.button, inputPlayer2);
             }
 
@@ -1259,7 +1281,9 @@ class $modify(BGLHook, GJBaseGameLayer) {
         g.respawnFrame = -1;
         m_fields->macroInput = false;
 
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
         trimExpiredPendingFramePerfects(frame);
+#endif
 
         if (g.currentAction == g.macro.inputs.size() && g.stopPlaying) {
             Macro::togglePlaying();
@@ -1295,6 +1319,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
     }
 
     void processRealtimeFramePerfect(size_t actionIndex, input const& currentInput) {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
         auto& g = Global::get();
         if (!Global::isFramePerfectDetectionEnabled()) {
             m_fields->pendingFramePerfects.clear();
@@ -1423,9 +1448,14 @@ class $modify(BGLHook, GJBaseGameLayer) {
             -1,
             typeName
         );
+#else
+        (void)actionIndex;
+        (void)currentInput;
+#endif
     }
 
     void trimExpiredPendingFramePerfects(int frame) {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
         if (!Global::isFramePerfectDetectionEnabled()) {
             m_fields->pendingFramePerfects.clear();
             return;
@@ -1460,6 +1490,9 @@ class $modify(BGLHook, GJBaseGameLayer) {
             }
         );
         pending.erase(it, pending.end());
+#else
+        (void)frame;
+#endif
     }
 
     void handleButton(bool hold, int button, bool player2) {
@@ -1484,10 +1517,12 @@ class $modify(BGLHook, GJBaseGameLayer) {
                 Macro::recordAction(frame, button, player2, hold);
         }
 
+#if GEOBOT_ENABLE_PATHFINDER
         if (!m_fields->macroInput && !m_levelEndAnimationStarted) {
             int frame = Global::getCurrentFrame(!PlayLayer::get());
             advancePathfinderFromInput(this, frame, button, player2, hold);
         }
+#endif
 
         GJBaseGameLayer::handleButton(hold, button, player2);
     }

@@ -24,6 +24,14 @@ using namespace geode::prelude;
 
 #define WINDOW_BG "GJ_square01.png"
 
+#ifndef GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
+#define GEOBOT_ENABLE_FRAMEPERFECT_DETECTION 1
+#endif
+
+#ifndef GEOBOT_ENABLE_PATHFINDER
+#define GEOBOT_ENABLE_PATHFINDER 1
+#endif
+
 inline void detachInputNodeSafe(CCTextInputNode* input) {
     if (!input) return;
 

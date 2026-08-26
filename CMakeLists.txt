@@ -12,8 +12,10 @@ if (APPLE)
     endif()
 endif()
 
-project(geobot2 VERSION 1.0.0)
+project(geobot VERSION 2.0.0)
 option(geobot_FAST_BUILD "Optimize build settings for faster compile times" ON)
+option(geobot_ENABLE_FRAMEPERFECT_DETECTION "Build frameperfect detection support" OFF)
+option(geobot_ENABLE_PATHFINDER "Build pathfinder support" OFF)
 
 option(geobot_ENABLE_TEST_BUILDS "Enable test targets in this project and dependencies" OFF)
 set(BUILD_TESTING ${geobot_ENABLE_TEST_BUILDS} CACHE BOOL "Build tests" FORCE)
@@ -249,7 +251,63 @@ if (TARGET GeodeBindings)
     endif()
 endif()
 
-setup_geode_mod(${PROJECT_NAME})
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    GEOBOT_ENABLE_FRAMEPERFECT_DETECTION=$<BOOL:${geobot_ENABLE_FRAMEPERFECT_DETECTION}>
+    GEOBOT_ENABLE_PATHFINDER=$<BOOL:${geobot_ENABLE_PATHFINDER}>
+)
+
+set(_geobot_mod_source_dir "${CMAKE_CURRENT_BINARY_DIR}/geobot-mod-source")
+file(MAKE_DIRECTORY "${_geobot_mod_source_dir}")
+
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/mod.json" _geobot_mod_json)
+if (NOT geobot_ENABLE_FRAMEPERFECT_DETECTION)
+    string(JSON _geobot_mod_json REMOVE "${_geobot_mod_json}"
+        "settings" "feature_flag_frameperfect_detection"
+    )
+endif()
+if (NOT geobot_ENABLE_PATHFINDER)
+    string(JSON _geobot_mod_json REMOVE "${_geobot_mod_json}"
+        "settings" "feature_flag_pathfinder"
+    )
+    string(JSON _geobot_mod_json REMOVE "${_geobot_mod_json}"
+        "settings" "pathfinder_solver_executable"
+    )
+    string(JSON _geobot_mod_json REMOVE "${_geobot_mod_json}"
+        "settings" "pathfinder_solver_args"
+    )
+    string(JSON _geobot_mod_json REMOVE "${_geobot_mod_json}"
+        "settings" "pathfinder_output_folder"
+    )
+endif()
+file(WRITE "${_geobot_mod_source_dir}/mod.json" "${_geobot_mod_json}\n")
+
+foreach(_geobot_mod_file
+    about.md
+    changelog.md
+    support.md
+    logo.png
+    resources/GJ_commentSide2_001_White.png
+    resources/GJ_commentTop2_001_White.png
+    resources/default_hold_click.mp3
+    resources/default_release_click.mp3
+    resources/default_hold_left.mp3
+    resources/default_release_left.mp3
+    resources/default_hold_right.mp3
+    resources/default_release_right.mp3
+)
+    get_filename_component(_geobot_mod_file_dir "${_geobot_mod_file}" DIRECTORY)
+    if (NOT _geobot_mod_file_dir STREQUAL "")
+        file(MAKE_DIRECTORY "${_geobot_mod_source_dir}/${_geobot_mod_file_dir}")
+    endif()
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/${_geobot_mod_file}"
+        "${_geobot_mod_source_dir}/${_geobot_mod_file}"
+        COPYONLY
+    )
+endforeach()
+
+file(WRITE "${_geobot_mod_source_dir}/CMakeLists.txt" "setup_geode_mod(${PROJECT_NAME})\n")
+add_subdirectory("${_geobot_mod_source_dir}" "${CMAKE_CURRENT_BINARY_DIR}/geobot-mod-package")
 
 if (geobot_FAST_BUILD AND TARGET ${PROJECT_NAME})
     # Faster builds: disable LTO. Unity build is disabled because Geode's

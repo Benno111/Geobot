@@ -3,12 +3,51 @@
 
 #include <Geode/modify/PlayLayer.hpp>
 
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
+namespace {
+constexpr float kFramePerfectOverlayScale = 0.46f;
+constexpr float kFramePerfectOverlayMinWidth = 180.f;
+constexpr float kFramePerfectOverlayMaxWidth = 252.f;
+constexpr float kFramePerfectOverlayMinHeight = 42.f;
+constexpr float kFramePerfectOverlayMaxHeight = 58.f;
+constexpr float kFramePerfectOverlayPaddingX = 20.f;
+constexpr float kFramePerfectOverlayPaddingY = 13.f;
+
+void updateFramePerfectOverlay(CCLabelBMFont* label, CCScale9Sprite* bg, std::string const& text) {
+    if (!label || !bg)
+        return;
+
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    CCPoint position { winSize.width / 2.f, 44.f };
+    label->setPosition(position);
+    bg->setPosition(position);
+
+    label->setString(text.c_str());
+    label->setScale(kFramePerfectOverlayScale);
+    label->limitLabelWidth(kFramePerfectOverlayMaxWidth - kFramePerfectOverlayPaddingX, kFramePerfectOverlayScale, 0.28f);
+    label->updateLabel();
+
+    auto size = label->getContentSize();
+    float scaledWidth = size.width * label->getScale();
+    float scaledHeight = size.height * label->getScale();
+    float maxWidth = std::max(kFramePerfectOverlayMinWidth, std::min(kFramePerfectOverlayMaxWidth, winSize.width - 16.f));
+
+    bg->setContentSize({
+        std::clamp(scaledWidth + kFramePerfectOverlayPaddingX, kFramePerfectOverlayMinWidth, maxWidth),
+        std::clamp(scaledHeight + kFramePerfectOverlayPaddingY, kFramePerfectOverlayMinHeight, kFramePerfectOverlayMaxHeight)
+    });
+}
+}
+#endif
+
 class $modify(PlayLayer) {
 
     struct Fields {
         CCLabelBMFont* frameLabel = nullptr;
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
         CCLabelBMFont* framePerfectLabel = nullptr;
         CCScale9Sprite* framePerfectBg = nullptr;
+#endif
     };
 
     void postUpdate(float dt) {
@@ -18,9 +57,12 @@ class $modify(PlayLayer) {
         if (g.state != state::none && g.frameLabel && !g.renderer.recording)
             m_fields->frameLabel->setString(("Frame: " + std::to_string(Global::getCurrentFrame())).c_str());
 
+#if GEOBOT_ENABLE_PATHFINDER
         if (g.pathfinderMode && !g.renderer.recording)
             Interface::updateLabels();
+#endif
 
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
         if (m_fields->framePerfectLabel && m_fields->framePerfectBg) {
             Global::refreshFramePerfectOverlayText();
             std::string mode = Global::getFramePerfectOverlayMode();
@@ -38,26 +80,22 @@ class $modify(PlayLayer) {
             if (canShow && mode == "When") {
                 m_fields->framePerfectLabel->setVisible(true);
                 m_fields->framePerfectBg->setVisible(true);
-                m_fields->framePerfectLabel->setString(g.framePerfectOverlayText.c_str());
-                auto size = m_fields->framePerfectLabel->getContentSize();
-                float scale = m_fields->framePerfectLabel->getScale();
-                m_fields->framePerfectBg->setContentSize({ std::max(210.f, size.width * scale + 18.f), 50.f });
+                updateFramePerfectOverlay(m_fields->framePerfectLabel, m_fields->framePerfectBg, g.framePerfectOverlayText);
                 g.framePerfectOverlayFrames--;
             } else if (canShow && mode == "Always") {
                 m_fields->framePerfectLabel->setVisible(true);
                 m_fields->framePerfectBg->setVisible(true);
-                if (g.framePerfectOverlayText.empty())
-                    m_fields->framePerfectLabel->setString("FRAME PERFECT\nWaiting for input\nOverlay armed");
-                else
-                    m_fields->framePerfectLabel->setString(g.framePerfectOverlayText.c_str());
-                auto size = m_fields->framePerfectLabel->getContentSize();
-                float scale = m_fields->framePerfectLabel->getScale();
-                m_fields->framePerfectBg->setContentSize({ std::max(210.f, size.width * scale + 18.f), 50.f });
+                updateFramePerfectOverlay(
+                    m_fields->framePerfectLabel,
+                    m_fields->framePerfectBg,
+                    g.framePerfectOverlayText.empty() ? "FRAME PERFECT\nWaiting for input\nOverlay armed" : g.framePerfectOverlayText
+                );
             } else {
                 m_fields->framePerfectLabel->setVisible(false);
                 m_fields->framePerfectBg->setVisible(false);
             }
         }
+#endif
     }
 
     bool init(GJGameLevel * level, bool b1, bool b2) {
@@ -67,8 +105,10 @@ class $modify(PlayLayer) {
         Interface::addButtons(this);
 
         m_fields->frameLabel = static_cast<CCLabelBMFont*>(getChildByID("frame-label"_spr));
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
         m_fields->framePerfectLabel = static_cast<CCLabelBMFont*>(getChildByID("frame-perfect-label"_spr));
         m_fields->framePerfectBg = typeinfo_cast<CCScale9Sprite*>(getChildByID("frame-perfect-bg"_spr));
+#endif
 
         return true;
     }
@@ -99,9 +139,10 @@ void Interface::addLabels(PlayLayer* pl) {
     lbl->setVisible(false);
     pl->addChild(lbl);
 
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
     auto bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
     bg->setPosition({ CCDirector::sharedDirector()->getWinSize().width / 2.f, 44.f });
-    bg->setContentSize({ 210.f, 50.f });
+    bg->setContentSize({ kFramePerfectOverlayMinWidth, 50.f });
     bg->setOpacity(90);
     bg->setVisible(false);
     bg->setID("frame-perfect-bg"_spr);
@@ -113,9 +154,10 @@ void Interface::addLabels(PlayLayer* pl) {
     lbl->setAnchorPoint({ 0.5f, 0.5f });
     lbl->setID("frame-perfect-label"_spr);
     lbl->setZOrder(301);
-    lbl->setScale(0.48f);
+    lbl->setScale(kFramePerfectOverlayScale);
     lbl->setVisible(false);
     pl->addChild(lbl);
+#endif
 
     Interface::updateLabels();
 }
@@ -197,6 +239,7 @@ void Interface::updateLabels() {
             lbl->setString("");
     }
 
+#if GEOBOT_ENABLE_PATHFINDER
     if (g.pathfinderMode && !g.renderer.recording) {
         std::string pathfinderLabel = "Pathfinder: " + g.pathfinderStatus;
         if (labelText.empty())
@@ -204,6 +247,7 @@ void Interface::updateLabels() {
         else
             labelText += " | " + pathfinderLabel;
     }
+#endif
 
     label->setString(labelText.c_str());
 }

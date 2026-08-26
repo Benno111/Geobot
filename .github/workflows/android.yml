@@ -22,6 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Restore build object cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build*
+          key: geobot-objects-${{ runner.os }}-${{ matrix.config.target || 'Android' }}-Release-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            geobot-objects-${{ runner.os }}-${{ matrix.config.target || 'Android' }}-Release-
+
       - name: Build the mod
         uses: geode-sdk/build-geode-mod@main
         with:
@@ -29,6 +38,15 @@ jobs:
           bindings-ref: main
           combine: false
           target: ${{ matrix.config.target }}
+
+      - name: Save build object cache
+        if: ${{ always() }}
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            build*
+          key: geobot-objects-${{ runner.os }}-${{ matrix.config.target || 'Android' }}-Release-${{ github.run_id }}-${{ github.run_attempt }}
 
   package:
     name: Package builds

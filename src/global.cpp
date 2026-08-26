@@ -21,6 +21,7 @@ class $modify(CCTextInputNode) {
 };
 
 namespace {
+#if GEOBOT_ENABLE_PATHFINDER
 std::string buildPathfinderSearchSignature(Macro const& macro) {
   std::string signature;
   signature.reserve(macro.inputs.size() * 12);
@@ -53,6 +54,7 @@ bool canUseMacroAsPathfinderSeed(Macro const& macro) {
 
   return !holding;
 }
+#endif
 
 int monthFromDateAbbrev(std::string_view month) {
   static const std::array<std::string_view, 12> months = {
@@ -522,6 +524,7 @@ PauseLayer* Global::getPauseLayer() {
 }
 
 namespace {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
 bool isFramePerfectForTier(int leftWiggle, int rightWiggle, int maxGap) {
   return leftWiggle <= maxGap || rightWiggle <= maxGap;
 }
@@ -565,9 +568,11 @@ std::string buildFramePerfectOverlayText(
     wiggleLine
   );
 }
+#endif
 }
 
 void Global::refreshFramePerfectOverlayText() {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
   auto& g = Global::get();
   std::string typeName = g.framePerfectOverlayTypeName.empty() ? "Waiting for input" : g.framePerfectOverlayTypeName;
   std::string fpsType = g.framePerfectOverlayFpsType.empty() ? "None" : g.framePerfectOverlayFpsType;
@@ -588,9 +593,11 @@ void Global::refreshFramePerfectOverlayText() {
     g.framePerfectOverlayRightWiggle,
     footer
   );
+#endif
 }
 
 void Global::resetFramePerfectStats() {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
   auto& g = Global::get();
   g.framePerfectOverlayFrames = 0;
   g.framePerfectOverlayText.clear();
@@ -608,6 +615,7 @@ void Global::resetFramePerfectStats() {
   g.framePerfectExpected144 = 0;
   g.framePerfectExpected240 = 0;
   g.lastFramePerfectAction = std::numeric_limits<size_t>::max();
+#endif
 }
 
 bool Global::isDeveloperModeEnabled() {
@@ -626,6 +634,7 @@ void Global::setDeveloperModeEnabled(bool enabled) {
 }
 
 std::string Global::getFramePerfectOverlayMode() {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
   Mod* mod = Mod::get();
   if (!mod)
     return "Always";
@@ -636,19 +645,31 @@ std::string Global::getFramePerfectOverlayMode() {
   if (value == "When" && Global::isDeveloperModeEnabled())
     return value;
   return "Always";
+#else
+  return "Never";
+#endif
 }
 
 bool Global::isFramePerfectDetectionEnabled() {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
   Mod* mod = Mod::get();
   return !mod || mod->getSettingValue<bool>("feature_flag_frameperfect_detection");
+#else
+  return false;
+#endif
 }
 
 bool Global::isPathfinderFeatureEnabled() {
+#if GEOBOT_ENABLE_PATHFINDER
   Mod* mod = Mod::get();
   return !mod || mod->getSettingValue<bool>("feature_flag_pathfinder");
+#else
+  return false;
+#endif
 }
 
 void Global::applyPathfinderMacro(Macro const& macro) {
+#if GEOBOT_ENABLE_PATHFINDER
   auto& g = Global::get();
 
   g.macro = macro;
@@ -685,13 +706,21 @@ void Global::applyPathfinderMacro(Macro const& macro) {
 
   Interface::updateLabels();
   Interface::updateButtons();
+#else
+  (void)macro;
+#endif
 }
 
 bool Global::isPathfinderAutoSearchActive() {
+#if GEOBOT_ENABLE_PATHFINDER
   return Global::get().pathfinderAutoSearch;
+#else
+  return false;
+#endif
 }
 
 bool Global::startPathfinderAutoSearch() {
+#if GEOBOT_ENABLE_PATHFINDER
   auto& g = Global::get();
   PlayLayer* pl = PlayLayer::get();
   if (!pl || !Global::isPathfinderFeatureEnabled() || !g.pathfinderMode)
@@ -732,9 +761,13 @@ bool Global::startPathfinderAutoSearch() {
 
   Global::applyPathfinderMacro(seedMacro);
   return true;
+#else
+  return false;
+#endif
 }
 
 void Global::stopPathfinderAutoSearch(bool preserveStatus) {
+#if GEOBOT_ENABLE_PATHFINDER
   auto& g = Global::get();
   g.pathfinderAutoSearch = false;
   g.pathfinderSearching = false;
@@ -748,9 +781,13 @@ void Global::stopPathfinderAutoSearch(bool preserveStatus) {
 
   if (!preserveStatus)
     Global::resetPathfinderState();
+#else
+  (void)preserveStatus;
+#endif
 }
 
 void Global::resetPathfinderState() {
+#if GEOBOT_ENABLE_PATHFINDER
   auto& g = Global::get();
   g.pathfinderAction = 0;
   g.pathfinderSearching = g.pathfinderAutoSearch;
@@ -765,9 +802,11 @@ void Global::resetPathfinderState() {
     g.pathfinderStatus = "No Macro";
   else
     g.pathfinderStatus = "Armed";
+#endif
 }
 
 void Global::triggerFramePerfectOverlay(int button, bool down) {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
   auto& g = Global::get();
   const char* buttonName = "Click";
   if (button == 2) buttonName = "Left";
@@ -775,9 +814,14 @@ void Global::triggerFramePerfectOverlay(int button, bool down) {
 
   g.framePerfectOverlayText = fmt::format("Frame Perfect: {} {}", buttonName, down ? "Press" : "Release");
   g.framePerfectOverlayFrames = 30;
+#else
+  (void)button;
+  (void)down;
+#endif
 }
 
 void Global::triggerFramePerfectOverlayProgress(int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle) {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
   auto& g = Global::get();
   (void)button;
   (void)down;
@@ -789,9 +833,17 @@ void Global::triggerFramePerfectOverlayProgress(int button, bool down, std::stri
   g.framePerfectOverlayScanning = true;
   Global::refreshFramePerfectOverlayText();
   g.framePerfectOverlayFrames = 2;
+#else
+  (void)button;
+  (void)down;
+  (void)typeName;
+  (void)leftWiggle;
+  (void)rightWiggle;
+#endif
 }
 
 void Global::triggerFramePerfectExpected(int leftWiggle, int rightWiggle) {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
   auto& g = Global::get();
 
   if (isFramePerfectForTier(leftWiggle, rightWiggle, 2))
@@ -802,9 +854,14 @@ void Global::triggerFramePerfectExpected(int leftWiggle, int rightWiggle) {
     g.framePerfectExpected240++;
 
   g.framePerfectExpected = g.framePerfectExpected240;
+#else
+  (void)leftWiggle;
+  (void)rightWiggle;
+#endif
 }
 
 void Global::triggerFramePerfectOverlayCounted(size_t actionIndex, int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle) {
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
   auto& g = Global::get();
   if (g.lastFramePerfectAction == actionIndex)
     return;
@@ -841,6 +898,14 @@ void Global::triggerFramePerfectOverlayCounted(size_t actionIndex, int button, b
   g.framePerfectOverlayScanning = false;
   Global::refreshFramePerfectOverlayText();
   g.framePerfectOverlayFrames = 45;
+#else
+  (void)actionIndex;
+  (void)button;
+  (void)down;
+  (void)typeName;
+  (void)leftWiggle;
+  (void)rightWiggle;
+#endif
 }
 
 std::filesystem::path Global::getFolderSettingPath(std::string const& settingID, bool createIfMissing) {
@@ -1020,19 +1085,22 @@ $execute{
   if (!g.mod->hasSavedValue("developer_mode_enabled"))
     g.mod->setSavedValue("developer_mode_enabled", false);
 
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
   if (!g.mod->hasSavedValue("frame_perfect_overlay_mode"))
     g.mod->setSavedValue("frame_perfect_overlay_mode", std::string("Always"));
   else if (!Global::isDeveloperModeEnabled() &&
            g.mod->getSavedValue<std::string>("frame_perfect_overlay_mode") == "When")
     g.mod->setSavedValue("frame_perfect_overlay_mode", std::string("Always"));
 
-  if (!g.mod->hasSavedValue("pathfinder_mode"))
-    g.mod->setSavedValue("pathfinder_mode", false);
-
   geode::listenForSettingChanges<bool>("feature_flag_frameperfect_detection", +[](bool enabled) {
     if (!enabled)
       Global::resetFramePerfectStats();
   });
+#endif
+
+#if GEOBOT_ENABLE_PATHFINDER
+  if (!g.mod->hasSavedValue("pathfinder_mode"))
+    g.mod->setSavedValue("pathfinder_mode", false);
 
   geode::listenForSettingChanges<bool>("feature_flag_pathfinder", +[](bool enabled) {
     auto& g = Global::get();
@@ -1054,6 +1122,7 @@ $execute{
       }
     }
   });
+#endif
 
   std::string const currentNoticeVersion = geobotVersion;
   if (!g.mod->hasSavedValue("update_notice_last_seen")) {
@@ -1094,7 +1163,11 @@ $execute{
   g.speedhackAudio = g.mod->getSavedValue<bool>("macro_speedhack_audio");
   g.trajectoryBothSides = g.mod->getSavedValue<bool>("macro_trajectory_both_sides");
   g.p2mirror = g.mod->getSavedValue<bool>("p2_input_mirror");
+#if GEOBOT_ENABLE_PATHFINDER
   g.pathfinderMode = Global::isPathfinderFeatureEnabled() && g.mod->getSavedValue<bool>("pathfinder_mode");
+#else
+  g.pathfinderMode = false;
+#endif
   Global::resetPathfinderState();
   g.tpsEnabled = g.mod->getSavedValue<bool>("macro_tps_enabled");
   g.tps = g.mod->getSavedValue<double>("macro_tps");

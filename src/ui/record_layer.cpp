@@ -6,7 +6,9 @@
 #include "noclip_settings_layer.hpp"
 #include "autoclicker_settings_layer.hpp"
 #include "trajectory_settings_layer.hpp"
+#if GEOBOT_ENABLE_PATHFINDER
 #include "pathfinder_settings_layer.hpp"
+#endif
 #include "mirror_settings_layer.hpp"
 #include "star_rate_override_layer.hpp"
 #include "../hacks/coin_finder.hpp"
@@ -67,10 +69,12 @@ struct SettingsCategory {
 
 const std::vector<SettingsCategory> kSettingsCategories {
     {
-        "Macro Settings",
+        "Macro",
         {
             { "Accuracy:", "macro_accuracy", InputType::Accuracy, 0.4f },
+#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
             { "FP Overlay:", "frame_perfect_overlay_mode", InputType::FramePerfectMode, 0.4f },
+#endif
             { "Frame Offset:", "frame_offset", InputType::FrameOffset, 0.4f },
             { "Frame Fix Limit:", "frame_fixes_limit", InputType::FrameFixesLimit, 0.4f },
             { "Lock Delta:", "lock_delta", InputType::None },
@@ -86,36 +90,10 @@ const std::vector<SettingsCategory> kSettingsCategories {
             { "No respawn flash:", "macro_no_respawn_flash", InputType::None },
             { "Enable Coin Finder:", "macro_coin_finder", InputType::None },
             { "Enable Layout Mode:", "macro_layout_mode", InputType::None },
-            { "Auto Safe Mode:", "macro_auto_safe_mode", InputType::None }
-        }
-    },
-    {
-        "Path Finder Settings",
-        {
-            { "Pathfinder Mode:", "pathfinder_mode", InputType::Settings, 0.34f, menu_selector(RecordLayer::openPathfinderSettings) }
-        }
-    },
-    {
-        "Render Settings",
-        {
-#ifdef GEODE_IS_WINDOWS
-            { "Force cursor on open:", "menu_show_cursor", InputType::None },
-            { "Button on pause menu:", "menu_show_button", InputType::None },
-            { "Pause on open:", "menu_pause_on_open", InputType::None },
-#else
-            { "Always show buttons:", "macro_always_show_buttons", InputType::None },
-            { "Hide speedhack button:", "macro_hide_speedhack", InputType::None },
-            { "Hide Frame Stepper button:", "macro_hide_stepper", InputType::None, 0.3f },
+            { "Auto Safe Mode:", "macro_auto_safe_mode", InputType::None },
+#if GEOBOT_ENABLE_PATHFINDER
+            { "Pathfinder Mode:", "pathfinder_mode", InputType::Settings, 0.34f, menu_selector(RecordLayer::openPathfinderSettings) },
 #endif
-            { "Hide labels on render:", "render_hide_labels", InputType::None },
-            { "Hide playing label:", "macro_hide_playing_label", InputType::None },
-            { "Hide recording label:", "macro_hide_recording_label", InputType::None },
-            { "Renders Folder:", "render_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openRendersFolder) }
-        }
-    },
-    {
-        "Other Settings",
-        {
             { "Enable Clickbot:", "clickbot_enabled", InputType::Settings, 0.325f, menu_selector(ClickbotLayer::open)},
             { "Enable Autoclicker:", "autoclicker_enabled", InputType::Settings, 0.3f, menu_selector(AutoclickerLayer::open) },
             { "Always Practice Fixes:", "macro_always_practice_fixes", InputType::None },
@@ -131,6 +109,24 @@ const std::vector<SettingsCategory> kSettingsCategories {
             { "No Mirror Portal:", "no_mirror_portal", InputType::None },
             { "Enable Auto Saving:", "macro_auto_save", InputType::Autosave }
         }
+    },
+    {
+        "Render",
+        {
+#ifdef GEODE_IS_WINDOWS
+            { "Force cursor on open:", "menu_show_cursor", InputType::None },
+            { "Button on pause menu:", "menu_show_button", InputType::None },
+            { "Pause on open:", "menu_pause_on_open", InputType::None },
+#else
+            { "Always show buttons:", "macro_always_show_buttons", InputType::None },
+            { "Hide speedhack button:", "macro_hide_speedhack", InputType::None },
+            { "Hide Frame Stepper button:", "macro_hide_stepper", InputType::None, 0.3f },
+#endif
+            { "Hide labels on render:", "render_hide_labels", InputType::None },
+            { "Hide playing label:", "macro_hide_playing_label", InputType::None },
+            { "Hide recording label:", "macro_hide_recording_label", InputType::None },
+            { "Renders Folder:", "render_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openRendersFolder) }
+        }
     }
 };
 
@@ -138,6 +134,26 @@ namespace {
 bool isMacroMenuRewriteEnabled() {
     Mod* mod = Mod::get();
     return mod && mod->getSettingValue<bool>("feature_flag_macro_menu_rewrite");
+}
+
+std::string getSettingsCategoryButtonTitle(std::string const& title) {
+    return title;
+}
+
+CCScale9Sprite* createSettingsChoiceSprite(std::string const& text) {
+    const CCSize buttonSize { 82.f, 28.f };
+
+    auto* bg = CCScale9Sprite::create("GJ_button_01.png", { 0, 0, 40, 40 });
+    bg->setContentSize(buttonSize);
+
+    auto* label = CCLabelBMFont::create(text.c_str(), "bigFont.fnt");
+    label->setPosition(buttonSize / 2.f);
+    label->setScale(0.34f);
+    label->limitLabelWidth(buttonSize.width - 10.f, label->getScale(), 0.16f);
+    label->updateLabel();
+    bg->addChild(label);
+
+    return bg;
 }
 
 std::vector<RecordSetting> getLegacySettingsList() {
@@ -408,8 +424,10 @@ void RecordLayer::openLoadMacro(CCObject*) {
 }
 
 void RecordLayer::openPathfinderSettings(CCObject*) {
+#if GEOBOT_ENABLE_PATHFINDER
     if (auto* layer = PathfinderSettingsLayer::create())
         layer->show();
+#endif
 }
 
 void RecordLayer::openStarRateOverride(CCObject*) {
@@ -569,8 +587,10 @@ void RecordLayer::togglePlaying(CCObject*) {
     if (Global::hasIncompatibleMods())
         return playing->toggle(true);
 
+#if GEOBOT_ENABLE_PATHFINDER
     if (g.pathfinderAutoSearch && g.state == state::playing)
         Global::stopPathfinderAutoSearch();
+#endif
 
     if (g.state == state::recording)
         recording->toggle(false);
@@ -743,8 +763,10 @@ void RecordLayer::toggleSetting(CCObject* obj) {
 
     bool value = !toggle->isToggled(); 
 
+#if GEOBOT_ENABLE_PATHFINDER
     if (id == "pathfinder_mode" && !Global::isPathfinderFeatureEnabled())
         value = false;
+#endif
 
     g.mod->setSavedValue(id, value);
 
@@ -762,7 +784,9 @@ void RecordLayer::toggleSetting(CCObject* obj) {
     if (id == "macro_auto_save") g.autosaveEnabled = value;
     if (id == "lock_delta") g.lockDelta = value;
     if (id == "auto_stop_playing") g.stopPlaying = value;
+#if GEOBOT_ENABLE_PATHFINDER
     if (id == "pathfinder_mode") applyPathfinderState(value, menu);
+#endif
 
     if (id == "macro_show_trajectory") {
         g.showTrajectory = value;
@@ -1037,6 +1061,7 @@ bool RecordLayer::setup() {
     actionsLabel->setPosition(ccp(-201, 110));
     menu->addChild(actionsLabel);
 
+#if GEOBOT_ENABLE_PATHFINDER
     CCLabelBMFont* pathfinderLabel = CCLabelBMFont::create(
         ("Pathfinder: " + g.pathfinderStatus).c_str(),
         "chatFont.fnt"
@@ -1048,6 +1073,7 @@ bool RecordLayer::setup() {
     pathfinderLabel->setPosition(ccp(-201, 96));
     pathfinderLabel->setID("pathfinder-status-label"_spr);
     menu->addChild(pathfinderLabel);
+#endif
 
     CCLabelBMFont* lbl = CCLabelBMFont::create("Macro", "goldFont.fnt");
     lbl->setPosition(ccp(-116.5, 112));
@@ -1064,13 +1090,8 @@ bool RecordLayer::setup() {
     bool macroMenuRewrite = isMacroMenuRewriteEnabled();
 
     if (macroMenuRewrite) {
-        lbl = CCLabelBMFont::create("Left Settings", "goldFont.fnt");
-        lbl->setPosition(ccp(12, 111));
-        lbl->setScale(0.56f);
-        menu->addChild(lbl);
-
-        lbl = CCLabelBMFont::create("Right Settings", "goldFont.fnt");
-        lbl->setPosition(ccp(156, 111));
+        lbl = CCLabelBMFont::create("Settings", "goldFont.fnt");
+        lbl->setPosition(ccp(159.f, 111.f));
         lbl->setScale(0.56f);
         menu->addChild(lbl);
     }
@@ -1088,16 +1109,16 @@ bool RecordLayer::setup() {
         settingsBg->setOpacity(90);
         settingsBg->setPosition({ -20.f, -85.f });
         settingsBg->setAnchorPoint({ 0.f, 0.f });
-        settingsBg->setContentSize({ 100.f, 181.f });
+        settingsBg->setContentSize({ 52.f, 181.f });
         menu->addChild(settingsBg);
 
         settingsBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
         settingsBg->setScale(0.7f);
         settingsBg->setColor({ 0,0,0 });
         settingsBg->setOpacity(90);
-        settingsBg->setPosition({ 91.f, -85.f });
+        settingsBg->setPosition({ 38.f, -85.f });
         settingsBg->setAnchorPoint({ 0.f, 0.f });
-        settingsBg->setContentSize({ 190.f, 181.f });
+        settingsBg->setContentSize({ 243.f, 181.f });
         menu->addChild(settingsBg);
     }
     else {
@@ -1112,56 +1133,48 @@ bool RecordLayer::setup() {
     }
 
     settingsSectionLabel = CCLabelBMFont::create("", "goldFont.fnt");
-    settingsSectionLabel->setPosition(macroMenuRewrite ? CCPoint { 186.f, 95.f } : CCPoint { 130.f, 95.f });
+    settingsSectionLabel->setPosition(macroMenuRewrite ? CCPoint { 159.5f, 95.f } : CCPoint { 130.f, 95.f });
     settingsSectionLabel->setScale(0.42f);
     menu->addChild(settingsSectionLabel);
 
-    settingsScroll = geode::ScrollLayer::create(macroMenuRewrite ? cocos2d::CCSize { 190.f, 150.f } : cocos2d::CCSize { 301.f, 150.f });
-    settingsScroll->setPosition(macroMenuRewrite ? CCPoint { 91.f, -72.f } : CCPoint { -20.f, -72.f });
+    settingsScroll = geode::ScrollLayer::create(macroMenuRewrite ? cocos2d::CCSize { 243.f, 150.f } : cocos2d::CCSize { 301.f, 150.f });
+    settingsScroll->setPosition(macroMenuRewrite ? CCPoint { 38.f, -72.f } : CCPoint { -20.f, -72.f });
     settingsScroll->setTouchEnabled(true);
     settingsScroll->enableScrollWheel(true);
     menu->addChild(settingsScroll);
 
     settingsScrollbar = geode::Scrollbar::create(settingsScroll);
-    settingsScrollbar->setPosition(macroMenuRewrite ? CCPoint { 186.f, 0.f } : CCPoint { 274.f, 0.f });
+    settingsScrollbar->setPosition(macroMenuRewrite ? CCPoint { 274.f, 0.f } : CCPoint { 274.f, 0.f });
     menu->addChild(settingsScrollbar);
 
     settingsCategoryButtons.clear();
     if (macroMenuRewrite) {
-        std::array<char const*, 4> categoryTitles = {
-            "Macro Settings",
-            "Path Finder\nSettings",
-            "Render Settings",
-            "Other Settings"
-        };
-        std::array<CCPoint, 4> categoryPositions = {
-            CCPoint { 30.f, 70.f },
-            CCPoint { 30.f, 32.f },
-            CCPoint { 30.f, -7.f },
-            CCPoint { 30.f, -48.f }
-        };
-        std::array<CCSize, 4> categorySizes = {
-            CCSize { 92.f, 31.f },
-            CCSize { 92.f, 25.f },
-            CCSize { 92.f, 25.f },
-            CCSize { 92.f, 30.f }
-        };
+        constexpr float categoryTopY = 56.f;
+        constexpr float categoryBottomY = 12.f;
+        constexpr float categoryWidth = 44.f;
+        constexpr float categoryHeight = 38.f;
+        size_t categoryCount = kSettingsCategories.size();
+        settingsCategoryButtons.reserve(categoryCount);
 
-        settingsCategoryButtons.reserve(categoryTitles.size());
+        for (size_t i = 0; i < categoryCount; i++) {
+            std::string categoryTitle = getSettingsCategoryButtonTitle(kSettingsCategories[i].title);
+            bool multiline = categoryTitle.find('\n') != std::string::npos;
+            float yPos = categoryCount <= 1
+                ? categoryTopY
+                : categoryTopY - ((categoryTopY - categoryBottomY) * static_cast<float>(i) / static_cast<float>(categoryCount - 1));
 
-        for (size_t i = 0; i < categoryTitles.size(); i++) {
             auto* cardBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
-            cardBg->setContentSize(categorySizes[i]);
+            cardBg->setContentSize({ categoryWidth, categoryHeight });
             cardBg->setOpacity(135);
             cardBg->setColor({ 255, 255, 255 });
 
-            auto* cardLabel = CCLabelBMFont::create(categoryTitles[i], "chatFont.fnt");
-            cardLabel->setScale(i == 1 ? 0.42f : 0.5f);
+            auto* cardLabel = CCLabelBMFont::create(categoryTitle.c_str(), "chatFont.fnt");
+            cardLabel->setScale(multiline ? 0.34f : 0.38f);
             cardLabel->setPosition({
-                categorySizes[i].width / 2.f,
-                categorySizes[i].height / 2.f
+                categoryWidth / 2.f,
+                categoryHeight / 2.f
             });
-            cardLabel->limitLabelWidth(categorySizes[i].width - 10.f, cardLabel->getScale(), 0.1f);
+            cardLabel->limitLabelWidth(categoryWidth - 6.f, cardLabel->getScale(), 0.16f);
             cardLabel->updateLabel();
             cardLabel->setID("category-label"_spr);
             cardBg->addChild(cardLabel);
@@ -1173,7 +1186,7 @@ bool RecordLayer::setup() {
             );
             cardBtn->setTag(static_cast<int>(i));
             cardBtn->setID(fmt::format("settings-category-{}", i).c_str());
-            cardBtn->setPosition(categoryPositions[i]);
+            cardBtn->setPosition({ 6.f, yPos });
             menu->addChild(cardBtn);
             settingsCategoryButtons.push_back(cardBtn);
         }
@@ -1553,6 +1566,7 @@ void RecordLayer::selectSettingsCategory(size_t index) {
 }
 
 void RecordLayer::applyPathfinderState(bool enabled, CCMenu* rootMenu) {
+#if GEOBOT_ENABLE_PATHFINDER
     auto& g = Global::get();
     if (!Global::isPathfinderFeatureEnabled())
         enabled = false;
@@ -1580,6 +1594,10 @@ void RecordLayer::applyPathfinderState(bool enabled, CCMenu* rootMenu) {
     }
 
     Interface::updateLabels();
+#else
+    (void)enabled;
+    (void)rootMenu;
+#endif
 }
 
 void RecordLayer::setToggleMember(CCMenuItemToggler* toggle, std::string id) {
@@ -1591,8 +1609,10 @@ void RecordLayer::setToggleMember(CCMenuItemToggler* toggle, std::string id) {
 }
 
 void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu) {
+#if GEOBOT_ENABLE_PATHFINDER
     if (sett.id == "pathfinder_mode" && !Global::isPathfinderFeatureEnabled())
         sett.disabled = true;
+#endif
 
     float targetWidth = targetMenu ? targetMenu->getContentSize().width : 190.f;
     float labelX = 10.f;
@@ -1636,8 +1656,10 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
         toggle->setPosition(ccp(toggleX, yPos));
         toggle->setScale(toggleScale);
         bool toggled = mod->getSavedValue<bool>(sett.id);
+#if GEOBOT_ENABLE_PATHFINDER
         if (sett.id == "pathfinder_mode" && !Global::isPathfinderFeatureEnabled())
             toggled = false;
+#endif
         toggle->toggle(toggled);
         toggle->setID(sett.id.c_str());
         toggle->setEnabled(!sett.disabled);
@@ -1894,8 +1916,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     }
 
     if (sett.input == InputType::Accuracy) {
-        ButtonSprite* btnSpr = ButtonSprite::create(getSavedAccuracyMode(mod).c_str());
-        btnSpr->setScale(0.4f);
+        CCScale9Sprite* btnSpr = createSettingsChoiceSprite(getSavedAccuracyMode(mod));
         CCMenuItemSpriteExtra* btn = CCMenuItemSpriteExtra::create(
             btnSpr,
             this,
@@ -1909,8 +1930,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
     }
 
     if (sett.input == InputType::FramePerfectMode) {
-        ButtonSprite* btnSpr = ButtonSprite::create(getSavedFramePerfectOverlayMode(mod).c_str());
-        btnSpr->setScale(0.4f);
+        CCScale9Sprite* btnSpr = createSettingsChoiceSprite(getSavedFramePerfectOverlayMode(mod));
         CCMenuItemSpriteExtra* btn = CCMenuItemSpriteExtra::create(
             btnSpr,
             this,
@@ -1984,7 +2004,7 @@ void RecordLayer::loadSettingsList() {
 
     if (settingsSectionLabel) {
         settingsSectionLabel->setString(category.title.c_str());
-        settingsSectionLabel->limitLabelWidth(120.f, 0.42f, 0.1f);
+        settingsSectionLabel->limitLabelWidth(macroMenuRewrite ? 190.f : 120.f, 0.42f, 0.1f);
         settingsSectionLabel->updateLabel();
     }
 
