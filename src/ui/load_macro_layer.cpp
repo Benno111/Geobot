@@ -3,9 +3,14 @@
 #include "macro_editor.hpp"
 
 #include <Geode/modify/CCMenu.hpp>
+#include <sstream>
 #ifdef GEODE_IS_WINDOWS
 #include <Windows.h>
 #endif
+
+namespace {
+	CCSprite* createFavoriteSprite(bool active);
+}
 
 class $modify(CCMenu) {
 	virtual bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) {
@@ -290,6 +295,19 @@ bool LoadMacroLayer::setup(geode::Popup* layer, geode::Popup* layer2, bool autos
 	sortToggle->toggle(false);
 	menu->addChild(sortToggle);
 
+	CCSprite* favoriteOff = createFavoriteSprite(false);
+	CCSprite* favoriteOn = createFavoriteSprite(true);
+	favoritesToggle = CCMenuItemToggler::create(
+		favoriteOff,
+		favoriteOn,
+		this,
+		menu_selector(LoadMacroLayer::updateFavoritesFilter)
+	);
+	favoritesToggle->setPosition({ -172, 70 });
+	favoritesToggle->setScale(0.55f);
+	favoritesToggle->setID("favorites-filter-toggle");
+	menu->addChild(favoritesToggle);
+
 	CCSprite* spriteOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
 	CCSprite* spriteOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
 
@@ -386,6 +404,55 @@ void LoadMacroLayer::updateSort(CCObject*) {
 	reloadList(0);
 }
 
+namespace {
+	constexpr char const* FAVORITE_MACROS_KEY = "favorite_macros";
+
+	std::string favoriteID(std::filesystem::path const& path) {
+		return path.lexically_normal().generic_string();
+	}
+
+	CCSprite* createFavoriteSprite(bool active) {
+		CCSprite* sprite = CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png");
+		sprite->setColor(active ? ccc3(255, 220, 70) : ccc3(120, 120, 120));
+		sprite->setOpacity(active ? 255 : 170);
+		return sprite;
+	}
+}
+
+bool LoadMacroLayer::isFavorite(std::filesystem::path const& path) const {
+	std::istringstream favorites(Mod::get()->getSavedValue<std::string>(FAVORITE_MACROS_KEY));
+	std::string favorite;
+	std::string id = favoriteID(path);
+	while (std::getline(favorites, favorite)) {
+		if (favorite == id)
+			return true;
+	}
+	return false;
+}
+
+void LoadMacroLayer::setFavorite(std::filesystem::path const& path, bool favorite) {
+	std::istringstream saved(Mod::get()->getSavedValue<std::string>(FAVORITE_MACROS_KEY));
+	std::vector<std::string> favorites;
+	std::string entry;
+	std::string id = favoriteID(path);
+	while (std::getline(saved, entry)) {
+		if (!entry.empty() && entry != id)
+			favorites.push_back(entry);
+	}
+	if (favorite)
+		favorites.push_back(id);
+
+	std::string serialized;
+	for (auto const& value : favorites)
+		serialized += value + "\n";
+	Mod::get()->setSavedValue(FAVORITE_MACROS_KEY, serialized);
+}
+
+void LoadMacroLayer::updateFavoritesFilter(CCObject*) {
+	favoritesOnly = !favoritesToggle->isToggled();
+	reloadList(0);
+}
+
 void LoadMacroLayer::addList(bool refresh, float prevScroll) {
 	queuedRefresh = refresh;
 	queuedScroll = prevScroll;
@@ -426,6 +493,7 @@ void LoadMacroLayer::populateList(bool refresh, float prevScroll) {
 			name = name.substr(0, name.find_last_of('.'));
 
 		if (Utils::toLower(name).find(search) == std::string::npos && search != "") continue;
+		if (favoritesOnly && !isFavorite(macros[i])) continue;
 
 		std::time_t date;
 
@@ -587,7 +655,7 @@ bool MacroCell::init(std::filesystem::path path, std::string name, std::time_t d
 	addChild(menu);
 
 	CCLabelBMFont* lbl = CCLabelBMFont::create(this->name.c_str(), "chatFont.fnt");
-	lbl->limitLabelWidth(194.f, 0.8f, 0.01f);
+	lbl->limitLabelWidth(isMerge ? 194.f : 174.f, 0.8f, 0.01f);
 	lbl->setAnchorPoint({ 0, 0.5 });
 	lbl->updateLabel();
 	addChild(lbl);
@@ -642,6 +710,21 @@ bool MacroCell::init(std::filesystem::path path, std::string name, std::time_t d
 
 	if (!isMerge)
 		menu->addChild(toggler);
+
+	if (!isMerge) {
+		LoadMacroLayer* layer = static_cast<LoadMacroLayer*>(loadLayer);
+		favoriteToggle = CCMenuItemToggler::create(
+			createFavoriteSprite(false),
+			createFavoriteSprite(true),
+			this,
+			menu_selector(MacroCell::onFavorite)
+		);
+		favoriteToggle->setScale(0.42f);
+		favoriteToggle->setPosition({ 196, 17.5f });
+		favoriteToggle->setID("favorite-toggle");
+		favoriteToggle->toggle(layer->isFavorite(path));
+		menu->addChild(favoriteToggle);
+	}
 
 	return true;
 }
@@ -817,6 +900,7 @@ void MacroCell::deleteMacro(bool reload) {
 		return FLAlertLayer::create("Error", "There was an error deleting this macro. ID: 7", "Ok")->show();
 	}
 	else {
+		static_cast<LoadMacroLayer*>(loadLayer)->setFavorite(path, false);
 		if (reload) {
 			static_cast<LoadMacroLayer*>(loadLayer)->reloadList();
 			Notification::create("Macro Deleted", NotificationIcon::Success)->show();
@@ -827,6 +911,16 @@ void MacroCell::deleteMacro(bool reload) {
 
 void MacroCell::onSelect(CCObject*) {
 	selectMacro(true);
+}
+
+void MacroCell::onFavorite(CCObject*) {
+	LoadMacroLayer* layer = static_cast<LoadMacroLayer*>(loadLayer);
+	bool favorite = !favoriteToggle->isToggled();
+	layer->setFavorite(path, favorite);
+
+	// Removing a favorite while the filter is active should remove it from the list.
+	if (!favorite && layer->favoritesOnly)
+		layer->reloadList(0);
 }
 
 void MacroCell::selectMacro(bool single) {

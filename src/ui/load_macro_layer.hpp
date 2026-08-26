@@ -21,6 +21,7 @@ public:
 
 	CCMenu* menu = nullptr;
 	CCMenuItemToggler* toggler = nullptr;
+	CCMenuItemToggler* favoriteToggle = nullptr;
 
 	static MacroCell* create(std::filesystem::path path, std::string name, std::time_t date, geode::Popup* menuLayer, geode::Popup* mergeLayer, CCLayer* loadLayer);
 
@@ -35,6 +36,7 @@ public:
 	void deleteMacro(bool reload);
 
 	void onSelect(CCObject*);
+	void onFavorite(CCObject*);
 
 	void selectMacro(bool single);
 };
@@ -48,6 +50,7 @@ public:
 
 	CCMenuItemToggler* selectAllToggle = nullptr;
 	CCMenuItemToggler* sortToggle = nullptr;
+	CCMenuItemToggler* favoritesToggle = nullptr;
 
 	CCMenuItemToggler* p1Toggle = nullptr;
 	CCMenuItemToggler* p2Toggle = nullptr;
@@ -67,6 +70,7 @@ public:
 	bool isAutosaves = false;
 	bool isMerge = false;
 	bool invertSort = false;
+	bool favoritesOnly = false;
 	bool queuedRefresh = false;
 	bool listLoadQueued = false;
 	float queuedScroll = 0.f;
@@ -100,4 +104,8 @@ public:
 	void onImportMacro(CCObject*);
 
 	void updateSort(CCObject*);
+	void updateFavoritesFilter(CCObject*);
+
+	bool isFavorite(std::filesystem::path const& path) const;
+	void setFavorite(std::filesystem::path const& path, bool favorite);
 };
