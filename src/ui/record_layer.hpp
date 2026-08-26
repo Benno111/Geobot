@@ -93,7 +93,7 @@ public:
 
 	static std::string getTPSString();
 	
-	STATIC_CREATE(RecordLayer, 455, 271)
+	static RecordLayer* create();
 	
 	virtual void onClose(cocos2d::CCObject*) override;
 

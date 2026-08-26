@@ -178,7 +178,8 @@ void LoadMacroLayer::onSelectAll(CCObject* obj) {
 
 LoadMacroLayer* LoadMacroLayer::create(geode::Popup* layer, geode::Popup* layer2, bool autosaves) {
 	LoadMacroLayer* ret = new LoadMacroLayer();
-	if (ret->initAnchored(385, 291, layer, layer2, autosaves)) {
+	std::string texture = Utils::getTexture();
+	if (ret->initAnchored(385, 291, layer, layer2, autosaves, texture.c_str())) {
 		ret->autorelease();
 		return ret;
 	}
@@ -214,13 +215,8 @@ bool LoadMacroLayer::setup(geode::Popup* layer, geode::Popup* layer2, bool autos
 
 	setTitle(isMerge ? "Merge Macro" : "Load Macro");
 	m_title->setPositionY(m_title->getPositionY() + 5);
-    m_closeBtn->getNormalImage()->setScale(0.6f);
-
-	cocos2d::CCPoint offset = (CCDirector::sharedDirector()->getWinSize() - m_mainLayer->getContentSize()) / 2;
-    m_mainLayer->setPosition(m_mainLayer->getPosition() - offset);
-    m_bgSprite->setPosition(m_bgSprite->getPosition() + offset);
-    m_closeBtn->setPosition(m_closeBtn->getPosition() + offset);
-    m_title->setPosition(m_title->getPosition() + offset);
+	m_closeBtn->getNormalImage()->setScale(0.6f);
+	adjustForLoadingScreen();
 
 	if (!isMerge) {
 		CCSprite* icon = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
@@ -304,9 +300,16 @@ bool LoadMacroLayer::setup(geode::Popup* layer, geode::Popup* layer2, bool autos
 		menu_selector(LoadMacroLayer::updateFavoritesFilter)
 	);
 	favoritesToggle->setPosition({ -172, 70 });
-	favoritesToggle->setScale(0.55f);
+	favoritesToggle->setScale(0.48f);
 	favoritesToggle->setID("favorites-filter-toggle");
 	menu->addChild(favoritesToggle);
+
+	CCLabelBMFont* favoritesLabel = CCLabelBMFont::create("Favorites", "bigFont.fnt");
+	favoritesLabel->setAnchorPoint({ 0.f, 0.5f });
+	favoritesLabel->setPosition({ -157.f, 70.f });
+	favoritesLabel->setScale(0.32f);
+	favoritesLabel->setID("favorites-filter-label");
+	menu->addChild(favoritesLabel);
 
 	CCSprite* spriteOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
 	CCSprite* spriteOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");

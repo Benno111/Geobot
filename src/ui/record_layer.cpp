@@ -914,18 +914,25 @@ void RecordLayer::openRendersFolder(CCObject*) {
     file::openFolder(Global::getFolderSettingPath("render_folder"));
 }
 
+RecordLayer* RecordLayer::create() {
+    auto* ret = new RecordLayer();
+    std::string texture = Utils::getTexture();
+    if (ret->initAnchored(455.f, 271.f, texture.c_str())) {
+        ret->autorelease();
+        return ret;
+    }
+
+    delete ret;
+    return nullptr;
+}
+
 bool RecordLayer::setup() {
     auto& g = Global::get();
     mod = g.mod;
 
     Utils::setBackgroundColor(m_bgSprite);
     
-    cocos2d::CCPoint offset = (CCDirector::sharedDirector()->getWinSize() - m_mainLayer->getContentSize()) / 2;
-    m_mainLayer->setPosition(m_mainLayer->getPosition() - offset);
-    m_closeBtn->setPosition(m_closeBtn->getPosition() + offset);
-    m_bgSprite->setPosition(m_bgSprite->getPosition() + offset);
-
-    m_closeBtn->setPosition(m_closeBtn->getPosition() + ccp(-6.75, 6.75));
+    adjustForLoadingScreen(false);
     m_closeBtn->getNormalImage()->setScale(0.575f);
 
     menu = CCMenu::create();
@@ -2000,45 +2007,6 @@ void RecordLayer::loadSettingsList() {
     }
 
     settingsScroll->scrollToTop();
-    // Resize popup to fit content width and recenter on screen
-    {
-        CCArray* children = m_mainLayer->getChildren();
-        if (children && children->count() > 0) {
-            bool first = true;
-            float minX = 0.f, maxX = 0.f;
-            for (int i = 0; i < children->count(); ++i) {
-                if (auto* child = typeinfo_cast<CCNode*>(children->objectAtIndex(i))) {
-                    CCSize cs = child->getContentSize();
-                    if (cs.width <= 0.f) continue;
-                    float sx = child->getScaleX();
-                    CCPoint ap = child->getAnchorPoint();
-                    float left = child->getPositionX() - cs.width * sx * ap.x;
-                    float right = child->getPositionX() + cs.width * sx * (1.f - ap.x);
-                    if (first) {
-                        minX = left; maxX = right; first = false;
-                    } else {
-                        minX = std::min(minX, left);
-                        maxX = std::max(maxX, right);
-                    }
-                }
-            }
-
-            if (!first) {
-                float padding = 12.f;
-                float desiredWidth = (maxX - minX) + padding * 2.f;
-                auto cur = m_mainLayer->getContentSize();
-                if (desiredWidth > 0.f && std::abs(desiredWidth - cur.width) > 0.5f) {
-                    m_mainLayer->setContentSize({ desiredWidth, cur.height });
-
-                    cocos2d::CCPoint offset = (cocos2d::CCDirector::sharedDirector()->getWinSize() - m_mainLayer->getContentSize()) / 2;
-                    m_mainLayer->setPosition(m_mainLayer->getPosition() - offset);
-                    m_closeBtn->setPosition(m_closeBtn->getPosition() + offset);
-                    m_bgSprite->setPosition(m_bgSprite->getPosition() + offset);
-                }
-            }
-        }
-    }
-
     updateTPS();
 }
 
