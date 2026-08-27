@@ -1,13 +1,20 @@
 name: Build Android
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
+  pull_request:
   push:
-    branches:
-      - "d"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
+    timeout-minutes: 75
     strategy:
       fail-fast: false
       matrix:
@@ -16,42 +23,30 @@ jobs:
           os: ubuntu-latest
           target: Android32
 
+        - name: Android64
+          os: ubuntu-latest
+          target: Android64
+
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Restore build object cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            build*
-          key: geobot-objects-${{ runner.os }}-${{ matrix.config.target || 'Android' }}-Release-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: |
-            geobot-objects-${{ runner.os }}-${{ matrix.config.target || 'Android' }}-Release-
-
       - name: Build the mod
         uses: geode-sdk/build-geode-mod@main
         with:
           bindings: geode-sdk/bindings
+          build-config: Release
           bindings-ref: main
-          combine: false
+          combine: true
           target: ${{ matrix.config.target }}
-
-      - name: Save build object cache
-        if: ${{ always() }}
-        continue-on-error: true
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            build*
-          key: geobot-objects-${{ runner.os }}-${{ matrix.config.target || 'Android' }}-Release-${{ github.run_id }}-${{ github.run_attempt }}
 
   package:
     name: Package builds
     runs-on: ubuntu-latest
     needs: ['build']
+    timeout-minutes: 15
 
     steps:
       - uses: geode-sdk/build-geode-mod/combine@main
