@@ -1,13 +1,20 @@
 name: Build Android
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
+  pull_request:
   push:
-    branches:
-      - "d"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
+    timeout-minutes: 75
     strategy:
       fail-fast: false
       matrix:
@@ -15,6 +22,10 @@ jobs:
         - name: Android32
           os: ubuntu-latest
           target: Android32
+
+        - name: Android64
+          os: ubuntu-latest
+          target: Android64
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -27,16 +38,17 @@ jobs:
         with:
           path: |
             build*
-          key: geobot-objects-${{ runner.os }}-${{ matrix.config.target || 'Android' }}-Release-${{ github.run_id }}-${{ github.run_attempt }}
+          key: geobot-objects-${{ runner.os }}-${{ matrix.config.target }}-Release-${{ hashFiles('CMakeLists.txt', 'mod.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
-            geobot-objects-${{ runner.os }}-${{ matrix.config.target || 'Android' }}-Release-
+            geobot-objects-${{ runner.os }}-${{ matrix.config.target }}-Release-${{ hashFiles('CMakeLists.txt', 'mod.json') }}-
 
       - name: Build the mod
         uses: geode-sdk/build-geode-mod@main
         with:
           bindings: geode-sdk/bindings
+          build-config: Release
           bindings-ref: main
-          combine: false
+          combine: true
           target: ${{ matrix.config.target }}
 
       - name: Save build object cache
@@ -46,12 +58,13 @@ jobs:
         with:
           path: |
             build*
-          key: geobot-objects-${{ runner.os }}-${{ matrix.config.target || 'Android' }}-Release-${{ github.run_id }}-${{ github.run_attempt }}
+          key: geobot-objects-${{ runner.os }}-${{ matrix.config.target }}-Release-${{ hashFiles('CMakeLists.txt', 'mod.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
 
   package:
     name: Package builds
     runs-on: ubuntu-latest
     needs: ['build']
+    timeout-minutes: 15
 
     steps:
       - uses: geode-sdk/build-geode-mod/combine@main
