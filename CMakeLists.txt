@@ -306,8 +306,14 @@ foreach(_geobot_mod_file
     )
 endforeach()
 
-file(WRITE "${_geobot_mod_source_dir}/CMakeLists.txt" "setup_geode_mod(${PROJECT_NAME})\n")
-add_subdirectory("${_geobot_mod_source_dir}" "${CMAKE_CURRENT_BINARY_DIR}/geobot-mod-package")
+# setup_geode_mod adds post-build commands to the mod target. CMake requires
+# TARGET-style add_custom_command calls to run in the directory that created
+# the target, so invoke the helper here rather than from a generated subdirectory.
+# Point it at the filtered package sources while it discovers mod.json/assets.
+set(_geobot_source_dir "${CMAKE_CURRENT_SOURCE_DIR}")
+set(CMAKE_CURRENT_SOURCE_DIR "${_geobot_mod_source_dir}")
+setup_geode_mod(${PROJECT_NAME})
+set(CMAKE_CURRENT_SOURCE_DIR "${_geobot_source_dir}")
 
 if (geobot_FAST_BUILD AND TARGET ${PROJECT_NAME})
     # Faster builds: disable LTO. Unity build is disabled because Geode's
