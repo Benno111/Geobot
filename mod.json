@@ -9,7 +9,7 @@
     "id": "benno111.geobot.dev",
     "name": "geobot",
     "developer": "Benno111",
-    "description": "A macro bot and utility toolkit for Geometry Dash",
+    "description": "A focused macro and click bot for Geometry Dash",
     "repository": "https://github.com/Benno111/geobot",
     "links": {
         "source": "https://github.com/Benno111/geobot",
@@ -25,61 +25,7 @@
             "version": ">=1.23.0"
         }
     },
-    "settings": {
-        "feature_flag_frameperfect_detection": {
-            "name": "Enable Frameperfect Detection",
-            "description": "Turns the frameperfect detection system on or off.",
-            "type": "bool",
-            "default": false
-        },
-        "feature_flag_pathfinder": {
-            "name": "Enable Pathfinder",
-            "description": "Turns the pathfinder system on or off.",
-            "type": "bool",
-            "default": false
-        },
-        "feature_flag_macro_menu_rewrite": {
-            "name": "Enable Macro Menu Rewrite",
-            "description": "Uses the rewritten category-based macro menu layout.",
-            "type": "bool",
-            "default": false
-        },
-        "pathfinder_solver_executable": {
-            "name": "Pathfinder Solver Executable",
-            "description": "Executable or script wrapper that generates a macro from a decompressed level string.",
-            "type": "file",
-            "default": {
-                "win": "{gd_dir}/pathfinder.exe",
-                "android": "",
-                "ios": ""
-            },
-            "control": {
-                "dialog": "open",
-                "filters": [
-                    {
-                        "files": [
-                            "*.exe",
-                            "*.bat",
-                            "*.cmd"
-                        ],
-                        "description": "Executable programs"
-                    }
-                ]
-            }
-        },
-        "pathfinder_solver_args": {
-            "name": "Pathfinder Solver Arguments",
-            "description": "Arguments passed to the solver. Supported placeholders: {input}, {output}, {level_name}.",
-            "type": "string",
-            "default": "--input \"{input}\" --output \"{output}\" --name \"{level_name}\""
-        },
-        "pathfinder_output_folder": {
-            "name": "Pathfinder Output Folder",
-            "description": "Folder used for temporary level exports and generated pathfinder macros.",
-            "type": "folder",
-            "default": "{mod_save_dir}/pathfinder"
-        }
-    },
+    "settings": {},
     "resources": {
         "sprites": [
             "resources/GJ_commentSide2_001_White.png",
@@ -100,7 +46,6 @@
     },
     "tags": [
         "gameplay",
-        "utility",
         "cheat"
     ]
 }

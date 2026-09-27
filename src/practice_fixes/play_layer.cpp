@@ -26,11 +26,6 @@ void clearRespawnJumpState(PlayerObject* player) {
 class $modify(GJBaseGameLayer) {
 
   void toggleFlipped(bool p0, bool p1) {
-    if (Mod::get()->getSavedValue<bool>("no_mirror_portal"))
-      p0 = false;
-    if (Global::get().state == state::recording || Mod::get()->getSavedValue<bool>("instant_mirror_portal"))
-      p1 = true;
-
     GJBaseGameLayer::toggleFlipped(p0, p1);
   }
 
@@ -102,8 +97,7 @@ class $modify(PlayLayer) {
 
     auto& g = Global::get();
 
-  if (g.mod->getSavedValue<bool>("autosave_checkpoint_enabled"))
-    Macro::tryAutosave(m_level, cp);
+  Macro::tryAutosave(m_level, cp);
 
     if (g.state == state::playing) {
       PlayLayer::loadFromCheckpoint(cp);
@@ -130,7 +124,7 @@ class $modify(PlayLayer) {
       return;
     }
 
-    if ((g.state != state::recording && !Mod::get()->getSavedValue<bool>("macro_always_practice_fixes")))
+    if (g.state != state::recording)
       return PlayLayer::loadFromCheckpoint(cp);
 
     if (!g.checkpoints.contains(cp)) return PlayLayer::loadFromCheckpoint(cp);
@@ -145,14 +139,6 @@ class $modify(PlayLayer) {
     g.ignoreJumpButton = frame + 1;
     g.previousFrame = g.checkpoints[cp].previousFrame;
 
-    #ifdef GEODE_IS_WINDOWS
-
-    if (g.seedEnabled) {
-      uintptr_t seed = g.checkpoints[cp].seed;
-      *(uintptr_t*)((char*)geode::base::get() + seedAddr) = seed;
-    }
-
-    #endif
 
     if (g.state == state::recording)
       InputPracticeFixes::applyFixes(this, p1Data, p2Data, frame);
@@ -161,11 +147,6 @@ class $modify(PlayLayer) {
 
     PlayerPracticeFixes::applyData(this->m_player1, p1Data, false);
     PlayerPracticeFixes::applyData(this->m_player2, p2Data, true);
-
-    if (g.state != state::recording && g.mod->getSavedValue<bool>("macro_always_practice_fixes")) {
-      this->m_player1->releaseButton(static_cast<PlayerButton>(1));
-      this->m_player2->releaseButton(static_cast<PlayerButton>(1));
-    }
 
   }
 

@@ -21,40 +21,6 @@ class $modify(CCTextInputNode) {
 };
 
 namespace {
-#if GEOBOT_ENABLE_PATHFINDER
-std::string buildPathfinderSearchSignature(Macro const& macro) {
-  std::string signature;
-  signature.reserve(macro.inputs.size() * 12);
-
-  for (auto const& action : macro.inputs) {
-    signature += std::to_string(action.frame);
-    signature += ':';
-    signature += std::to_string(action.button);
-    signature += ':';
-    signature += action.player2 ? '1' : '0';
-    signature += ':';
-    signature += action.down ? '1' : '0';
-    signature += ';';
-  }
-
-  return signature;
-}
-
-bool canUseMacroAsPathfinderSeed(Macro const& macro) {
-  bool holding = false;
-  for (auto const& action : macro.inputs) {
-    if (action.player2 || action.button != 1)
-      return false;
-    if (action.frame <= 0)
-      return false;
-    if (action.down == holding)
-      return false;
-    holding = action.down;
-  }
-
-  return !holding;
-}
-#endif
 
 int monthFromDateAbbrev(std::string_view month) {
   static const std::array<std::string_view, 12> months = {
@@ -109,61 +75,11 @@ bool hasBuildExpiredBy30Days() {
   return std::time(nullptr) > expiry;
 }
 
-bool isValidFFmpegBinaryPath(std::filesystem::path const& path) {
-  if (path.empty()) return false;
 
-  std::error_code ec;
-  if (!std::filesystem::exists(path, ec) || !std::filesystem::is_regular_file(path, ec))
-    return false;
 
-  std::string fileName = path.filename().string();
-  std::transform(fileName.begin(), fileName.end(), fileName.begin(), [](unsigned char c) {
-    return static_cast<char>(std::tolower(c));
-  });
-#ifdef GEODE_IS_WINDOWS
-  return fileName == "ffmpeg.exe" || fileName == "ffmpeg";
-#else
-  return fileName == "ffmpeg";
-#endif
-}
 
-std::vector<std::filesystem::path> getBundledFFmpegCandidates(Mod* mod) {
-  std::filesystem::path resources = mod->getResourcesDir();
-  std::vector<std::filesystem::path> candidates;
 
-#ifdef GEODE_IS_WINDOWS
-  candidates.push_back(resources / "ffmpeg" / "windows" / "ffmpeg.exe");
-  // Legacy package path kept as fallback for older installs.
-  candidates.push_back(resources / "ffmpeg.exe");
-#elif defined(GEODE_IS_ANDROID)
-  candidates.push_back(resources / "ffmpeg" / "android" / "ffmpeg");
-#elif defined(GEODE_IS_MACOS)
-  candidates.push_back(resources / "ffmpeg" / "macos" / "ffmpeg");
-#elif defined(GEODE_IS_IOS)
-  candidates.push_back(resources / "ffmpeg" / "ios" / "ffmpeg");
-#else
-  candidates.push_back(resources / "ffmpeg" / "linux" / "ffmpeg");
-#endif
 
-  return candidates;
-}
-
-std::filesystem::path resolveBundledFFmpegPath(Mod* mod) {
-  for (auto const& candidate : getBundledFFmpegCandidates(mod)) {
-    if (isValidFFmpegBinaryPath(candidate))
-      return candidate;
-  }
-
-  std::filesystem::path gameDirFFmpeg = geode::dirs::getGameDir() / "ffmpeg.exe";
-  if (isValidFFmpegBinaryPath(gameDirFFmpeg))
-    return gameDirFFmpeg;
-
-  gameDirFFmpeg = geode::dirs::getGameDir() / "ffmpeg";
-  if (isValidFFmpegBinaryPath(gameDirFFmpeg))
-    return gameDirFFmpeg;
-
-  return {};
-}
 }
 
 struct IncompatibleSetting {
@@ -357,162 +273,6 @@ void Global::updateKeybinds() {
   // Legacy custom-keybinds integration is disabled for Geode v5 migration.
 }
 
-void Global::updateSeed(bool isRestart) {
-
-  auto& g = Global::get();
-
-  if (g.seedEnabled) {
-    PlayLayer* pl = PlayLayer::get();
-    if (!pl) return;
-
-    std::string raw = g.mod->getSavedValue<std::string>("macro_seed");
-    if (raw != g.cachedMacroSeedString) {
-      g.cachedMacroSeedString = raw;
-      g.cachedMacroSeedValue = 1;
-
-      unsigned long long ull = 1;
-      auto begin = raw.data();
-      auto end = begin + raw.size();
-      while (begin < end && std::isspace(static_cast<unsigned char>(*begin))) ++begin;
-      while (end > begin && std::isspace(static_cast<unsigned char>(*(end - 1)))) --end;
-      if (begin < end) {
-        if (*begin == '+') ++begin;
-        else if (*begin == '-') begin = end;
-
-        int base = 10;
-        if ((end - begin) >= 2 && begin[0] == '0' && (begin[1] == 'x' || begin[1] == 'X')) {
-          base = 16;
-          begin += 2;
-        }
-        else if ((end - begin) > 1 && begin[0] == '0') {
-          base = 8;
-        }
-
-        auto [ptr, ec] = std::from_chars(begin, end, ull, base);
-        if (ec == std::errc() && ptr == end)
-          g.cachedMacroSeedValue = static_cast<uintptr_t>(ull);
-      }
-    }
-
-    uintptr_t seed = g.cachedMacroSeedValue;
-    int finalSeed;
-
-    if (!pl->m_player1->m_isDead) {
-      std::mt19937 generator(seed + pl->m_gameState.m_currentProgress);
-      std::uniform_int_distribution<int> distribution(10000, 999999999);
-      finalSeed = distribution(generator);
-    }
-    else {
-      std::random_device rd;
-      std::mt19937 generator(rd());
-      std::uniform_int_distribution<int> distribution(1000, 999999999);
-      finalSeed = distribution(generator);
-    }
-
-#ifdef GEODE_IS_WINDOWS
-    *(uintptr_t*)((char*)geode::base::get() + seedAddr) = finalSeed;
-#else
-    GameToolbox::fast_srand(finalSeed);
-#endif
-
-    g.safeMode = true;
-  }
-
-  if (isRestart && g.state == state::recording) {
-#ifdef GEODE_IS_WINDOWS
-    g.macro.seed = *(uintptr_t*)((char*)geode::base::get() + seedAddr);
-#else
-    g.macro.seed = 0;
-#endif
-  }
-
-}
-
-void Global::updatePitch(float value) {
-  auto& g = Global::get();
-  if (!g.speedhackAudio) {
-    if (g.currentPitch != 1.f) value = 1.f;
-    else return;
-  }
-
-  FMODAudioEngine* fmod = FMODAudioEngine::sharedEngine();
-  FMOD::ChannelGroup* channel = nullptr;
-  fmod->m_system->getMasterChannelGroup(&channel);
-
-  if (channel) {
-    channel->setPitch(value);
-    g.currentPitch = value;
-  }
-}
-
-void Global::frameStep() {
-  auto& g = Global::get();
-  if (!PlayLayer::get() || !g.frameStepper) return;
-
-  g.stepFrame = true;
-  g.stepFrameDraw = true;
-  g.stepFrameParticle = 4;
-}
-
-void Global::toggleSpeedhack() {
-  auto& g = Global::get();
-  g.mod->setSavedValue("macro_speedhack_enabled", !g.mod->getSavedValue<bool>("macro_speedhack_enabled"));
-  g.speedhackEnabled = g.mod->getSavedValue<bool>("macro_speedhack_enabled");
-
-  if (g.layer) {
-    if (static_cast<RecordLayer*>(g.layer)->speedhackToggle)
-      static_cast<RecordLayer*>(g.layer)->speedhackToggle->toggle(g.mod->getSavedValue<bool>("macro_speedhack_enabled"));
-  }
-
-  if (!g.mod->getSavedValue<bool>("macro_speedhack_enabled"))
-    Global::updatePitch(1.f);
-}
-
-void Global::toggleFrameStepper() {
-  if (Global::get().frameStepper)
-    Global::frameStepperOff();
-  else
-    Global::frameStepperOn();
-}
-
-void Global::frameStepperOn() {
-  auto& g = Global::get();
-
-  g.mod->setSavedValue("macro_frame_stepper", true);
-  g.frameStepper = true;
-
-  if (g.layer) {
-    if (static_cast<RecordLayer*>(g.layer)->frameStepperToggle)
-      static_cast<RecordLayer*>(g.layer)->frameStepperToggle->toggle(true);
-  }
-
-  if (PlayLayer::get())
-    g.frameStepperMusicTime = FMODAudioEngine::sharedEngine()->getMusicTimeMS(0);
-
-  Interface::updateButtons();
-}
-
-void Global::frameStepperOff() {
-  auto& g = Global::get();
-
-  g.mod->setSavedValue("macro_frame_stepper", false);
-  g.stepFrame = false;
-  g.stepFrameParticle = false;
-  g.frameStepper = false;
-
-  if (PlayLayer::get() && g.frameStepperMusicTime != 0) {
-    FMODAudioEngine::sharedEngine()->setMusicTimeMS(g.frameStepperMusicTime, true, 0);
-    g.frameStepperMusicTime = 0;
-  }
-
-  if (g.layer) {
-    if (static_cast<RecordLayer*>(g.layer)->frameStepperToggle)
-      static_cast<RecordLayer*>(g.layer)->frameStepperToggle->toggle(false);
-  }
-
-  Interface::updateButtons();
-}
-
 PauseLayer* Global::getPauseLayer() {
   for (CCNode* child : CCDirector::sharedDirector()->getRunningScene()->getChildrenExt()) {
     if (PauseLayer* pauseLayer = typeinfo_cast<PauseLayer*>(child)) {
@@ -524,389 +284,15 @@ PauseLayer* Global::getPauseLayer() {
 }
 
 namespace {
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-bool isFramePerfectForTier(int leftWiggle, int rightWiggle, int maxGap) {
-  return leftWiggle <= maxGap || rightWiggle <= maxGap;
 }
 
-std::string getFramePerfectFpsTypeText(int leftWiggle, int rightWiggle) {
-  std::string result;
 
-  auto appendType = [&](int maxGap, char const* label) {
-    if (!isFramePerfectForTier(leftWiggle, rightWiggle, maxGap))
-      return;
 
-    if (!result.empty())
-      result += "/";
-    result += label;
-  };
 
-  appendType(2, "60");
-  appendType(1, "144");
-  appendType(0, "240");
 
-  if (result.empty())
-    return "None";
-  return result;
-}
 
-std::string buildFramePerfectOverlayText(
-  std::string const& typeName,
-  std::string const& fpsType,
-  int leftWiggle,
-  int rightWiggle,
-  std::string const& footer
-) {
-  std::string wiggleLine = fmt::format("Wiggle L:{} R:{}", leftWiggle, rightWiggle);
-  if (!footer.empty())
-    wiggleLine += " | " + footer;
 
-  return fmt::format(
-    "FRAME PERFECT\n{} | {}\n{}",
-    typeName,
-    fpsType,
-    wiggleLine
-  );
-}
-#endif
-}
 
-void Global::refreshFramePerfectOverlayText() {
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-  auto& g = Global::get();
-  std::string typeName = g.framePerfectOverlayTypeName.empty() ? "Waiting for input" : g.framePerfectOverlayTypeName;
-  std::string fpsType = g.framePerfectOverlayFpsType.empty() ? "None" : g.framePerfectOverlayFpsType;
-  std::string footer = fmt::format(
-    "60 {}/{}  144 {}/{}  240 {}/{}",
-    g.framePerfectCount60,
-    g.framePerfectExpected60,
-    g.framePerfectCount144,
-    g.framePerfectExpected144,
-    g.framePerfectCount240,
-    g.framePerfectExpected240
-  );
-
-  g.framePerfectOverlayText = buildFramePerfectOverlayText(
-    typeName,
-    fpsType,
-    g.framePerfectOverlayLeftWiggle,
-    g.framePerfectOverlayRightWiggle,
-    footer
-  );
-#endif
-}
-
-void Global::resetFramePerfectStats() {
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-  auto& g = Global::get();
-  g.framePerfectOverlayFrames = 0;
-  g.framePerfectOverlayText.clear();
-  g.framePerfectOverlayTypeName.clear();
-  g.framePerfectOverlayFpsType.clear();
-  g.framePerfectOverlayLeftWiggle = 0;
-  g.framePerfectOverlayRightWiggle = 0;
-  g.framePerfectOverlayScanning = false;
-  g.framePerfectCount = 0;
-  g.framePerfectCount60 = 0;
-  g.framePerfectCount144 = 0;
-  g.framePerfectCount240 = 0;
-  g.framePerfectExpected = 0;
-  g.framePerfectExpected60 = 0;
-  g.framePerfectExpected144 = 0;
-  g.framePerfectExpected240 = 0;
-  g.lastFramePerfectAction = std::numeric_limits<size_t>::max();
-#endif
-}
-
-bool Global::isDeveloperModeEnabled() {
-  Mod* mod = Mod::get();
-  return mod && mod->getSavedValue<bool>("developer_mode_enabled");
-}
-
-void Global::setDeveloperModeEnabled(bool enabled) {
-  Mod* mod = Mod::get();
-  if (!mod)
-    return;
-
-  mod->setSavedValue("developer_mode_enabled", enabled);
-  if (!enabled && mod->getSavedValue<std::string>("frame_perfect_overlay_mode") == "When")
-    mod->setSavedValue("frame_perfect_overlay_mode", std::string("Always"));
-}
-
-std::string Global::getFramePerfectOverlayMode() {
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-  Mod* mod = Mod::get();
-  if (!mod)
-    return "Always";
-
-  std::string value = mod->getSavedValue<std::string>("frame_perfect_overlay_mode");
-  if (value == "Never" || value == "Always")
-    return value;
-  if (value == "When" && Global::isDeveloperModeEnabled())
-    return value;
-  return "Always";
-#else
-  return "Never";
-#endif
-}
-
-bool Global::isFramePerfectDetectionEnabled() {
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-  Mod* mod = Mod::get();
-  return !mod || mod->getSettingValue<bool>("feature_flag_frameperfect_detection");
-#else
-  return false;
-#endif
-}
-
-bool Global::isPathfinderFeatureEnabled() {
-#if GEOBOT_ENABLE_PATHFINDER
-  Mod* mod = Mod::get();
-  return !mod || mod->getSettingValue<bool>("feature_flag_pathfinder");
-#else
-  return false;
-#endif
-}
-
-void Global::applyPathfinderMacro(Macro const& macro) {
-#if GEOBOT_ENABLE_PATHFINDER
-  auto& g = Global::get();
-
-  g.macro = macro;
-  g.currentAction = 0;
-  g.currentFrameFix = 0;
-  g.restart = true;
-  g.macro.canChangeFPS = false;
-  g.macro.geobotMacro = g.macro.botInfo.name == "geobot";
-
-  Global::resetPathfinderState();
-  Macro::updateTPS();
-
-  if (g.layer)
-    static_cast<RecordLayer*>(g.layer)->updateTPS();
-
-  if (g.state == state::recording) {
-    if (g.layer && static_cast<RecordLayer*>(g.layer)->recording)
-      static_cast<RecordLayer*>(g.layer)->recording->toggle(false);
-    g.state = state::none;
-  }
-
-  if (g.state != state::playing) {
-    Macro::togglePlaying();
-    return;
-  }
-
-  PlayLayer* pl = PlayLayer::get();
-  if (pl) {
-    if (!pl->m_isPaused && !pl->m_levelEndAnimationStarted)
-      pl->resetLevelFromStart();
-    else
-      g.restart = true;
-  }
-
-  Interface::updateLabels();
-  Interface::updateButtons();
-#else
-  (void)macro;
-#endif
-}
-
-bool Global::isPathfinderAutoSearchActive() {
-#if GEOBOT_ENABLE_PATHFINDER
-  return Global::get().pathfinderAutoSearch;
-#else
-  return false;
-#endif
-}
-
-bool Global::startPathfinderAutoSearch() {
-#if GEOBOT_ENABLE_PATHFINDER
-  auto& g = Global::get();
-  PlayLayer* pl = PlayLayer::get();
-  if (!pl || !Global::isPathfinderFeatureEnabled() || !g.pathfinderMode)
-    return false;
-  if (g.pathfinderAutoSearch)
-    return false;
-  if (pl->m_levelSettings->m_platformerMode || pl->m_levelSettings->m_twoPlayerMode)
-    return false;
-
-  g.pathfinderAutoSearch = true;
-  g.pathfinderSearching = true;
-  g.pathfinderSearchAttempts = 0;
-  g.pathfinderBestProgress = 0.f;
-  g.pathfinderBestFrame = 0;
-  g.pathfinderSearchQueue.clear();
-  g.pathfinderSearchVisited.clear();
-  g.pathfinderSnapshots.clear();
-  g.pathfinderSearchCurrent = Macro();
-
-  Macro seedMacro = canUseMacroAsPathfinderSeed(g.macro) ? g.macro : Macro();
-  seedMacro.frameFixes.clear();
-  seedMacro.framerate = 240.f;
-  seedMacro.botInfo.name = "geobot";
-  seedMacro.botInfo.version = geobotVersion;
-  seedMacro.geobotMacro = true;
-  if (pl && pl->m_level) {
-    seedMacro.levelInfo.id = pl->m_level->m_levelID.value();
-    seedMacro.levelInfo.name = pl->m_level->m_levelName;
-    seedMacro.ldm = pl->m_level->m_lowDetailModeToggled;
-  }
-  seedMacro.author = g.macro.author.empty() ? "N/A" : g.macro.author;
-  seedMacro.description = "Internal Pathfinder Seed";
-
-  g.pathfinderSearchVisited.insert(buildPathfinderSearchSignature(seedMacro));
-  g.pathfinderSearchCurrent = seedMacro;
-  g.pathfinderSearchAttempts = 1;
-  g.pathfinderStatus = seedMacro.inputs.empty() ? "Search queued" : "Searching from current macro";
-
-  Global::applyPathfinderMacro(seedMacro);
-  return true;
-#else
-  return false;
-#endif
-}
-
-void Global::stopPathfinderAutoSearch(bool preserveStatus) {
-#if GEOBOT_ENABLE_PATHFINDER
-  auto& g = Global::get();
-  g.pathfinderAutoSearch = false;
-  g.pathfinderSearching = false;
-  g.pathfinderSearchAttempts = 0;
-  g.pathfinderBestProgress = 0.f;
-  g.pathfinderBestFrame = 0;
-  g.pathfinderSearchQueue.clear();
-  g.pathfinderSearchVisited.clear();
-  g.pathfinderSnapshots.clear();
-  g.pathfinderSearchCurrent = Macro();
-
-  if (!preserveStatus)
-    Global::resetPathfinderState();
-#else
-  (void)preserveStatus;
-#endif
-}
-
-void Global::resetPathfinderState() {
-#if GEOBOT_ENABLE_PATHFINDER
-  auto& g = Global::get();
-  g.pathfinderAction = 0;
-  g.pathfinderSearching = g.pathfinderAutoSearch;
-
-  if (!Global::isPathfinderFeatureEnabled())
-    g.pathfinderStatus = "Disabled";
-  else if (!g.pathfinderMode)
-    g.pathfinderStatus = "Idle";
-  else if (g.pathfinderAutoSearch)
-    g.pathfinderStatus = "Searching";
-  else if (g.macro.inputs.empty())
-    g.pathfinderStatus = "No Macro";
-  else
-    g.pathfinderStatus = "Armed";
-#endif
-}
-
-void Global::triggerFramePerfectOverlay(int button, bool down) {
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-  auto& g = Global::get();
-  const char* buttonName = "Click";
-  if (button == 2) buttonName = "Left";
-  else if (button == 3) buttonName = "Right";
-
-  g.framePerfectOverlayText = fmt::format("Frame Perfect: {} {}", buttonName, down ? "Press" : "Release");
-  g.framePerfectOverlayFrames = 30;
-#else
-  (void)button;
-  (void)down;
-#endif
-}
-
-void Global::triggerFramePerfectOverlayProgress(int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle) {
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-  auto& g = Global::get();
-  (void)button;
-  (void)down;
-
-  g.framePerfectOverlayTypeName = typeName;
-  g.framePerfectOverlayFpsType = getFramePerfectFpsTypeText(leftWiggle, rightWiggle);
-  g.framePerfectOverlayLeftWiggle = leftWiggle;
-  g.framePerfectOverlayRightWiggle = rightWiggle;
-  g.framePerfectOverlayScanning = true;
-  Global::refreshFramePerfectOverlayText();
-  g.framePerfectOverlayFrames = 2;
-#else
-  (void)button;
-  (void)down;
-  (void)typeName;
-  (void)leftWiggle;
-  (void)rightWiggle;
-#endif
-}
-
-void Global::triggerFramePerfectExpected(int leftWiggle, int rightWiggle) {
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-  auto& g = Global::get();
-
-  if (isFramePerfectForTier(leftWiggle, rightWiggle, 2))
-    g.framePerfectExpected60++;
-  if (isFramePerfectForTier(leftWiggle, rightWiggle, 1))
-    g.framePerfectExpected144++;
-  if (isFramePerfectForTier(leftWiggle, rightWiggle, 0))
-    g.framePerfectExpected240++;
-
-  g.framePerfectExpected = g.framePerfectExpected240;
-#else
-  (void)leftWiggle;
-  (void)rightWiggle;
-#endif
-}
-
-void Global::triggerFramePerfectOverlayCounted(size_t actionIndex, int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle) {
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-  auto& g = Global::get();
-  if (g.lastFramePerfectAction == actionIndex)
-    return;
-
-  g.lastFramePerfectAction = actionIndex;
-  Global::triggerFramePerfectExpected(leftWiggle, rightWiggle);
-
-  if (g.framePerfectSfxEnabled) {
-    const char* sfx = down ? "default_hold_click.mp3" : "default_release_click.mp3";
-    if (button == 2)
-      sfx = down ? "default_hold_left.mp3" : "default_release_left.mp3";
-    else if (button == 3)
-      sfx = down ? "default_hold_right.mp3" : "default_release_right.mp3";
-
-    FMODAudioEngine::sharedEngine()->playEffect((Mod::get()->getResourcesDir() / sfx).string());
-  }
-
-  if (isFramePerfectForTier(leftWiggle, rightWiggle, 2))
-    g.framePerfectCount60++;
-  if (isFramePerfectForTier(leftWiggle, rightWiggle, 1))
-    g.framePerfectCount144++;
-  if (isFramePerfectForTier(leftWiggle, rightWiggle, 0))
-    g.framePerfectCount240++;
-
-  g.framePerfectCount = g.framePerfectCount240;
-
-  (void)button;
-  (void)down;
-
-  g.framePerfectOverlayTypeName = typeName;
-  g.framePerfectOverlayFpsType = getFramePerfectFpsTypeText(leftWiggle, rightWiggle);
-  g.framePerfectOverlayLeftWiggle = leftWiggle;
-  g.framePerfectOverlayRightWiggle = rightWiggle;
-  g.framePerfectOverlayScanning = false;
-  Global::refreshFramePerfectOverlayText();
-  g.framePerfectOverlayFrames = 45;
-#else
-  (void)actionIndex;
-  (void)button;
-  (void)down;
-  (void)typeName;
-  (void)leftWiggle;
-  (void)rightWiggle;
-#endif
-}
 
 std::filesystem::path Global::getFolderSettingPath(std::string const& settingID, bool createIfMissing) {
   auto& g = Global::get();
@@ -915,8 +301,6 @@ std::filesystem::path Global::getFolderSettingPath(std::string const& settingID,
       return geode::dirs::getGameDir() / "macros";
     if (settingID == "autosaves_folder")
       return g.mod->getSaveDir() / "autosaves";
-    if (settingID == "render_folder")
-      return g.mod->getSaveDir() / "renders";
     return g.mod->getSaveDir() / settingID;
   };
 
@@ -958,10 +342,7 @@ $execute{
     return;
   }
 
-  if (!g.mod->setSavedValue("defaults_set_14", true)) {
-    g.mod->setSavedValue("render_fade_in_video", std::to_string(2));
-    g.mod->setSavedValue("render_fade_out_video", std::to_string(2));
-  }
+
 
   if (!g.mod->setSavedValue("defaults_set_12", true)) {
     g.mod->setSettingValue<std::filesystem::path>("macros_folder", Global::getFolderSettingPath("macros_folder"));
@@ -984,90 +365,25 @@ $execute{
     }
   }
 
-  #ifdef GEODE_IS_ANDROID
 
-  if (!g.mod->setSavedValue("defaults_set_15", true))
-    g.mod->setSavedValue("render_video_args", std::string(""));
-
-  if (!g.mod->setSavedValue("defaults_set_11", true))
-    g.mod->setSavedValue("render_codec", std::string("libx264"));
-    g.mod->setSavedValue("render_hardware_accel", std::string("Off"));
-
-  #endif
 
   if (!g.mod->setSavedValue("defaults_set_10", true)) {
     g.mod->setSettingValue("restore_page", true);
 
-    g.mod->setSavedValue("autosave_interval_enabled", false);
     g.mod->setSavedValue("autosave_interval", std::to_string(10));
     g.mod->setSavedValue("autosave_checkpoint_enabled", true);
     g.mod->setSavedValue("autosave_levelend_enabled", true);
 
-    g.mod->setSavedValue("render_fade_in_video", std::to_string(2));
-    g.mod->setSavedValue("render_fade_out_video", std::to_string(2));
 
     g.mod->setSavedValue("auto_stop_playing", false);
     g.mod->setSavedValue("macro_tps", 240.f);
     g.mod->setSavedValue("macro_tps_enabled", false);
 
-    g.mod->setSavedValue("autoclicker_hold_for", 5);
-    g.mod->setSavedValue("autoclicker_release_for", 5);
-    g.mod->setSavedValue("autoclicker_hold_for2", 5);
-    g.mod->setSavedValue("autoclicker_release_for2", 5);
-    g.mod->setSavedValue("autoclicker_p1", true);
-    g.mod->setSavedValue("autoclicker_p2", true);
 
-    g.mod->setSavedValue("trajectory_color1", ccc3(74, 226, 85));
-    g.mod->setSavedValue("trajectory_color2", ccc3(130, 8, 8));
-    g.mod->setSavedValue("trajectory_length", std::to_string(240));
 
   }
 
-  if (!g.mod->setSavedValue("defaults_set3", true)) {
-    g.mod->setSettingValue<std::filesystem::path>("render_folder", g.mod->getSaveDir() / "renders");
-    g.mod->setSavedValue("render_file_extension", std::string(".mp4"));
-    g.mod->setSavedValue("render_sfx_volume", 1.f);
-    g.mod->setSavedValue("render_music_volume", 1.f);
-    g.mod->setSavedValue("respawn_time", 0.5f);
-    g.mod->setSavedValue("render_seconds_after", std::to_string(2));
-    g.mod->setSavedValue("render_record_audio", true);
-    g.mod->setSavedValue("render_args", std::string("-pix_fmt yuv420p"));
-    g.mod->setSavedValue("macro_noclip_p1", true);
-    g.mod->setSavedValue("macro_noclip_p2", true);
 
-    g.mod->setSavedValue("render_width2", std::to_string(1920));
-    g.mod->setSavedValue("render_height", std::to_string(1080));
-    g.mod->setSavedValue("render_bitrate", std::to_string(12));
-    g.mod->setSavedValue("render_fps", std::to_string(60));
-    g.mod->setSavedValue("render_video_args", std::string("colorspace=all=bt709:iall=bt470bg:fast=1"));
-
-    g.mod->setSavedValue("render_codec", std::string("libx264"));
-    auto bundledFFmpeg = resolveBundledFFmpegPath(g.mod);
-    if (!bundledFFmpeg.empty())
-      g.mod->setSettingValue("ffmpeg_path", bundledFFmpeg);
-
-    g.mod->setSavedValue("render_record_audio", true);
-    g.mod->setSavedValue("render_hide_labels", true);
-
-    g.mod->setSavedValue("macro_seed", std::to_string(1));
-    g.mod->setSavedValue("macro_speedhack", std::string("0.5"));
-    g.mod->setSavedValue("macro_fps", 3);
-
-    g.mod->setSavedValue("macro_ignore_inputs", true);
-    g.mod->setSavedValue("macro_auto_safe_mode", true);
-    g.mod->setSavedValue("macro_speedhack_audio", true);
-    g.mod->setSavedValue("macro_show_frame_label", false);
-    g.mod->setSavedValue("macro_hide_playing_label", true);
-
-    g.mod->setSavedValue("menu_show_button", true);
-    g.mod->setSavedValue("menu_pause_on_open", false);
-    g.mod->setSavedValue("menu_show_cursor", true);
-
-    #ifdef GEODE_IS_ANDROID
-    g.mod->setSavedValue("menu_show_cursor", false);
-    #endif
-
-  }
 
   if (!g.mod->setSavedValue("defaults_set_16", true)) {
     g.mod->setSavedValue("macro_accuracy", std::string("Frame Fixes"));
@@ -1075,7 +391,6 @@ $execute{
     g.mod->setSavedValue("frame_fixes_limit", 240);
     g.mod->setSavedValue("lock_delta", false);
     g.mod->setSavedValue("auto_stop_playing", false);
-    g.mod->setSavedValue("pathfinder_mode", false);
   }
 
   // Hotfix: restore historical playback behavior (do not auto-stop by default).
@@ -1085,44 +400,7 @@ $execute{
   if (!g.mod->hasSavedValue("developer_mode_enabled"))
     g.mod->setSavedValue("developer_mode_enabled", false);
 
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-  if (!g.mod->hasSavedValue("frame_perfect_overlay_mode"))
-    g.mod->setSavedValue("frame_perfect_overlay_mode", std::string("Always"));
-  else if (!Global::isDeveloperModeEnabled() &&
-           g.mod->getSavedValue<std::string>("frame_perfect_overlay_mode") == "When")
-    g.mod->setSavedValue("frame_perfect_overlay_mode", std::string("Always"));
 
-  geode::listenForSettingChanges<bool>("feature_flag_frameperfect_detection", +[](bool enabled) {
-    if (!enabled)
-      Global::resetFramePerfectStats();
-  });
-#endif
-
-#if GEOBOT_ENABLE_PATHFINDER
-  if (!g.mod->hasSavedValue("pathfinder_mode"))
-    g.mod->setSavedValue("pathfinder_mode", false);
-
-  geode::listenForSettingChanges<bool>("feature_flag_pathfinder", +[](bool enabled) {
-    auto& g = Global::get();
-    if (!enabled) {
-      Global::stopPathfinderAutoSearch();
-      g.mod->setSavedValue("pathfinder_mode", false);
-      g.pathfinderMode = false;
-    }
-    else {
-      g.pathfinderMode = g.mod->getSavedValue<bool>("pathfinder_mode");
-    }
-
-    Global::resetPathfinderState();
-
-    Interface::updateLabels();
-    if (g.layer) {
-      if (auto* layer = typeinfo_cast<RecordLayer*>(g.layer)) {
-        layer->loadSettingsList();
-      }
-    }
-  });
-#endif
 
   std::string const currentNoticeVersion = geobotVersion;
   if (!g.mod->hasSavedValue("update_notice_last_seen")) {
@@ -1152,58 +430,28 @@ $execute{
   // Migrate legacy saved keys to current setting IDs.
   if (!g.mod->hasSavedValue("auto_stop_playing") && g.mod->hasSavedValue("macro_auto_stop_playing"))
     g.mod->setSavedValue("auto_stop_playing", g.mod->getSavedValue<bool>("macro_auto_stop_playing"));
-  if (!g.mod->hasSavedValue("disable_shaders") && g.mod->hasSavedValue("disableShaders"))
-    g.mod->setSavedValue("disable_shaders", g.mod->getSavedValue<bool>("disableShaders"));
 
-  g.showTrajectory = g.mod->getSavedValue<bool>("macro_show_trajectory");
-  g.coinFinder = g.mod->getSavedValue<bool>("macro_coin_finder");
-  g.frameStepper = g.mod->getSavedValue<bool>("macro_frame_stepper");
-  g.seedEnabled = g.mod->getSavedValue<bool>("macro_seed_enabled");
+  // Geobot is intentionally a focused macro/click bot. Keep retired utility
+  // features off even when an older installation left their values enabled.
   g.frameLabel = g.mod->getSavedValue<bool>("macro_show_frame_label");
-  g.speedhackAudio = g.mod->getSavedValue<bool>("macro_speedhack_audio");
-  g.trajectoryBothSides = g.mod->getSavedValue<bool>("macro_trajectory_both_sides");
-  g.p2mirror = g.mod->getSavedValue<bool>("p2_input_mirror");
-#if GEOBOT_ENABLE_PATHFINDER
-  g.pathfinderMode = Global::isPathfinderFeatureEnabled() && g.mod->getSavedValue<bool>("pathfinder_mode");
-#else
-  g.pathfinderMode = false;
-#endif
-  Global::resetPathfinderState();
   g.tpsEnabled = g.mod->getSavedValue<bool>("macro_tps_enabled");
   g.tps = g.mod->getSavedValue<double>("macro_tps");
-  g.autoclicker = g.mod->getSavedValue<bool>("autoclicker_enabled");
-  g.autoclickerP1 = g.mod->getSavedValue<bool>("autoclicker_p1");
-  g.autoclickerP2 = g.mod->getSavedValue<bool>("autoclicker_p2");
-  g.disableShaders = g.mod->getSavedValue<bool>("disable_shaders");
-  g.autosaveIntervalEnabled = g.mod->getSavedValue<bool>("autosave_interval_enabled");
-  g.autosaveEnabled = g.mod->getSavedValue<bool>("macro_auto_save");
+  // Autosaving is part of recording/editor playback now, not an optional
+  // utility mode. Persist the values so every autosave entry point agrees.
+  g.mod->setSavedValue("autosave_interval_enabled", true);
+  g.mod->setSavedValue("autosave_checkpoint_enabled", true);
+  g.mod->setSavedValue("autosave_levelend_enabled", true);
+  g.mod->setSavedValue("macro_auto_save", true);
 
-  g.holdFor = static_cast<int>(getSavedInt64Safe(g.mod, "autoclicker_hold_for", 5));
-  g.releaseFor = static_cast<int>(getSavedInt64Safe(g.mod, "autoclicker_release_for", 5));
-  g.holdFor2 = static_cast<int>(getSavedInt64Safe(g.mod, "autoclicker_hold_for2", 5));
-  g.releaseFor2 = static_cast<int>(getSavedInt64Safe(g.mod, "autoclicker_release_for2", 5));
   g.currentPage = static_cast<int>(getSavedInt64Safe(g.mod, "current_page", 0));
 
   g.autosaveInterval = (geode::utils::numFromString<float>(g.mod->getSavedValue<std::string>("autosave_interval")).unwrapOr(0.f) * 60);
 
-  g.speedhackEnabled = false;
-  g.mod->setSavedValue("macro_speedhack_enabled", false);
 
   g.frameOffset = static_cast<int>(getSavedInt64Safe(g.mod, "frame_offset", 0));
   g.frameFixesLimit = static_cast<int>(getSavedInt64Safe(g.mod, "frame_fixes_limit", 240));
   g.lockDelta = g.mod->getSavedValue<bool>("lock_delta");
   g.stopPlaying = g.mod->getSavedValue<bool>("auto_stop_playing");
-
-  if (g.mod->getSavedValue<std::string>("render_hardware_accel").empty())
-    g.mod->setSavedValue("render_hardware_accel", std::string("Off"));
-
-  auto ffmpegPath = g.mod->getSettingValue<std::filesystem::path>("ffmpeg_path");
-  bool hasValidFFmpeg = isValidFFmpegBinaryPath(ffmpegPath);
-  if (!hasValidFFmpeg) {
-    auto bundledFFmpeg = resolveBundledFFmpegPath(g.mod);
-    if (!bundledFFmpeg.empty())
-      g.mod->setSettingValue("ffmpeg_path", bundledFFmpeg);
-  }
 
   if (g.mod->getSavedValue<std::string>("macro_accuracy") == "Frame Fixes")
     g.frameFixes = true;

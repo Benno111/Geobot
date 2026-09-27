@@ -6,7 +6,6 @@
 #include "../includes.hpp"
 
 #include "load_macro_layer.hpp"
-#include "render_settings_layer.hpp"
 #include "save_macro_layer.hpp"
 #include "macro_info_layer.hpp"
 
@@ -14,15 +13,10 @@ enum InputType {
 	None,
 	Settings,
 	Action,
-	Autosave,
-	Speedhack,
-	Seed,
-	Respawn,
 	Tps,
 	FrameOffset,
 	FrameFixesLimit,
 	Accuracy,
-	FramePerfectMode
 };
 
 struct RecordSetting {
@@ -38,15 +32,9 @@ class RecordLayer : public xdb::Popup<>, public TextInputDelegate {
 public:
 	CCMenuItemToggler* recording = nullptr;
 	CCMenuItemToggler* playing = nullptr;
-	CCMenuItemToggler* speedhackToggle = nullptr;
-	CCMenuItemToggler* trajectoryToggle = nullptr;
-	CCMenuItemToggler* noclipToggle = nullptr;
-	CCMenuItemToggler* frameStepperToggle = nullptr;
-	CCMenuItemToggler* renderToggle = nullptr;
 	CCMenuItemToggler* tpsToggle = nullptr;
 
 	CCLabelBMFont* actionsLabel = nullptr;
-	CCLabelBMFont* fpsLabel = nullptr;
 	CCLabelBMFont* warningLabel = nullptr;
 
 	CCSprite* warningSprite = nullptr;
@@ -55,14 +43,6 @@ public:
 	CCMenuItemSpriteExtra* FPSLeft = nullptr;
 	CCMenuItemSpriteExtra* FPSRight = nullptr;
 
-	CCTextInputNode* widthInput = nullptr;
-	CCTextInputNode* heightInput = nullptr;
-	CCTextInputNode* bitrateInput = nullptr;
-	CCTextInputNode* fpsInput = nullptr;
-	CCTextInputNode* codecInput = nullptr;
-	CCTextInputNode* seedInput = nullptr;
-	CCTextInputNode* speedhackInput = nullptr;
-	CCTextInputNode* respawnInput = nullptr;
 	CCTextInputNode* tpsInput = nullptr;
 	CCTextInputNode* frameOffsetInput = nullptr;
 	CCTextInputNode* frameFixesLimitInput = nullptr;
@@ -99,7 +79,6 @@ public:
 
 	void textChanged(CCTextInputNode* node) override;
 
-	void checkSpeedhack();
 
 	static RecordLayer* openMenu(bool instant = false);
 
@@ -112,26 +91,19 @@ public:
 	}
 
 	void openLoadMacro(CCObject*);
-	void openPathfinderSettings(CCObject*);
-	void openStarRateOverride(CCObject*);
 
 	void openSaveMacro(CCObject*);
-	void clear22Percentage(CCObject*);
 
-	void showCodecPopup(CCObject*);
 
 	void toggleRecording(CCObject*);
 
 	void togglePlaying(CCObject*);
 
-	void toggleRender(CCObject* btn);
 
-	void openPresets(CCObject*);
 
 	void onAutosaves(CCObject*);
 	void openMacrosFolder(CCObject*);
 	void openAutosavesFolder(CCObject*);
-	void openRendersFolder(CCObject*);
 
 	void loadSettingsList();
 
@@ -147,13 +119,10 @@ public:
 
 	void openKeybinds(CCObject*);
 
-	void toggleFPS(bool on);
 
 	void onDiscord(CCObject*);
 	void onCycleAccuracy(CCObject*);
-	void onCycleFramePerfectMode(CCObject*);
 	void onSelectSettingsCategory(CCObject*);
-	static void applyPathfinderState(bool enabled, CCMenu* rootMenu = nullptr);
 	void updateSettingsCategoryButtons();
 	void selectSettingsCategory(size_t index);
 

@@ -71,7 +71,6 @@ public:
 
     static void toggleRecording();
 
-    static bool shouldStep();
 
     static bool flipControls();
 

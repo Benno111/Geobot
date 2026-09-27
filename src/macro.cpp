@@ -68,7 +68,6 @@ void Macro::tryAutosave(GJGameLevel* level, CheckpointObject* cp) {
     auto& g = Global::get();
 
     if (g.state != state::recording) return;
-    if (!g.autosaveEnabled) return;
     if (!g.checkpoints.contains(cp)) return;
     if (g.checkpoints[cp].frame < g.lastAutoSaveFrame) return;
 
@@ -329,7 +328,6 @@ void Macro::resetState(bool cp) {
 
     g.restart = false;
     g.state = state::none;
-    Global::resetPathfinderState();
 
     if (!cp)
         g.checkpoints.clear();
@@ -368,28 +366,4 @@ void Macro::toggleRecording() {
         layer->toggleRecording(nullptr);
         layer->onClose(nullptr);
     }
-}
-
-bool Macro::shouldStep() {
-    auto& g = Global::get();
-
-    if (g.stepFrame) return true;
-    if (Global::getCurrentFrame() == 0) return true;
-
-    // if (g.ignoreFrame != -1) return true;
-    // if (g.ignoreJumpButton != -1) return true;
-
-    // if (g.delayedFrameReleaseMain[0] != -1) return true;
-    // if (g.delayedFrameReleaseMain[1] != -1) return true;
-
-    // if (g.delayedFrameInput[0] != -1) return true;
-    // if (g.delayedFrameInput[1] != -1) return true;
-
-    // for (int x = 0; x < 2; x++) {
-    //     for (int y = 0; y < 2; y++) {
-    //         if (g.delayedFrameRelease[x][y] != -1) return true;
-    //     }
-    // }
-
-    return false;
 }
