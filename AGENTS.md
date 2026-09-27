@@ -8,12 +8,15 @@ Repository guidance for coding agents working in this repo.
 
 1. Make the requested changes.
 2. Run the most relevant verification available for the changed area.
-3. If verification passes, create a git commit.
+3. Create a git commit for completed changes.
 4. Push the commit to `origin` on the current branch.
 
 ## Push Policy
 
 - After a successful change, agents should push to `origin` by default.
+- Always push completed changes even when local CMake/configure cannot run because
+  the Geode SDK is unavailable; GitHub Actions is the authoritative build
+  environment for this repo. Still report the local verification blocker.
 - Use a normal non-interactive flow:
   - `git add ...`
   - `git commit -m "<clear message>"`
@@ -23,7 +26,8 @@ Repository guidance for coding agents working in this repo.
 
 ## Safety Rules
 
-- Do not push if verification clearly failed.
+- Do not push if verification clearly failed for reasons unrelated to a missing
+  local Geode SDK or other documented local-only environment blocker.
 - Do not revert unrelated user changes.
 - Do not amend existing commits unless the user explicitly asks.
 - If credentials, branch protections, or remote permissions block the push, report the blocker clearly.
