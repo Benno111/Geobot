@@ -21,7 +21,9 @@ jobs:
         config:
         - name: Windows
           os: windows-latest
+          target: Win64
           build-type: Release
+          ccache_variant: sccache
 
         - name: Android32
           os: ubuntu-latest
@@ -34,6 +36,7 @@ jobs:
         - name: iOS
           os: macos-latest
           target: iOS
+          ccache_variant: sccache
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -46,7 +49,9 @@ jobs:
         with:
           bindings: geode-sdk/bindings
           build-config: ${{ matrix.config.build-type || 'Release' }}
+          ccache-variant: ${{ matrix.config.ccache_variant || 'default' }}
           export-pdb: false
+          use-lto: false
           bindings-ref: main
           combine: true
           target: ${{ matrix.config.target }}
