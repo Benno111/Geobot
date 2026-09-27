@@ -174,13 +174,28 @@ class $modify(PlayLayer) {
 
     void levelComplete() {
         auto& g = Global::get();
+
+        g.firstAttempt = true;
+
+        if (g.state == state::recording && g.autosaveEnabled && g.mod->getSavedValue<bool>("autosave_levelend_enabled"))
+            Macro::autoSave(nullptr, g.currentSession);
+
         bool wasTestMode = m_isTestMode;
-        if (shouldBlockRewards())
+
+        if (g.safeMode)
             m_isTestMode = true;
 
+        if (m_isPracticeMode)
+            g.safeMode = false;
+
         PlayLayer::levelComplete();
+        
+        Macro::resetState(true);
+
         m_isTestMode = wasTestMode;
     }
+
+};
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
         auto& g = Global::get();
