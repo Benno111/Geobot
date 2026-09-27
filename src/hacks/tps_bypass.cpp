@@ -1,6 +1,13 @@
 #include "../includes.hpp"
 #include <Geode/modify/GJBaseGameLayer.hpp>
 
+namespace {
+    // Leave part of a 60 Hz frame for rendering, audio, and the rest of the
+    // scheduler. Spending the entire 16.67 ms interval in playback's catch-up
+    // loop makes an otherwise 60 FPS frame miss v-sync and present at 30 FPS.
+    constexpr auto kPlaybackStepBudget = std::chrono::duration<double, std::milli>(12.0);
+}
+
 class $modify(GJBaseGameLayer) {
 
     void update(float dt) {
@@ -34,7 +41,7 @@ class $modify(GJBaseGameLayer) {
 
         const double realDt = static_cast<double>(dt) + g.leftOver;
 
-        const auto startTime = std::chrono::steady_clock::now();
+        const auto deadline = std::chrono::steady_clock::now() + kPlaybackStepBudget;
         // Account for representation error at exact tick boundaries. Without
         // this, identical deltas can produce a different step count depending
         // on the platform's floating-point implementation.
@@ -43,7 +50,11 @@ class $modify(GJBaseGameLayer) {
 
         for (int i = 0; i < mult; ++i) {
             GJBaseGameLayer::update(static_cast<float>(newDt));
-            if (std::chrono::steady_clock::now() - startTime > std::chrono::duration<double, std::milli>(16.666)) {
+            // Always complete at least one tick. Afterwards, yield before the
+            // playback loop consumes the whole display frame. Unprocessed
+            // ticks remain in leftOver, so inputs and frame fixes are applied
+            // on their original simulation frames rather than being dropped.
+            if (i + 1 < mult && std::chrono::steady_clock::now() >= deadline) {
                 mult = i + 1;
                 break;
             }

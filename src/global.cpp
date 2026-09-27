@@ -1155,14 +1155,16 @@ $execute{
   if (!g.mod->hasSavedValue("disable_shaders") && g.mod->hasSavedValue("disableShaders"))
     g.mod->setSavedValue("disable_shaders", g.mod->getSavedValue<bool>("disableShaders"));
 
-  g.showTrajectory = g.mod->getSavedValue<bool>("macro_show_trajectory");
-  g.coinFinder = g.mod->getSavedValue<bool>("macro_coin_finder");
-  g.frameStepper = g.mod->getSavedValue<bool>("macro_frame_stepper");
-  g.seedEnabled = g.mod->getSavedValue<bool>("macro_seed_enabled");
+  // Geobot is intentionally a focused macro/click bot. Keep retired utility
+  // features off even when an older installation left their values enabled.
+  g.showTrajectory = false;
+  g.coinFinder = false;
+  g.frameStepper = false;
+  g.seedEnabled = false;
   g.frameLabel = g.mod->getSavedValue<bool>("macro_show_frame_label");
-  g.speedhackAudio = g.mod->getSavedValue<bool>("macro_speedhack_audio");
-  g.trajectoryBothSides = g.mod->getSavedValue<bool>("macro_trajectory_both_sides");
-  g.p2mirror = g.mod->getSavedValue<bool>("p2_input_mirror");
+  g.speedhackAudio = false;
+  g.trajectoryBothSides = false;
+  g.p2mirror = false;
 #if GEOBOT_ENABLE_PATHFINDER
   g.pathfinderMode = Global::isPathfinderFeatureEnabled() && g.mod->getSavedValue<bool>("pathfinder_mode");
 #else
@@ -1171,12 +1173,18 @@ $execute{
   Global::resetPathfinderState();
   g.tpsEnabled = g.mod->getSavedValue<bool>("macro_tps_enabled");
   g.tps = g.mod->getSavedValue<double>("macro_tps");
-  g.autoclicker = g.mod->getSavedValue<bool>("autoclicker_enabled");
+  g.autoclicker = false;
   g.autoclickerP1 = g.mod->getSavedValue<bool>("autoclicker_p1");
   g.autoclickerP2 = g.mod->getSavedValue<bool>("autoclicker_p2");
   g.disableShaders = g.mod->getSavedValue<bool>("disable_shaders");
-  g.autosaveIntervalEnabled = g.mod->getSavedValue<bool>("autosave_interval_enabled");
-  g.autosaveEnabled = g.mod->getSavedValue<bool>("macro_auto_save");
+  // Autosaving is part of recording/editor playback now, not an optional
+  // utility mode. Persist the values so every autosave entry point agrees.
+  g.autosaveIntervalEnabled = true;
+  g.autosaveEnabled = true;
+  g.mod->setSavedValue("autosave_interval_enabled", true);
+  g.mod->setSavedValue("autosave_checkpoint_enabled", true);
+  g.mod->setSavedValue("autosave_levelend_enabled", true);
+  g.mod->setSavedValue("macro_auto_save", true);
 
   g.holdFor = static_cast<int>(getSavedInt64Safe(g.mod, "autoclicker_hold_for", 5));
   g.releaseFor = static_cast<int>(getSavedInt64Safe(g.mod, "autoclicker_release_for", 5));
@@ -1188,6 +1196,14 @@ $execute{
 
   g.speedhackEnabled = false;
   g.mod->setSavedValue("macro_speedhack_enabled", false);
+  g.mod->setSavedValue("autoclicker_enabled", false);
+  g.mod->setSavedValue("macro_coin_finder", false);
+  g.mod->setSavedValue("macro_frame_stepper", false);
+  g.mod->setSavedValue("macro_layout_mode", false);
+  g.mod->setSavedValue("macro_noclip", false);
+  g.mod->setSavedValue("macro_seed_enabled", false);
+  g.mod->setSavedValue("macro_show_trajectory", false);
+  g.mod->setSavedValue("p2_input_mirror", false);
 
   g.frameOffset = static_cast<int>(getSavedInt64Safe(g.mod, "frame_offset", 0));
   g.frameFixesLimit = static_cast<int>(getSavedInt64Safe(g.mod, "frame_fixes_limit", 240));

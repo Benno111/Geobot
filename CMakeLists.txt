@@ -14,9 +14,6 @@ endif()
 
 project(geobot VERSION 2.0.0)
 option(geobot_FAST_BUILD "Optimize build settings for faster compile times" ON)
-option(geobot_ENABLE_FRAMEPERFECT_DETECTION "Build frameperfect detection support" OFF)
-option(geobot_ENABLE_PATHFINDER "Build pathfinder support" OFF)
-
 option(geobot_ENABLE_TEST_BUILDS "Enable test targets in this project and dependencies" OFF)
 set(BUILD_TESTING ${geobot_ENABLE_TEST_BUILDS} CACHE BOOL "Build tests" FORCE)
  
@@ -252,33 +249,14 @@ if (TARGET GeodeBindings)
 endif()
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    GEOBOT_ENABLE_FRAMEPERFECT_DETECTION=$<BOOL:${geobot_ENABLE_FRAMEPERFECT_DETECTION}>
-    GEOBOT_ENABLE_PATHFINDER=$<BOOL:${geobot_ENABLE_PATHFINDER}>
+    GEOBOT_ENABLE_FRAMEPERFECT_DETECTION=0
+    GEOBOT_ENABLE_PATHFINDER=0
 )
 
 set(_geobot_mod_source_dir "${CMAKE_CURRENT_BINARY_DIR}/geobot-mod-source")
 file(MAKE_DIRECTORY "${_geobot_mod_source_dir}")
 
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/mod.json" _geobot_mod_json)
-if (NOT geobot_ENABLE_FRAMEPERFECT_DETECTION)
-    string(JSON _geobot_mod_json REMOVE "${_geobot_mod_json}"
-        "settings" "feature_flag_frameperfect_detection"
-    )
-endif()
-if (NOT geobot_ENABLE_PATHFINDER)
-    string(JSON _geobot_mod_json REMOVE "${_geobot_mod_json}"
-        "settings" "feature_flag_pathfinder"
-    )
-    string(JSON _geobot_mod_json REMOVE "${_geobot_mod_json}"
-        "settings" "pathfinder_solver_executable"
-    )
-    string(JSON _geobot_mod_json REMOVE "${_geobot_mod_json}"
-        "settings" "pathfinder_solver_args"
-    )
-    string(JSON _geobot_mod_json REMOVE "${_geobot_mod_json}"
-        "settings" "pathfinder_output_folder"
-    )
-endif()
 file(WRITE "${_geobot_mod_source_dir}/mod.json" "${_geobot_mod_json}\n")
 
 foreach(_geobot_mod_file
