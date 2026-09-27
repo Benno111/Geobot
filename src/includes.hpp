@@ -17,20 +17,11 @@
 #include <limits>
 #include <charconv>
 
-#include "renderer/renderer.hpp"
 #include "macro.hpp"
 
 using namespace geode::prelude;
 
 #define WINDOW_BG "GJ_square01.png"
-
-#ifndef GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-#define GEOBOT_ENABLE_FRAMEPERFECT_DETECTION 1
-#endif
-
-#ifndef GEOBOT_ENABLE_PATHFINDER
-#define GEOBOT_ENABLE_PATHFINDER 1
-#endif
 
 inline void detachInputNodeSafe(CCTextInputNode* input) {
     if (!input) return;
@@ -159,44 +150,17 @@ public:
 
     static void updateKeybinds();
 
-    static void updateSeed(bool isRestart = false);
 
-    static void updatePitch(float value);
 
-    static void toggleSpeedhack();
 
-    static void frameStep();
-
-    static void toggleFrameStepper();
-
-    static void frameStepperOn();
-
-    static void frameStepperOff();
 
     static PauseLayer* getPauseLayer();
     static std::filesystem::path getFolderSettingPath(std::string const& settingID, bool createIfMissing = true);
-    static void triggerFramePerfectOverlay(int button, bool down);
-    static void triggerFramePerfectOverlayProgress(int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle);
-    static void triggerFramePerfectExpected(int leftWiggle, int rightWiggle);
-    static void triggerFramePerfectOverlayCounted(size_t actionIndex, int button, bool down, std::string const& typeName, int leftWiggle, int rightWiggle);
-    static void refreshFramePerfectOverlayText();
-    static void resetFramePerfectStats();
-    static bool isDeveloperModeEnabled();
-    static void setDeveloperModeEnabled(bool enabled);
-    static std::string getFramePerfectOverlayMode();
-    static bool isFramePerfectDetectionEnabled();
-    static bool isPathfinderFeatureEnabled();
-    static void resetPathfinderState();
-    static void applyPathfinderMacro(Macro const& macro);
-    static bool isPathfinderAutoSearchActive();
-    static bool startPathfinderAutoSearch();
-    static void stopPathfinderAutoSearch(bool preserveStatus = false);
 
     Mod* mod = Mod::get();
     geode::Popup* layer = nullptr;
 
     Macro macro;
-    Renderer renderer;
     state state = none;
 
     std::unordered_map<CheckpointObject*, CheckpointData> checkpoints;
@@ -208,77 +172,26 @@ public:
     std::chrono::time_point<std::chrono::steady_clock> lastAutoSaveMS = std::chrono::steady_clock::now();
     int currentSession = 0;
 
-    bool stepFrame = false;
-    bool stepFrameDraw = false;
-    int stepFrameDrawMultiple = 0;
-    int stepFrameParticle = 0;
-    int frameStepperMusicTime = 0;
 
     bool cancelCheckpoint = false;
     bool ignoreRecordAction = false;
     bool restart = false;
     bool restartLater = false;
-    bool creatingTrajectory = false;
     bool firstAttempt = false;
     bool macroUsedInAttempt = false;
 
-    bool disableShaders = false;
-    bool safeMode = false;
-    bool layoutMode = false;
-    bool showTrajectory = false;
-    bool coinFinder = false;
-    bool frameStepper = false;
-    bool speedhackEnabled = false;
-    bool speedhackAudio = false;
-    bool seedEnabled = false;
     bool clickbotEnabled = false;
     bool clickbotOnlyPlaying = false;
     bool clickbotOnlyHolding = false;
     bool frameLabel = false;
-    bool trajectoryBothSides = false;
-    bool p2mirror = false;
     bool lockDelta = false;
     bool stopPlaying = false;
-    bool pathfinderMode = false;
-    bool pathfinderSearching = false;
-    bool pathfinderAutoSearch = false;
-    size_t pathfinderAction = 0;
-    size_t pathfinderSearchAttempts = 0;
-    float pathfinderBestProgress = 0.f;
-    int pathfinderBestFrame = 0;
-    struct PathfinderSimulationSnapshot {
-        int frame = 0;
-        size_t actionIndex = 0;
-        float progress = 0.f;
-        PlayerData player1;
-    };
-    struct PathfinderQueuedCandidate {
-        Macro macro;
-        float priority = 0.f;
-        float progress = 0.f;
-        int survivedFrames = 0;
-        bool died = false;
-        int branchFrame = 0;
-    };
-    Macro pathfinderSearchCurrent;
-    std::deque<PathfinderQueuedCandidate> pathfinderSearchQueue;
-    std::unordered_set<std::string> pathfinderSearchVisited;
-    std::deque<PathfinderSimulationSnapshot> pathfinderSnapshots;
     bool tpsEnabled = false;
     float tps = 240.f;
     bool previousTpsEnabled = false;
     float previousTps = 0.f;
-    bool autoclicker = false;
-    bool autoclickerP1 = false;
-    bool autoclickerP2 = false;
-    int holdFor = 0;
-    int releaseFor = 0;
-    int holdFor2 = 0;
-    int releaseFor2 = 0;
-    bool autosaveIntervalEnabled = false;
     int autosaveInterval = 600000;
     float autosaveCheck = 2.f;
-    bool autosaveEnabled = false;
 
     bool ignoreStopDashing[2] = { false, false };
     bool addSideHoldingMembers[2] = { false, false };
@@ -304,29 +217,7 @@ public:
     bool buildExpiryNoticeShown = false;
 
     int currentPage = 0;
-    float currentPitch = 1.f;
-    std::string cachedMacroSeedString = "";
-    uintptr_t cachedMacroSeedValue = 1;
-    uintptr_t latestSeed = 0;
     // Keep the fixed-step accumulator in double precision. A float accumulator
     // can round a nominal 4-step 60 Hz update down to 3 steps on some targets.
     double leftOver = 0.0;
-    int framePerfectOverlayFrames = 0;
-    std::string framePerfectOverlayText = "";
-    int framePerfectCount = 0;
-    int framePerfectCount60 = 0;
-    int framePerfectCount144 = 0;
-    int framePerfectCount240 = 0;
-    int framePerfectExpected = 0;
-    int framePerfectExpected60 = 0;
-    int framePerfectExpected144 = 0;
-    int framePerfectExpected240 = 0;
-    std::string framePerfectOverlayTypeName = "";
-    std::string framePerfectOverlayFpsType = "";
-    int framePerfectOverlayLeftWiggle = 0;
-    int framePerfectOverlayRightWiggle = 0;
-    bool framePerfectOverlayScanning = false;
-    bool framePerfectSfxEnabled = true;
-    size_t lastFramePerfectAction = std::numeric_limits<size_t>::max();
-    std::string pathfinderStatus = "Idle";
 };

@@ -1,5 +1,4 @@
 #include "load_macro_layer.hpp"
-#include "autosave_settings_layer.hpp"
 #include "macro_editor.hpp"
 
 #include <Geode/modify/CCMenu.hpp>
@@ -261,18 +260,7 @@ bool LoadMacroLayer::setup(geode::Popup* layer, geode::Popup* layer2, bool autos
 
 		menu->addChild(btn);
 
-		if (isAutosaves) {
-			spr = CCSprite::createWithSpriteFrameName("GJ_optionsBtn_001.png");
-			spr->setScale(0.55f);
-			btn = CCMenuItemSpriteExtra::create(
-				spr,
-				this,
-				menu_selector(AutoSaveLayer::open)
-			);
-			btn->setPosition(ccp(15, -121));
 
-			menu->addChild(btn);
-		}
 	}
 
 	CCSprite* spr1 = CCSprite::create("GJ_button_01.png");
@@ -826,7 +814,6 @@ void MacroCell::handleLoad() {
 	g.currentFrameFix = 0;
 	g.restart = true;
 	g.macro.canChangeFPS = false;
-	Global::resetPathfinderState();
 
     g.macro.geobotMacro = g.macro.botInfo.name == "geobot";
 

@@ -24,9 +24,9 @@ private:
         auto& g = Global::get();
 
         int playerInputs[2][3][2] = { { { 0, 0 }, { 0, 0 }, { 0, 0 } }, { { 0, 0 }, { 0, 0 }, { 0, 0 } } };
-        int framePerfectByButton[3] = { 0, 0, 0 };
-        int framePerfectPress = 0;
-        int framePerfectRelease = 0;
+        int shortInputsByButton[3] = { 0, 0, 0 };
+        int shortInputPress = 0;
+        int shortInputRelease = 0;
 
         for (const auto& input : g.macro.inputs)
             playerInputs[input.player2][input.button - 1][input.down]++;
@@ -41,10 +41,10 @@ private:
             if (cur.down == prev.down) continue;
 
             if (cur.button >= 1 && cur.button <= 3)
-                framePerfectByButton[cur.button - 1]++;
+                shortInputsByButton[cur.button - 1]++;
 
-            if (cur.down) framePerfectPress++;
-            else framePerfectRelease++;
+            if (cur.down) shortInputPress++;
+            else shortInputRelease++;
         }
 
         CCScale9Sprite* bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
@@ -206,15 +206,15 @@ private:
         lbl->setOpacity(150);
         m_mainLayer->addChild(lbl);
 
-        int totalFramePerfects = framePerfectPress + framePerfectRelease;
+        int totalShortInputs = shortInputPress + shortInputRelease;
         std::string fpSummary = fmt::format(
-            "FP {} | Clk {} L {} R {} | Inp {} Rel {}",
-            totalFramePerfects,
-            framePerfectByButton[0],
-            framePerfectByButton[1],
-            framePerfectByButton[2],
-            framePerfectPress,
-            framePerfectRelease
+            "Short inputs {} | Clk {} L {} R {} | Inp {} Rel {}",
+            totalShortInputs,
+            shortInputsByButton[0],
+            shortInputsByButton[1],
+            shortInputsByButton[2],
+            shortInputPress,
+            shortInputRelease
         );
 
         lbl = CCLabelBMFont::create(fpSummary.c_str(), "chatFont.fnt");
