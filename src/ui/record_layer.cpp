@@ -65,6 +65,7 @@ const std::vector<SettingsCategory> kSettingsCategories {
             { "Frame Fix Limit:", "frame_fixes_limit", InputType::FrameFixesLimit, 0.4f },
             { "Lock Delta:", "lock_delta", InputType::None },
             { "Auto Stop Playing:", "auto_stop_playing", InputType::None },
+            { "Auto Safe Mode:", "macro_auto_safe_mode", InputType::None },
             { "TPS Bypass:", "macro_tps_enabled", InputType::Tps, 0.4f },
             { "Enable Clickbot:", "clickbot_enabled", InputType::Settings, 0.325f, menu_selector(ClickbotLayer::open)},
             { "Ignore inputs:", "macro_ignore_inputs", InputType::None },
@@ -82,7 +83,8 @@ bool isMacroMenuRewriteEnabled() {
 }
 
 void addRewardDisabledWatermark(CCLayer* layer) {
-    if (!layer || !Global::get().botUsedInLevelSession)
+    auto& g = Global::get();
+    if (!layer || !g.botUsedInLevelSession || !g.mod->getSavedValue<bool>("macro_auto_safe_mode"))
         return;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();

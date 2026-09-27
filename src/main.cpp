@@ -6,12 +6,19 @@
 
 #include <Geode/binding/LevelEditorLayer.hpp>
 #include <Geode/modify/AppDelegate.hpp>
+#include <Geode/modify/GameStatsManager.hpp>
+#include <Geode/modify/GJGameLevel.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
 
 namespace {
 constexpr int kRespawnMovementClearFrames = 5;
+
+bool shouldBlockRewards() {
+    auto& g = Global::get();
+    return g.botUsedInLevelSession && g.mod->getSavedValue<bool>("macro_auto_safe_mode");
+}
 
 bool isEditorPlaytestCompat(PlayLayer* pl) {
     if (!pl) return false;
@@ -161,14 +168,14 @@ class $modify(PlayLayer) {
     }
 
     void showNewBest(bool po, int p1, int p2, bool p3, bool p4, bool p5) {
-        if (!Global::get().botUsedInLevelSession)
+        if (!shouldBlockRewards())
             PlayLayer::showNewBest(po, p1, p2, p3, p4, p5);
     }
 
     void levelComplete() {
         auto& g = Global::get();
         bool wasTestMode = m_isTestMode;
-        if (g.botUsedInLevelSession)
+        if (shouldBlockRewards())
             m_isTestMode = true;
 
         PlayLayer::levelComplete();
@@ -259,6 +266,97 @@ class $modify(PlayLayer) {
                 GJBaseGameLayer::handleButton(true, indexButton[sidesButtons[i]], player2);
         }
         g.ignoreRecordAction = false;
+    }
+};
+
+class $modify(GJGameLevel) {
+    void savePercentage(int p0, bool p1, int p2, int p3, bool p4) {
+        if (!shouldBlockRewards())
+            GJGameLevel::savePercentage(p0, p1, p2, p3, p4);
+    }
+};
+
+class $modify(GameStatsManager) {
+    void awardCurrencyForLevel(GJGameLevel* level) {
+        if (!shouldBlockRewards())
+            GameStatsManager::awardCurrencyForLevel(level);
+    }
+
+    void awardDiamondsForLevel(GJGameLevel* level) {
+        if (!shouldBlockRewards())
+            GameStatsManager::awardDiamondsForLevel(level);
+    }
+
+    bool awardSecretKey() {
+        if (shouldBlockRewards())
+            return false;
+        return GameStatsManager::awardSecretKey();
+    }
+
+    void completedLevel(GJGameLevel* level) {
+        if (!shouldBlockRewards())
+            GameStatsManager::completedLevel(level);
+    }
+
+    void completedStarLevel(GJGameLevel* level) {
+        if (!shouldBlockRewards())
+            GameStatsManager::completedStarLevel(level);
+    }
+
+    void markLevelAsCompletedAndClaimed(GJGameLevel* level) {
+        if (!shouldBlockRewards())
+            GameStatsManager::markLevelAsCompletedAndClaimed(level);
+    }
+
+    void completedMapPack(GJMapPack* pack) {
+        if (!shouldBlockRewards())
+            GameStatsManager::completedMapPack(pack);
+    }
+
+    void completedDemonLevel(GJGameLevel* level) {
+        if (!shouldBlockRewards())
+            GameStatsManager::completedDemonLevel(level);
+    }
+
+    GJRewardItem* completedDailyLevel(GJGameLevel* level) {
+        if (shouldBlockRewards())
+            return nullptr;
+        return GameStatsManager::completedDailyLevel(level);
+    }
+
+    void checkCoinAchievement(GJGameLevel* level) {
+        if (!shouldBlockRewards())
+            GameStatsManager::checkCoinAchievement(level);
+    }
+
+    void checkAchievement(char const* key) {
+        if (!shouldBlockRewards())
+            GameStatsManager::checkAchievement(key);
+    }
+
+    void incrementChallenge(GJChallengeType type, int amount) {
+        if (!shouldBlockRewards())
+            GameStatsManager::incrementChallenge(type, amount);
+    }
+
+    void storeUserCoin(char const* key) {
+        if (!shouldBlockRewards())
+            GameStatsManager::storeUserCoin(key);
+    }
+
+    void storeSecretCoin(char const* key) {
+        if (!shouldBlockRewards())
+            GameStatsManager::storeSecretCoin(key);
+    }
+
+    void incrementStat(char const* key, int amount) {
+        if (!shouldBlockRewards())
+            GameStatsManager::incrementStat(key, amount);
+    }
+
+    void setStat(char const* key, int value) {
+        if (!shouldBlockRewards())
+            GameStatsManager::setStat(key, value);
     }
 };
 
