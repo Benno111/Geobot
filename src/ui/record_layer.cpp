@@ -5,6 +5,7 @@
 
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/EditorPauseLayer.hpp>
+#include <Geode/modify/EndLevelLayer.hpp>
 #include <Geode/binding/LevelEditorLayer.hpp>
 #include <Geode/utils/web.hpp>
 #include <array>
@@ -325,6 +326,23 @@ void addgeobotPauseButton(cocos2d::CCLayer* layer) {
     btn->setPosition({214, 88});
     fallbackMenu->addChild(btn);
 }
+
+void stopMacroOnEndscreen() {
+    auto& g = Global::get();
+    if (g.state != state::playing && g.state != state::recording)
+        return;
+
+    Macro::resetState(true);
+    Macro::updateTPS();
+
+    if (auto* recordLayer = typeinfo_cast<RecordLayer*>(g.layer)) {
+        if (recordLayer->recording)
+            recordLayer->recording->toggle(false);
+        if (recordLayer->playing)
+            recordLayer->playing->toggle(false);
+        recordLayer->updateTPS();
+    }
+}
 }
 
 class $modify(PauseLayer) {
@@ -338,6 +356,14 @@ class $modify(PauseLayer) {
 class $modify(EditorPauseLayer) {
     void customSetup() {
         EditorPauseLayer::customSetup();
+        addgeobotPauseButton(this);
+    }
+};
+
+class $modify(EndLevelLayer) {
+    void customSetup() {
+        EndLevelLayer::customSetup();
+        stopMacroOnEndscreen();
         addgeobotPauseButton(this);
     }
 };
