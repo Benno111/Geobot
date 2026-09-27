@@ -74,6 +74,9 @@ public:
 	CCLabelBMFont* loadingLabel = nullptr;
 
 	CCLabelBMFont* macroCountLbl = nullptr;
+	geode::ScrollLayer* macroScroll = nullptr;
+	geode::Scrollbar* macroScrollbar = nullptr;
+	CCMenu* macroListMenu = nullptr;
 
 	std::vector<MacroCell*> selectedMacros;
 	std::vector<MacroCell*> allMacros;
@@ -116,6 +119,8 @@ public:
         void cancelBackgroundListLoad();
         void clearListNodes();
         void rebuildListFromLoaded(bool refresh = false, float prevScroll = 0.f);
+        void appendLoadedListEntries();
+        void updateDynamicListLayout(float prevScroll = 0.f, bool restoreScroll = false);
         void showLoadingScreen();
         void hideLoadingScreen();
         void onExit() override;
