@@ -182,6 +182,16 @@ class $modify(PlayLayer) {
         m_isTestMode = wasTestMode;
     }
 
+    void destroyPlayer(PlayerObject* player, GameObject* object) {
+        auto& g = Global::get();
+        if (g.state == state::playing || g.state == state::recording) {
+            g.macroUsedInAttempt = true;
+            g.botUsedInLevelSession = true;
+        }
+
+        PlayLayer::destroyPlayer(player, object);
+    }
+
     void resetLevel() {
         PlayLayer::resetLevel();
 
