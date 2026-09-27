@@ -240,45 +240,7 @@ if (TARGET GeodeBindings)
     endif()
 endif()
 
-set(_geobot_mod_source_dir "${CMAKE_CURRENT_BINARY_DIR}/geobot-mod-source")
-file(MAKE_DIRECTORY "${_geobot_mod_source_dir}")
-
-file(READ "${CMAKE_CURRENT_SOURCE_DIR}/mod.json" _geobot_mod_json)
-file(WRITE "${_geobot_mod_source_dir}/mod.json" "${_geobot_mod_json}\n")
-
-foreach(_geobot_mod_file
-    about.md
-    changelog.md
-    support.md
-    logo.png
-    resources/GJ_commentSide2_001_White.png
-    resources/GJ_commentTop2_001_White.png
-    resources/default_hold_click.mp3
-    resources/default_release_click.mp3
-    resources/default_hold_left.mp3
-    resources/default_release_left.mp3
-    resources/default_hold_right.mp3
-    resources/default_release_right.mp3
-)
-    get_filename_component(_geobot_mod_file_dir "${_geobot_mod_file}" DIRECTORY)
-    if (NOT _geobot_mod_file_dir STREQUAL "")
-        file(MAKE_DIRECTORY "${_geobot_mod_source_dir}/${_geobot_mod_file_dir}")
-    endif()
-    configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/${_geobot_mod_file}"
-        "${_geobot_mod_source_dir}/${_geobot_mod_file}"
-        COPYONLY
-    )
-endforeach()
-
-# setup_geode_mod adds post-build commands to the mod target. CMake requires
-# TARGET-style add_custom_command calls to run in the directory that created
-# the target, so invoke the helper here rather than from a generated subdirectory.
-# Point it at the filtered package sources while it discovers mod.json/assets.
-set(_geobot_source_dir "${CMAKE_CURRENT_SOURCE_DIR}")
-set(CMAKE_CURRENT_SOURCE_DIR "${_geobot_mod_source_dir}")
 setup_geode_mod(${PROJECT_NAME})
-set(CMAKE_CURRENT_SOURCE_DIR "${_geobot_source_dir}")
 
 if (geobot_FAST_BUILD AND TARGET ${PROJECT_NAME})
     # Faster builds: disable LTO. Unity build is disabled because Geode's
