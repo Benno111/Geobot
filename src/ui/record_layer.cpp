@@ -115,6 +115,21 @@ const std::vector<std::string> kAccuracyModes = {
     "Frame Fixes"
 };
 
+std::string getSavedAccuracyMode(Mod* mod) {
+    std::string value = mod->getSavedValue<std::string>("macro_accuracy");
+    for (auto const& mode : kAccuracyModes) {
+        if (value == mode)
+            return value;
+    }
+    return "Frame Fixes";
+}
+
+void applyAccuracyMode(std::string const& value) {
+    auto& g = Global::get();
+    g.frameFixes = value == "Frame Fixes";
+    g.inputFixes = value == "Input Fixes";
+}
+
 int monthFromDateAbbrev(std::string_view month) {
     static const std::array<std::string_view, 12> months = {
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
