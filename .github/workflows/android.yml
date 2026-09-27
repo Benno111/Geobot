@@ -47,8 +47,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: ['build']
     timeout-minutes: 15
+    permissions:
+      contents: write
 
     steps:
+      - uses: actions/checkout@v4
+
       - uses: geode-sdk/build-geode-mod/combine@main
         id: build
 
@@ -56,3 +60,37 @@ jobs:
         with:
           name: Build Output
           path: ${{ steps.build.outputs.build-output }}
+
+      - name: Write release notes
+        if: ${{ github.event_name != 'pull_request' && github.ref_name == 'main' }}
+        shell: bash
+        run: |
+          python - <<'PY' > release-notes.md
+          import json
+
+          with open("mod.json", "r", encoding="utf-8") as f:
+              mod = json.load(f)
+
+          gd = mod.get("gd", {})
+          print(f"Draft Android build for {mod.get('name', 'geobot')} {mod.get('version', '')}")
+          print()
+          print("Game versions:")
+          if "android" in gd:
+              print(f"- android: Geometry Dash {gd['android']}")
+          print()
+          print(f"Geode: {mod.get('geode', 'unknown')}")
+          print(f"Commit: {__import__('os').environ.get('GITHUB_SHA', '')}")
+          PY
+
+      - name: Create draft release and upload Android game package
+        if: ${{ github.event_name != 'pull_request' && github.ref_name == 'main' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: geobot-android-build-${{ github.run_id }}
+          name: geobot Android build ${{ github.run_number }}
+          body_path: release-notes.md
+          draft: true
+          prerelease: true
+          files: |
+            ${{ steps.build.outputs.build-output }}
+            ${{ steps.build.outputs.build-output }}/*

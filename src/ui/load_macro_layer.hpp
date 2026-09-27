@@ -2,9 +2,18 @@
 
 #include "../includes.hpp"
 #include "record_layer.hpp"
+#include <atomic>
+#include <iterator>
 #include <locale>
+#include <memory>
 #include <string>
 #include <ctime>
+
+struct MacroListEntry {
+        std::filesystem::path path;
+        std::string name;
+        std::time_t date = 0;
+};
 
 class MacroCell : public CCNode {
 	std::string name;
@@ -35,10 +44,13 @@ public:
 
 	void deleteMacro(bool reload);
 
-	void onSelect(CCObject*);
-	void onFavorite(CCObject*);
+        void onSelect(CCObject*);
+        void onFavorite(CCObject*);
 
-	void selectMacro(bool single);
+        void selectMacro(bool single);
+        std::filesystem::path const& getPath() const {
+                return path;
+        }
 };
 
 class LoadMacroLayer : public xdb::Popup<geode::Popup*, geode::Popup*, bool>, public TextInputDelegate {
@@ -71,9 +83,15 @@ public:
 	bool isMerge = false;
 	bool invertSort = false;
 	bool favoritesOnly = false;
-	bool queuedRefresh = false;
-	bool listLoadQueued = false;
-	float queuedScroll = 0.f;
+        bool queuedRefresh = false;
+        bool listLoadInProgress = false;
+        float queuedScroll = 0.f;
+        int listLoadGeneration = 0;
+
+        std::shared_ptr<std::atomic_bool> listLoadCancel;
+        std::mutex listLoadMutex;
+        std::vector<MacroListEntry> pendingMacroEntries;
+        std::vector<MacroListEntry> loadedMacroEntries;
 
 	static LoadMacroLayer* create(geode::Popup* layer, geode::Popup* layer2, bool autosaves);
 
@@ -89,11 +107,18 @@ public:
 
 	void clearSearch(CCObject*);
 
-	void addList(bool refresh = false, float prevScroll = 0.f);
-	void populateList(bool refresh = false, float prevScroll = 0.f);
-	void performQueuedListLoad();
-	void showLoadingScreen();
-	void hideLoadingScreen();
+        void addList(bool refresh = false, float prevScroll = 0.f);
+        void populateList(bool refresh = false, float prevScroll = 0.f);
+        void performQueuedListLoad();
+        void startBackgroundListLoad(bool refresh = false, float prevScroll = 0.f);
+        void drainPendingListEntries();
+        void finishBackgroundListLoad();
+        void cancelBackgroundListLoad();
+        void clearListNodes();
+        void rebuildListFromLoaded(bool refresh = false, float prevScroll = 0.f);
+        void showLoadingScreen();
+        void hideLoadingScreen();
+        void onExit() override;
 
 	void reloadList(int amount = 1);
 

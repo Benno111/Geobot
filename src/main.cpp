@@ -136,12 +136,11 @@ class $modify(PlayLayer) {
         auto& g = Global::get();
 
         if (g.state == state::playing) {
-            g.currentAction = 0;
-            g.currentFrameFix = 0;
+            Macro::preparePlayback();
             g.previousFrame = 0;
             g.respawnFrame = -1;
             g.leftOver = 0.f;
-                    Macro::resetVariables();
+            Macro::resetVariables();
             if (isEditorPlaytestCompat(this))
                 g.restart = true;
         }
@@ -217,8 +216,7 @@ class $modify(PlayLayer) {
 
 
         g.leftOver = 0.f;
-        g.currentAction = 0;
-        g.currentFrameFix = 0;
+        Macro::seekPlayback(0);
         g.restart = false;
 
         if (g.state == state::recording)
@@ -409,13 +407,20 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
         m_fields->macroInput = true;
 
-        while (g.currentAction < g.macro.inputs.size() && frame >= g.macro.inputs[g.currentAction].frame) {
-            size_t actionIndex = g.currentAction;
-            auto const& macroInput = g.macro.inputs[g.currentAction];
+        auto const& inputs = g.macro.inputs;
+        size_t actionCount = inputs.size();
+        bool flipControls = false;
+        bool hasFlipState = false;
+
+        while (g.currentAction < actionCount && frame >= inputs[g.currentAction].frame) {
+            auto const& macroInput = inputs[g.currentAction];
 
             if (frame != g.respawnFrame) {
-                bool inputPlayer2 = Macro::flipControls() ? !macroInput.player2 : macroInput.player2;
-                (void)actionIndex;
+                if (!hasFlipState) {
+                    flipControls = Macro::flipControls();
+                    hasFlipState = true;
+                }
+                bool inputPlayer2 = flipControls ? !macroInput.player2 : macroInput.player2;
                 GJBaseGameLayer::handleButton(macroInput.down, macroInput.button, inputPlayer2);
             }
 
@@ -426,16 +431,20 @@ class $modify(BGLHook, GJBaseGameLayer) {
         m_fields->macroInput = false;
 
 
-        if (g.currentAction == g.macro.inputs.size() && g.stopPlaying) {
+        if (g.currentAction == actionCount && g.stopPlaying) {
             Macro::togglePlaying();
             Macro::resetState(true);
             return;
         }
 
         if (g.frameFixes || g.inputFixes) {
-            while (g.currentFrameFix < g.macro.frameFixes.size() &&
-                   frame >= g.macro.frameFixes[g.currentFrameFix].frame) {
-                auto& fix = g.macro.frameFixes[g.currentFrameFix];
+            auto const& frameFixes = g.macro.frameFixes;
+            size_t frameFixCount = frameFixes.size();
+            bool dualMode = m_gameState.m_isDualMode;
+
+            while (g.currentFrameFix < frameFixCount &&
+                   frame >= frameFixes[g.currentFrameFix].frame) {
+                auto const& fix = frameFixes[g.currentFrameFix];
 
                 PlayerObject* p1 = m_player1;
                 PlayerObject* p2 = m_player2;
@@ -446,7 +455,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
                 if (fix.p1.rotate && fix.p1.rotation != 0.f)
                     p1->setRotation(fix.p1.rotation);
 
-                if (m_gameState.m_isDualMode) {
+                if (dualMode) {
                     if (fix.p2.pos.x != 0.f && fix.p2.pos.y != 0.f)
                         p2->setPosition(fix.p2.pos);
 

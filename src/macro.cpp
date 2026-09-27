@@ -4,14 +4,41 @@
 
 #include <Geode/modify/PlayLayer.hpp>
 
+namespace {
+template <class Entries>
+size_t firstEntryAtOrAfter(Entries const& entries, int frame) {
+    return static_cast<size_t>(std::lower_bound(
+        entries.begin(),
+        entries.end(),
+        frame,
+        [](auto const& entry, int targetFrame) {
+            return entry.frame < targetFrame;
+        }
+    ) - entries.begin());
+}
+
+template <class Entries>
+void sortByFrameIfNeeded(Entries& entries) {
+    if (std::is_sorted(entries.begin(), entries.end(), [](auto const& a, auto const& b) {
+        return a.frame < b.frame;
+    })) return;
+
+    std::stable_sort(entries.begin(), entries.end(), [](auto const& a, auto const& b) {
+        return a.frame < b.frame;
+    });
+}
+}
+
 void Macro::recordAction(int frame, int button, bool player2, bool hold) {
     PlayLayer* pl = PlayLayer::get();
     if (!pl) return;
 
     auto& g = Global::get();
 
-    if (g.macro.inputs.empty())
+    if (g.macro.inputs.empty()) {
         Macro::updateInfo(pl);
+        g.macro.inputs.reserve(4096);
+    }
 
     if (g.tpsEnabled) g.macro.framerate = g.tps;
 
@@ -24,6 +51,10 @@ void Macro::recordAction(int frame, int button, bool player2, bool hold) {
 void Macro::recordFrameFix(int frame, PlayerObject* p1, PlayerObject* p2) {
     if (!p1 || !p2) return;
 
+    auto& frameFixes = Global::get().macro.frameFixes;
+    if (frameFixes.empty())
+        frameFixes.reserve(4096);
+
     float p1Rotation = p1->getRotation();
     float p2Rotation = p2->getRotation();
 
@@ -33,7 +64,7 @@ void Macro::recordFrameFix(int frame, PlayerObject* p1, PlayerObject* p2) {
     while (p2Rotation < 0 || p2Rotation > 360)
       p2Rotation += p2Rotation < 0 ? 360.f : -360.f;
 
-    Global::get().macro.frameFixes.push_back({
+    frameFixes.push_back({
       frame,
       { p1->getPosition(), p1Rotation },
       { p2->getPosition(), p2Rotation }
@@ -214,6 +245,7 @@ bool Macro::loadXDFile(std::filesystem::path path) {
         return false;
 
     Global::get().macro = newMacro;
+    Macro::preparePlayback();
     return true;
 }
 
@@ -304,6 +336,21 @@ Macro Macro::XDtoGDR(std::filesystem::path path) {
 
     return newMacro;
 
+}
+
+void Macro::preparePlayback() {
+    auto& g = Global::get();
+
+    sortByFrameIfNeeded(g.macro.inputs);
+    sortByFrameIfNeeded(g.macro.frameFixes);
+    Macro::seekPlayback(0);
+}
+
+void Macro::seekPlayback(int frame) {
+    auto& g = Global::get();
+
+    g.currentAction = firstEntryAtOrAfter(g.macro.inputs, frame);
+    g.currentFrameFix = firstEntryAtOrAfter(g.macro.frameFixes, frame);
 }
 
 void Macro::resetVariables() {

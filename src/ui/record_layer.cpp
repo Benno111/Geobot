@@ -472,8 +472,7 @@ void RecordLayer::togglePlaying(CCObject*) {
 
     if (g.state == state::playing) {
         g.botUsedInLevelSession = PlayLayer::get() != nullptr;
-        g.currentAction = 0;
-        g.currentFrameFix = 0;
+        Macro::preparePlayback();
 
         g.macro.geobotMacro = g.macro.botInfo.name == "geobot";
         

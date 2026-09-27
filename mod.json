@@ -23,6 +23,12 @@
     "dependencies": {
         "geode.node-ids": {
             "version": ">=1.23.0"
+        },
+        "legowiifun.cheat_api": {
+            "version": ">=1.2.3"
+        },
+        "sabe.persistenceapi": {
+            "version": ">=1.2.0"
         }
     },
     "settings": {},

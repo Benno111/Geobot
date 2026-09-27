@@ -9,6 +9,37 @@
 
 namespace {
 	CCSprite* createFavoriteSprite(bool active);
+
+	constexpr size_t kMacroListBatchSize = 12;
+	constexpr char const* FAVORITE_MACROS_KEY = "favorite_macros";
+
+	bool isMacroFile(std::filesystem::path const& path) {
+		auto ext = path.extension();
+		return ext == ".gdr" || ext == ".xd" || ext == ".json";
+	}
+
+	std::string macroDisplayName(std::filesystem::path const& path) {
+		std::string filename = path.filename().string();
+		std::string name = filename.substr(0, filename.find_last_of('.'));
+		if (path.extension() == ".json")
+			name = name.substr(0, name.find_last_of('.'));
+		return name;
+	}
+
+	std::string macroPathID(std::filesystem::path const& path) {
+		return path.lexically_normal().generic_string();
+	}
+
+	bool favoriteListContains(std::string const& favoritesRaw, std::filesystem::path const& path) {
+		std::istringstream favorites(favoritesRaw);
+		std::string favorite;
+		std::string id = macroPathID(path);
+		while (std::getline(favorites, favorite)) {
+			if (favorite == id)
+				return true;
+		}
+		return false;
+	}
 }
 
 class $modify(CCMenu) {
@@ -59,19 +90,17 @@ void LoadMacroLayer::textChanged(CCTextInputNode* node) {
 }
 
 void LoadMacroLayer::reloadList(int amount) {
-	if (CCNode* scrollbar = m_buttonMenu->getChildByID("scrollbar"))
-		scrollbar->removeFromParentAndCleanup(true);
-
-	if (CCNode* lbl = menu->getChildByID("no-macros-label"))
-		lbl->removeFromParentAndCleanup(true);
-
 	CCNode* listLayer = m_buttonMenu->getChildByID("list-layer");
-	if (!listLayer) return;
+	if (!listLayer) {
+		addList();
+		return;
+	}
 
 	ListView* listView = listLayer->getChildByType<ListView>(0);
 
 	CCLayer* contentLayer = nullptr;
-	contentLayer = typeinfo_cast<CCLayer*>(listView->m_tableView->getChildren()->objectAtIndex(0));
+	if (listView && listView->m_tableView && listView->m_tableView->getChildren()->count() > 0)
+		contentLayer = typeinfo_cast<CCLayer*>(listView->m_tableView->getChildren()->objectAtIndex(0));
 
 	int childrenCount = 0;
 	float posY = 0.f;
@@ -98,21 +127,16 @@ void LoadMacroLayer::showLoadingScreen() {
 	if (!loadingOverlay) {
 		CCSize layerSize = m_mainLayer->getContentSize();
 
-		CCLayerColor* dim = CCLayerColor::create({ 0, 0, 0, 110 });
+		CCNode* dim = CCNode::create();
 		dim->setContentSize(layerSize);
 		dim->setAnchorPoint({ 0.f, 0.f });
 		dim->setPosition({ 0, 0 });
 
-		CCScale9Sprite* panel = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
-		panel->setContentSize({ 175.f, 62.f });
-		panel->setColor({ 0, 0, 0 });
-		panel->setOpacity(165);
-		panel->setPosition(layerSize / 2);
-		dim->addChild(panel);
-
 		loadingLabel = CCLabelBMFont::create(isAutosaves ? "Loading Autosaves..." : "Loading Macros...", "bigFont.fnt");
-		loadingLabel->setScale(0.42f);
-		loadingLabel->setPosition(layerSize / 2);
+		loadingLabel->setScale(0.32f);
+		loadingLabel->setOpacity(150);
+		loadingLabel->setAnchorPoint({ 1.f, 0.5f });
+		loadingLabel->setPosition({ layerSize.width - 18.f, 33.f });
 		dim->addChild(loadingLabel);
 
 		loadingOverlay = dim;
@@ -125,21 +149,11 @@ void LoadMacroLayer::showLoadingScreen() {
 
 	if (loadingOverlay)
 		loadingOverlay->setVisible(true);
-
-	if (menu)
-		menu->setEnabled(false);
-	if (m_buttonMenu)
-		m_buttonMenu->setEnabled(false);
 }
 
 void LoadMacroLayer::hideLoadingScreen() {
 	if (loadingOverlay)
 		loadingOverlay->setVisible(false);
-
-	if (menu)
-		menu->setEnabled(true);
-	if (m_buttonMenu)
-		m_buttonMenu->setEnabled(true);
 }
 
 void LoadMacroLayer::deleteSelected(CCObject*) {
@@ -396,12 +410,6 @@ void LoadMacroLayer::updateSort(CCObject*) {
 }
 
 namespace {
-	constexpr char const* FAVORITE_MACROS_KEY = "favorite_macros";
-
-	std::string favoriteID(std::filesystem::path const& path) {
-		return path.lexically_normal().generic_string();
-	}
-
 	CCSprite* createFavoriteSprite(bool active) {
 		CCSprite* sprite = CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png");
 		sprite->setColor(active ? ccc3(255, 220, 70) : ccc3(120, 120, 120));
@@ -413,7 +421,7 @@ namespace {
 bool LoadMacroLayer::isFavorite(std::filesystem::path const& path) const {
 	std::istringstream favorites(Mod::get()->getSavedValue<std::string>(FAVORITE_MACROS_KEY));
 	std::string favorite;
-	std::string id = favoriteID(path);
+	std::string id = macroPathID(path);
 	while (std::getline(favorites, favorite)) {
 		if (favorite == id)
 			return true;
@@ -425,7 +433,7 @@ void LoadMacroLayer::setFavorite(std::filesystem::path const& path, bool favorit
 	std::istringstream saved(Mod::get()->getSavedValue<std::string>(FAVORITE_MACROS_KEY));
 	std::vector<std::string> favorites;
 	std::string entry;
-	std::string id = favoriteID(path);
+	std::string id = macroPathID(path);
 	while (std::getline(saved, entry)) {
 		if (!entry.empty() && entry != id)
 			favorites.push_back(entry);
@@ -445,60 +453,202 @@ void LoadMacroLayer::updateFavoritesFilter(CCObject*) {
 }
 
 void LoadMacroLayer::addList(bool refresh, float prevScroll) {
-	queuedRefresh = refresh;
-	queuedScroll = prevScroll;
-	showLoadingScreen();
-
-	if (listLoadQueued)
-		return;
-
-	listLoadQueued = true;
-	runAction(CCSequence::create(
-		CCDelayTime::create(0.f),
-		CCCallFunc::create(this, callfunc_selector(LoadMacroLayer::performQueuedListLoad)),
-		nullptr
-	));
+	startBackgroundListLoad(refresh, prevScroll);
 }
 
 void LoadMacroLayer::performQueuedListLoad() {
-	listLoadQueued = false;
-	populateList(queuedRefresh, queuedScroll);
-	hideLoadingScreen();
+	drainPendingListEntries();
 }
 
 void LoadMacroLayer::populateList(bool refresh, float prevScroll) {
+	rebuildListFromLoaded(refresh, prevScroll);
+}
+
+void LoadMacroLayer::cancelBackgroundListLoad() {
+	if (listLoadCancel)
+		listLoadCancel->store(true);
+	listLoadCancel.reset();
+	listLoadInProgress = false;
+
+	std::lock_guard<std::mutex> lock(listLoadMutex);
+	pendingMacroEntries.clear();
+}
+
+void LoadMacroLayer::clearListNodes() {
+	if (CCNode* scrollbar = m_buttonMenu->getChildByID("scrollbar"))
+		scrollbar->removeFromParentAndCleanup(true);
+
+	if (CCNode* lbl = menu->getChildByID("no-macros-label"))
+		lbl->removeFromParentAndCleanup(true);
+
+	if (CCNode* listLayer = m_buttonMenu->getChildByID("list-layer"))
+		listLayer->removeFromParentAndCleanup(true);
+
+	if (CCNode* bg = m_buttonMenu->getChildByID("background"))
+		bg->removeFromParentAndCleanup(true);
+}
+
+void LoadMacroLayer::startBackgroundListLoad(bool refresh, float prevScroll) {
+	cancelBackgroundListLoad();
+	clearListNodes();
+
+	queuedRefresh = refresh;
+	queuedScroll = prevScroll;
+	loadedMacroEntries.clear();
+	selectedMacros.clear();
+	allMacros.clear();
+	if (!isMerge && selectAllToggle)
+		selectAllToggle->toggle(false);
+
+	listLoadInProgress = true;
+	showLoadingScreen();
+	rebuildListFromLoaded(false, 0.f);
+
+	auto cancel = std::make_shared<std::atomic_bool>(false);
+	listLoadCancel = cancel;
+	int generation = ++listLoadGeneration;
+
+	std::filesystem::path folder = Global::getFolderSettingPath(isAutosaves ? "autosaves_folder" : "macros_folder");
+	std::string searchSnapshot = search;
+	bool favoritesOnlySnapshot = favoritesOnly;
+	bool invertSortSnapshot = invertSort;
+	std::string favoritesSnapshot = Mod::get()->getSavedValue<std::string>(FAVORITE_MACROS_KEY);
+
+	retain();
+	std::thread([this, cancel, generation, folder, searchSnapshot, favoritesOnlySnapshot, invertSortSnapshot, favoritesSnapshot] {
+		std::vector<std::filesystem::path> paths;
+		std::error_code ec;
+		std::filesystem::directory_iterator it(folder, ec);
+		std::filesystem::directory_iterator end;
+		while (!ec && it != end) {
+			if (cancel->load())
+				break;
+			auto const& entry = *it;
+			if (!entry.is_regular_file(ec))
+				ec.clear();
+			else
+				paths.push_back(entry.path());
+			it.increment(ec);
+		}
+
+		if (invertSortSnapshot)
+			std::reverse(paths.begin(), paths.end());
+
+		std::vector<MacroListEntry> batch;
+		batch.reserve(kMacroListBatchSize);
+
+		auto flushBatch = [&] {
+			if (batch.empty())
+				return;
+
+			{
+				std::lock_guard<std::mutex> lock(listLoadMutex);
+				pendingMacroEntries.insert(pendingMacroEntries.end(), batch.begin(), batch.end());
+			}
+			batch.clear();
+
+			Loader::get()->queueInMainThread([this, cancel, generation] {
+				if (listLoadCancel == cancel && listLoadGeneration == generation)
+					drainPendingListEntries();
+			});
+		};
+
+		for (auto const& macroPath : paths) {
+			if (cancel->load())
+				break;
+			if (!isMacroFile(macroPath))
+				continue;
+
+			std::string name = macroDisplayName(macroPath);
+			if (!searchSnapshot.empty() && Utils::toLower(name).find(searchSnapshot) == std::string::npos)
+				continue;
+			if (favoritesOnlySnapshot && !favoriteListContains(favoritesSnapshot, macroPath))
+				continue;
+
+			MacroListEntry info;
+			info.path = macroPath;
+			info.name = name;
+#ifdef GEODE_IS_WINDOWS
+			info.date = Utils::getFileCreationTime(macroPath);
+#endif
+			batch.push_back(std::move(info));
+
+			if (batch.size() >= kMacroListBatchSize)
+				flushBatch();
+		}
+
+		flushBatch();
+
+		Loader::get()->queueInMainThread([this, cancel, generation] {
+			if (listLoadCancel == cancel && listLoadGeneration == generation)
+				finishBackgroundListLoad();
+			release();
+		});
+	}).detach();
+}
+
+void LoadMacroLayer::drainPendingListEntries() {
+	if (!listLoadCancel)
+		return;
+
+	std::vector<MacroListEntry> batch;
+	{
+		std::lock_guard<std::mutex> lock(listLoadMutex);
+		batch.swap(pendingMacroEntries);
+	}
+
+	if (batch.empty())
+		return;
+
+	loadedMacroEntries.insert(
+		loadedMacroEntries.end(),
+		std::make_move_iterator(batch.begin()),
+		std::make_move_iterator(batch.end())
+	);
+	rebuildListFromLoaded(queuedRefresh, queuedScroll);
+}
+
+void LoadMacroLayer::finishBackgroundListLoad() {
+	drainPendingListEntries();
+	listLoadInProgress = false;
+	hideLoadingScreen();
+	rebuildListFromLoaded(queuedRefresh, queuedScroll);
+}
+
+void LoadMacroLayer::onExit() {
+	cancelBackgroundListLoad();
+	xdb::Popup<geode::Popup*, geode::Popup*, bool>::onExit();
+}
+
+void LoadMacroLayer::rebuildListFromLoaded(bool refresh, float prevScroll) {
 	cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
 
-	std::filesystem::path path = Global::getFolderSettingPath(isAutosaves ? "autosaves_folder" : "macros_folder");
-	std::vector<std::filesystem::path> macros = file::readDirectory(path).unwrapOrDefault();
+	std::vector<std::string> selectedIDs;
+	selectedIDs.reserve(selectedMacros.size());
+	bool selectAllWasOn = !isMerge && selectAllToggle && selectAllToggle->isToggled();
+	for (MacroCell* cell : selectedMacros) {
+		if (cell)
+			selectedIDs.push_back(macroPathID(cell->getPath()));
+	}
+	selectedMacros.clear();
+
+	clearListNodes();
+	allMacros.clear();
 
 	CCArray* cells = CCArray::create();
 
-	for (int i = invertSort ? macros.size() - 1 : 0; invertSort ? i >= 0 : i < macros.size(); invertSort ? --i : ++i) {
-
-		if (macros[i].extension() != ".gdr" && macros[i].extension() != ".xd" && macros[i].extension() != ".json") continue;
-
-		std::string name = macros[i].filename().string().substr(0, macros[i].filename().string().find_last_of('.'));
-
-		if (macros[i].extension() == ".json")
-			name = name.substr(0, name.find_last_of('.'));
-
-		if (Utils::toLower(name).find(search) == std::string::npos && search != "") continue;
-		if (favoritesOnly && !isFavorite(macros[i])) continue;
-
-		std::time_t date;
-
-#ifdef GEODE_IS_WINDOWS
-		date = Utils::getFileCreationTime(macros[i]);
-#endif
-
-		MacroCell* cell = MacroCell::create(macros[i], name, date, menuLayer, mergeLayer, static_cast<CCLayer*>(this));
+	for (auto const& macro : loadedMacroEntries) {
+		MacroCell* cell = MacroCell::create(macro.path, macro.name, macro.date, menuLayer, mergeLayer, static_cast<CCLayer*>(this));
+		if (!isMerge && (selectAllWasOn || std::find(selectedIDs.begin(), selectedIDs.end(), macroPathID(macro.path)) != selectedIDs.end())) {
+			cell->toggler->toggle(true);
+			selectedMacros.push_back(cell);
+		}
 		cells->addObject(cell);
 	}
 
 	macroCountLbl->setString(fmt::format("{} Macros", std::to_string(cells->count())).c_str());
 
-	if (cells->count() == 0) {
+	if (cells->count() == 0 && !listLoadInProgress) {
 		CCLabelBMFont* lbl = CCLabelBMFont::create(isAutosaves ? "No Autosaves" : "No Macros", "bigFont.fnt");
 		lbl->setPosition(winSize / 2);
 		lbl->setScale(0.5f);
@@ -810,8 +960,7 @@ void MacroCell::handleLoad() {
 	}
 
 	g.macro = newMacro;
-	g.currentAction = 0;
-	g.currentFrameFix = 0;
+	Macro::preparePlayback();
 	g.restart = true;
 	g.macro.canChangeFPS = false;
 

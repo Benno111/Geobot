@@ -110,6 +110,7 @@ class $modify(PlayLayer) {
 
       g.respawnFrame = g.checkpoints[cp].frame;
       g.previousFrame = g.checkpoints[cp].previousFrame;
+      Macro::seekPlayback(g.respawnFrame);
       Macro::resetVariables();
       PlayerPracticeFixes::applyData(this->m_player1, p1Data, false);
       PlayerPracticeFixes::applyData(this->m_player2, p2Data, true);

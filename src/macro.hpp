@@ -63,6 +63,10 @@ public:
 
     static Macro XDtoGDR(std::filesystem::path path);
 
+    static void preparePlayback();
+
+    static void seekPlayback(int frame);
+
     static void resetVariables();
 
     static void resetState(bool cp = false);
