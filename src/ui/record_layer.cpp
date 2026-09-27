@@ -81,6 +81,21 @@ bool isMacroMenuRewriteEnabled() {
     return false;
 }
 
+void addRewardDisabledWatermark(CCLayer* layer) {
+    if (!layer || !Global::get().botUsedInLevelSession)
+        return;
+
+    auto winSize = CCDirector::sharedDirector()->getWinSize();
+    auto* label = CCLabelBMFont::create("geobot active - rewards disabled", "chatFont.fnt");
+    label->setID("geobot-rewards-disabled-label"_spr);
+    label->setAnchorPoint({ 0.5f, 0.5f });
+    label->setPosition({ winSize.width / 2.f, 18.f });
+    label->setScale(0.55f);
+    label->setOpacity(180);
+    label->setZOrder(200);
+    layer->addChild(label);
+}
+
 std::string getSettingsCategoryButtonTitle(std::string const& title) {
     return title;
 }
@@ -314,6 +329,7 @@ class $modify(PauseLayer) {
     void customSetup() {
         PauseLayer::customSetup();
         addgeobotPauseButton(this);
+        addRewardDisabledWatermark(this);
     }
 };
 
@@ -412,6 +428,7 @@ void RecordLayer::toggleRecording(CCObject*) {
     g.state = g.state == state::recording ? state::none : state::recording;
 
     if (g.state == state::recording) {
+        g.botUsedInLevelSession = PlayLayer::get() != nullptr;
         g.currentAction = 0;
         g.currentFrameFix = 0;
 
@@ -434,6 +451,7 @@ void RecordLayer::toggleRecording(CCObject*) {
     this->updateTPS();
 
     g.lastAutoSaveMS = std::chrono::steady_clock::now();
+    g.autosaveCheck = 0.f;
 }
 
 void RecordLayer::togglePlaying(CCObject*) {
@@ -453,6 +471,7 @@ void RecordLayer::togglePlaying(CCObject*) {
     g.state = g.state == state::playing ? state::none : state::playing;
 
     if (g.state == state::playing) {
+        g.botUsedInLevelSession = PlayLayer::get() != nullptr;
         g.currentAction = 0;
         g.currentFrameFix = 0;
 
@@ -597,6 +616,10 @@ void RecordLayer::onAutosaves(CCObject*) {
     else {
         FLAlertLayer::create("Error", "There was an error getting the folder. ID: 5", "Ok")->show();
     }
+}
+
+void RecordLayer::showCodecPopup(CCObject*) {
+    FLAlertLayer::create("Codec", "<cr>AMD:</c> h264_amf\n<cg>NVIDIA:</c> h264_nvenc\n<cl>INTEL:</c> h264_qsv\nI don't know: libx264", "Ok")->show();
 }
 
 void RecordLayer::openMacrosFolder(CCObject*) {

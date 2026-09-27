@@ -225,13 +225,17 @@ void Global::showBuildExpiredNotice() {
   if (g.buildExpiryNoticeShown) return;
   g.buildExpiryNoticeShown = true;
 
-  Loader::get()->queueInMainThread([] {
-    FLAlertLayer::create(
-      "geobot",
-      "This build has expired (30-day limit). Please install a newer build.",
-      "OK"
-    )->show();
-  });
+  //Loader::get()->queueInMainThread([] {
+    //  disabled for the 30-day build expiry.
+    //
+    //
+    //
+    //FLAlertLayer::create(
+    //  "geobot",
+    //  "This build has expired (30-day limit). Please install a newer build.",
+    //  "OK"
+    //)->show();
+  //});
 }
 
 float Global::getTPS() {
@@ -436,16 +440,25 @@ $execute{
   g.frameLabel = g.mod->getSavedValue<bool>("macro_show_frame_label");
   g.tpsEnabled = g.mod->getSavedValue<bool>("macro_tps_enabled");
   g.tps = g.mod->getSavedValue<double>("macro_tps");
-  // Autosaving is part of recording/editor playback now, not an optional
-  // utility mode. Persist the values so every autosave entry point agrees.
+  // Autosaving is part of recording/editor playback now. Normalize legacy
+  // values so upgraded installs keep a working autosave mode without the
+  // retired settings screen.
   g.mod->setSavedValue("autosave_interval_enabled", true);
   g.mod->setSavedValue("autosave_checkpoint_enabled", true);
   g.mod->setSavedValue("autosave_levelend_enabled", true);
   g.mod->setSavedValue("macro_auto_save", true);
 
+  g.autosaveIntervalEnabled = g.mod->getSavedValue<bool>("autosave_interval_enabled");
+  g.autosaveEnabled = g.mod->getSavedValue<bool>("macro_auto_save");
+
   g.currentPage = static_cast<int>(getSavedInt64Safe(g.mod, "current_page", 0));
 
-  g.autosaveInterval = (geode::utils::numFromString<float>(g.mod->getSavedValue<std::string>("autosave_interval")).unwrapOr(0.f) * 60);
+  float autosaveMins = geode::utils::numFromString<float>(g.mod->getSavedValue<std::string>("autosave_interval")).unwrapOr(10.f);
+  if (autosaveMins <= 0.f) {
+    autosaveMins = 10.f;
+    g.mod->setSavedValue("autosave_interval", std::to_string(10));
+  }
+  g.autosaveInterval = static_cast<int>(autosaveMins * 60);
 
 
   g.frameOffset = static_cast<int>(getSavedInt64Safe(g.mod, "frame_offset", 0));

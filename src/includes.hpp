@@ -16,6 +16,7 @@
 #include <deque>
 #include <limits>
 #include <charconv>
+#include <cstdint>
 
 #include "macro.hpp"
 
@@ -170,7 +171,7 @@ public:
 
     int lastAutoSaveFrame = 0;
     std::chrono::time_point<std::chrono::steady_clock> lastAutoSaveMS = std::chrono::steady_clock::now();
-    int currentSession = 0;
+    std::int64_t currentSession = 0;
 
 
     bool cancelCheckpoint = false;
@@ -179,6 +180,7 @@ public:
     bool restartLater = false;
     bool firstAttempt = false;
     bool macroUsedInAttempt = false;
+    bool botUsedInLevelSession = false;
 
     bool clickbotEnabled = false;
     bool clickbotOnlyPlaying = false;
@@ -190,7 +192,9 @@ public:
     float tps = 240.f;
     bool previousTpsEnabled = false;
     float previousTps = 0.f;
-    int autosaveInterval = 600000;
+    bool autosaveEnabled = true;
+    bool autosaveIntervalEnabled = true;
+    int autosaveInterval = 600;
     float autosaveCheck = 2.f;
 
     bool ignoreStopDashing[2] = { false, false };

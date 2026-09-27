@@ -51,7 +51,7 @@ public:
 
     static int save(std::string author, std::string desc, std::string path, bool json = false);
 
-    static void autoSave(GJGameLevel* level, int number);
+    static void autoSave(GJGameLevel* level, std::int64_t number);
 
     static void tryAutosave(GJGameLevel* level, CheckpointObject* cp);
 

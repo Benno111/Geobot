@@ -102,6 +102,7 @@ public:
 
 
 	void onAutosaves(CCObject*);
+	void showCodecPopup(CCObject*);
 	void openMacrosFolder(CCObject*);
 	void openAutosavesFolder(CCObject*);
 

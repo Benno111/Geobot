@@ -47,7 +47,7 @@ bool Macro::flipControls() {
     return pl->m_levelSettings->m_platformerMode ? false : GameManager::get()->getGameVariable("0010");
 }
 
-void Macro::autoSave(GJGameLevel* level, int number) {
+void Macro::autoSave(GJGameLevel* level, std::int64_t number) {
     if (!level) level = PlayLayer::get() != nullptr ? PlayLayer::get()->m_level : nullptr;
     if (!level) return;
 
@@ -68,8 +68,10 @@ void Macro::tryAutosave(GJGameLevel* level, CheckpointObject* cp) {
     auto& g = Global::get();
 
     if (g.state != state::recording) return;
+    if (!g.autosaveEnabled) return;
+    if (!g.mod->getSavedValue<bool>("autosave_checkpoint_enabled")) return;
     if (!g.checkpoints.contains(cp)) return;
-    if (g.checkpoints[cp].frame < g.lastAutoSaveFrame) return;
+    if (g.checkpoints[cp].frame <= g.lastAutoSaveFrame) return;
 
     std::filesystem::path autoSavesPath = Global::getFolderSettingPath("autosaves_folder");
 
@@ -83,6 +85,7 @@ void Macro::tryAutosave(GJGameLevel* level, CheckpointObject* cp) {
     if (ec) log::warn("Failed to remove previous autosave");
 
     autoSave(level, g.currentSession);
+    g.lastAutoSaveFrame = g.checkpoints[cp].frame;
 
 }
 

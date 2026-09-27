@@ -151,8 +151,29 @@ class $modify(PlayLayer) {
         auto now = std::chrono::system_clock::now();
         g.currentSession = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
         g.lastAutoSaveFrame = 0;
+        g.botUsedInLevelSession = g.state != state::none;
 
         return true;
+    }
+
+    void onExit() {
+        PlayLayer::onExit();
+        Global::get().botUsedInLevelSession = false;
+    }
+
+    void showNewBest(bool po, int p1, int p2, bool p3, bool p4, bool p5) {
+        if (!Global::get().botUsedInLevelSession)
+            PlayLayer::showNewBest(po, p1, p2, p3, p4, p5);
+    }
+
+    void levelComplete() {
+        auto& g = Global::get();
+        bool wasTestMode = m_isTestMode;
+        if (g.botUsedInLevelSession)
+            m_isTestMode = true;
+
+        PlayLayer::levelComplete();
+        m_isTestMode = wasTestMode;
     }
 
     void resetLevel() {
@@ -304,6 +325,8 @@ class $modify(BGLHook, GJBaseGameLayer) {
 
         if (pl && !m_levelEndAnimationStarted && (g.state == state::playing || g.state == state::recording))
             g.macroUsedInAttempt = true;
+        if (pl && (g.state == state::playing || g.state == state::recording))
+            g.botUsedInLevelSession = true;
 
         g.previousFrame = frame;
 
