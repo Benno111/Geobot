@@ -1,16 +1,13 @@
 #include "record_layer.hpp"
 #include "macro_editor.hpp"
 #include "game_ui.hpp"
-#include "render_presets_layer.hpp"
 #include "clickbot_layer.hpp"
-#include "noclip_settings_layer.hpp"
-#include "autoclicker_settings_layer.hpp"
-#include "trajectory_settings_layer.hpp"
+#include "render_presets_layer.hpp"
+#include "render_settings_layer.hpp"
+#include "star_rate_override_layer.hpp"
 #if GEOBOT_ENABLE_PATHFINDER
 #include "pathfinder_settings_layer.hpp"
 #endif
-#include "mirror_settings_layer.hpp"
-#include "star_rate_override_layer.hpp"
 #include "../hacks/coin_finder.hpp"
 #include "../hacks/show_trajectory.hpp"
 
@@ -72,68 +69,24 @@ const std::vector<SettingsCategory> kSettingsCategories {
         "Macro",
         {
             { "Accuracy:", "macro_accuracy", InputType::Accuracy, 0.4f },
-#if GEOBOT_ENABLE_FRAMEPERFECT_DETECTION
-            { "FP Overlay:", "frame_perfect_overlay_mode", InputType::FramePerfectMode, 0.4f },
-#endif
             { "Frame Offset:", "frame_offset", InputType::FrameOffset, 0.4f },
             { "Frame Fix Limit:", "frame_fixes_limit", InputType::FrameFixesLimit, 0.4f },
             { "Lock Delta:", "lock_delta", InputType::None },
             { "Auto Stop Playing:", "auto_stop_playing", InputType::None },
             { "TPS Bypass:", "macro_tps_enabled", InputType::Tps, 0.4f },
-            { "Speedhack:", "macro_speedhack_enabled", InputType::Speedhack, 0.4f },
-            { "Seed:", "macro_seed_enabled", InputType::Seed, 0.4f },
-            { "Enable Noclip:", "macro_noclip", InputType::Settings, 0.325f, menu_selector(NoclipSettingsLayer::open) },
-            { "Show Trajectory:", "macro_show_trajectory", InputType::Settings, 0.325f, menu_selector(TrajectorySettingsLayer::open)  },
-            { "Enable Frame Stepper:", "macro_frame_stepper", InputType::None },
-            { "Instant respawn:", "macro_instant_respawn", InputType::None },
-            { "No death effect:", "macro_no_death_effect", InputType::None },
-            { "No respawn flash:", "macro_no_respawn_flash", InputType::None },
-            { "Enable Coin Finder:", "macro_coin_finder", InputType::None },
-            { "Enable Layout Mode:", "macro_layout_mode", InputType::None },
-            { "Auto Safe Mode:", "macro_auto_safe_mode", InputType::None },
-#if GEOBOT_ENABLE_PATHFINDER
-            { "Pathfinder Mode:", "pathfinder_mode", InputType::Settings, 0.34f, menu_selector(RecordLayer::openPathfinderSettings) },
-#endif
             { "Enable Clickbot:", "clickbot_enabled", InputType::Settings, 0.325f, menu_selector(ClickbotLayer::open)},
-            { "Enable Autoclicker:", "autoclicker_enabled", InputType::Settings, 0.3f, menu_selector(AutoclickerLayer::open) },
-            { "Always Practice Fixes:", "macro_always_practice_fixes", InputType::None },
             { "Ignore inputs:", "macro_ignore_inputs", InputType::None },
-            { "Show Frame Label:", "macro_show_frame_label", InputType::None },
-            { "Speedhack Audio:", "macro_speedhack_audio", InputType::None },
             { "Macros Folder:", "macros_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openMacrosFolder) },
-            { "Autosaves Folder:", "autosaves_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openAutosavesFolder) },
-            { "Respawn Time:", "respawn_time_enabled", InputType::Respawn },
-            { "Input Mirror:", "p2_input_mirror", InputType::Settings, 0.325f, menu_selector(MirrorSettingsLayer::open) },
-            { "Disable Shaders:", "disable_shaders", InputType::None },
-            { "Instant Mirror Portal:", "instant_mirror_portal", InputType::None },
-            { "No Mirror Portal:", "no_mirror_portal", InputType::None },
-            { "Enable Auto Saving:", "macro_auto_save", InputType::Autosave }
-        }
-    },
-    {
-        "Render",
-        {
-#ifdef GEODE_IS_WINDOWS
-            { "Force cursor on open:", "menu_show_cursor", InputType::None },
-            { "Button on pause menu:", "menu_show_button", InputType::None },
-            { "Pause on open:", "menu_pause_on_open", InputType::None },
-#else
-            { "Always show buttons:", "macro_always_show_buttons", InputType::None },
-            { "Hide speedhack button:", "macro_hide_speedhack", InputType::None },
-            { "Hide Frame Stepper button:", "macro_hide_stepper", InputType::None, 0.3f },
-#endif
-            { "Hide labels on render:", "render_hide_labels", InputType::None },
             { "Hide playing label:", "macro_hide_playing_label", InputType::None },
             { "Hide recording label:", "macro_hide_recording_label", InputType::None },
-            { "Renders Folder:", "render_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openRendersFolder) }
+            { "Autosaves Folder:", "autosaves_folder_btn", InputType::Action, 0.325f, menu_selector(RecordLayer::openAutosavesFolder) }
         }
     }
 };
 
 namespace {
 bool isMacroMenuRewriteEnabled() {
-    Mod* mod = Mod::get();
-    return mod && mod->getSettingValue<bool>("feature_flag_macro_menu_rewrite");
+    return false;
 }
 
 std::string getSettingsCategoryButtonTitle(std::string const& title) {
@@ -681,19 +634,19 @@ void RecordLayer::textChanged(CCTextInputNode* node) {
         }
     }
 
-    if (node == codecInput)
+    if (codecInput && node == codecInput)
         mod->setSavedValue("render_codec", std::string(codecInput->getString()));
 
-    if (std::string_view(widthInput->getString()) != "" && node == widthInput)
+    if (widthInput && node == widthInput && std::string_view(widthInput->getString()) != "")
         mod->setSavedValue("render_width2", std::string(widthInput->getString()));
 
-    if (std::string_view(heightInput->getString()) != "" && node == heightInput)
+    if (heightInput && node == heightInput && std::string_view(heightInput->getString()) != "")
         mod->setSavedValue("render_height", std::string(heightInput->getString()));
 
-    if (std::string_view(bitrateInput->getString()) != "" && node == bitrateInput)
+    if (bitrateInput && node == bitrateInput && std::string_view(bitrateInput->getString()) != "")
         mod->setSavedValue("render_bitrate", std::string(bitrateInput->getString()));
 
-    if (std::string_view(fpsInput->getString()) != "" && node == fpsInput) {
+    if (fpsInput && node == fpsInput && std::string_view(fpsInput->getString()) != "") {
         int fpsValue = 0;
         if (!parseIntSafe(std::string(fpsInput->getString()), fpsValue) || fpsValue > 240)
             return fpsInput->setString(mod->getSavedValue<std::string>("render_fps").c_str());
@@ -1026,15 +979,6 @@ bool RecordLayer::setup() {
     bg->setScale(0.7f);
     bg->setColor({ 0,0,0 });
     bg->setOpacity(75);
-    bg->setPosition(ccp(-212, 0));
-    bg->setAnchorPoint({ 0, 1 });
-    bg->setContentSize({ 275, 169 });
-    menu->addChild(bg);
-
-    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
-    bg->setScale(0.7f);
-    bg->setColor({ 0,0,0 });
-    bg->setOpacity(75);
     bg->setPosition(ccp(103, 2));
     bg->setContentSize({ 313, 339 });
     menu->addChild(bg);
@@ -1079,13 +1023,6 @@ bool RecordLayer::setup() {
     lbl->setPosition(ccp(-116.5, 112));
     lbl->setScale(0.575f);
     menu->addChild(lbl);
-
-    lbl = CCLabelBMFont::create("Render", "goldFont.fnt");
-    lbl->setScale(0.6f);
-    lbl->setPosition(ccp(-116.5, -9));
-    menu->addChild(lbl);
-
-
 
     bool macroMenuRewrite = isMacroMenuRewriteEnabled();
 
@@ -1204,35 +1141,25 @@ bool RecordLayer::setup() {
 
     
 
-    lbl = CCLabelBMFont::create("X", "chatFont.fnt");
-    lbl->setPosition(ccp(-114.5, -31));
-    lbl->setScale(0.7f);
-    menu->addChild(lbl);
-
-
-
-    lbl = CCLabelBMFont::create("M", "chatFont.fnt");
-    lbl->setPosition(ccp(-164, -59));
-    lbl->setScale(0.7f);
-    menu->addChild(lbl);
-
-
-
-    lbl = CCLabelBMFont::create("FPS", "chatFont.fnt");
-    lbl->setPosition(ccp(-108.5, -59));
-    lbl->setScale(0.49f);
-    menu->addChild(lbl);
-
-
+    CCMenuItemSpriteExtra* btn = nullptr;
+    CCSprite* spr = nullptr;
 
     ButtonSprite* btnSprite = ButtonSprite::create("Save");
     btnSprite->setScale(0.54f);
-
-    CCMenuItemSpriteExtra* btn = CCMenuItemSpriteExtra::create(btnSprite,
-        this,
-        menu_selector(RecordLayer::openSaveMacro));
-
+    btn = CCMenuItemSpriteExtra::create(btnSprite, this, menu_selector(RecordLayer::openSaveMacro));
     btn->setPosition(ccp(-162, 34));
+    menu->addChild(btn);
+
+    btnSprite = ButtonSprite::create("Load");
+    btnSprite->setScale(0.54f);
+    btn = CCMenuItemSpriteExtra::create(btnSprite, this, menu_selector(RecordLayer::openLoadMacro));
+    btn->setPosition(ccp(-106, 34));
+    menu->addChild(btn);
+
+    btnSprite = ButtonSprite::create("Edit");
+    btnSprite->setScale(0.54f);
+    btn = CCMenuItemSpriteExtra::create(btnSprite, this, menu_selector(RecordLayer::onEditMacro));
+    btn->setPosition(ccp(-50, 34));
     menu->addChild(btn);
 
 #ifdef GEODE_IS_WINDOWS
@@ -1241,202 +1168,9 @@ bool RecordLayer::setup() {
     btnSprite = ButtonSprite::create("Buttons");
 #endif
     btnSprite->setScale(0.54f);
-
-    btn = CCMenuItemSpriteExtra::create(btnSprite,
-        this,
-        menu_selector(RecordLayer::openKeybinds));
-
-    btn->setPosition(ccp(40, -100));
+    btn = CCMenuItemSpriteExtra::create(btnSprite, this, menu_selector(RecordLayer::openKeybinds));
+    btn->setPosition(ccp(-116, -32));
     menu->addChild(btn);
-
-
-    btnSprite = ButtonSprite::create("Rate");
-    btnSprite->setScale(0.54f);
-
-    btn = CCMenuItemSpriteExtra::create(btnSprite,
-        this,
-        menu_selector(RecordLayer::openStarRateOverride));
-
-    btn->setPosition(ccp(148, -100));
-    menu->addChild(btn);
-
-    btnSprite = ButtonSprite::create("Load");
-    btnSprite->setScale(0.54f);
-
-    btn = CCMenuItemSpriteExtra::create(btnSprite,
-        this,
-        menu_selector(RecordLayer::openLoadMacro));
-
-    btn->setPosition(ccp(-106, 34));
-    menu->addChild(btn);
-
-    btnSprite = ButtonSprite::create("Edit");
-    btnSprite->setScale(0.54f);
-
-    btn = CCMenuItemSpriteExtra::create(btnSprite,
-        this,
-        menu_selector(RecordLayer::onEditMacro));
-
-    btn->setPosition(ccp(-50, 34));
-    menu->addChild(btn);
-
-    widthInput = CCTextInputNode::create(150, 30, "Width", "chatFont.fnt");
-    widthInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
-    widthInput->ignoreAnchorPointForPosition(true);
-    widthInput->setPosition(ccp(-157, -31));
-    widthInput->setMaxLabelScale(0.7f);
-    widthInput->setMouseEnabled(true);
-    widthInput->setContentSize({ 60, 20 });
-    widthInput->setTouchEnabled(true);
-    widthInput->setAllowedChars("0123456789");
-    widthInput->setString(mod->getSavedValue<std::string>("render_width2").c_str());
-    widthInput->setDelegate(this);
-    widthInput->setID("render-input");
-    menu->addChild(widthInput);
-
-    heightInput = CCTextInputNode::create(150, 30, "Height", "chatFont.fnt");
-    heightInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
-    heightInput->ignoreAnchorPointForPosition(true);
-    heightInput->setPosition(ccp(-72.5, -31));
-    heightInput->setMaxLabelScale(0.7f);
-    heightInput->setMouseEnabled(true);
-    heightInput->setContentSize({ 60, 20 });
-    heightInput->setTouchEnabled(true);
-    heightInput->setAllowedChars("0123456789");
-    heightInput->setString(mod->getSavedValue<std::string>("render_height").c_str());
-    heightInput->setDelegate(this);
-    heightInput->setID("render-input");
-    menu->addChild(heightInput);
-
-    bitrateInput = CCTextInputNode::create(150, 30, "br", "chatFont.fnt");
-    bitrateInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
-    bitrateInput->ignoreAnchorPointForPosition(true);
-    bitrateInput->setPosition(ccp(-185.5, -59));
-    bitrateInput->setMaxLabelScale(0.7f);
-    bitrateInput->setMouseEnabled(true);
-    bitrateInput->setContentSize({ 32, 20 });
-    bitrateInput->setTouchEnabled(true);
-    bitrateInput->setAllowedChars("0123456789");
-    bitrateInput->setString(mod->getSavedValue<std::string>("render_bitrate").c_str());
-    bitrateInput->setDelegate(this);
-    menu->addChild(bitrateInput);
-
-    CCSprite* emptyBtn = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
-    emptyBtn->setScale(0.67f);
-
-    CCSprite* folderIcon = CCSprite::createWithSpriteFrameName("folderIcon_001.png");
-    folderIcon->setPosition(emptyBtn->getContentSize() / 2);
-    folderIcon->setScale(0.7f);
-
-    emptyBtn->addChild(folderIcon);
-    btn = CCMenuItemSpriteExtra::create(
-        emptyBtn,
-        this,
-        menu_selector(RecordLayer::openPresets)
-    );
-    btn->setPosition(ccp(-177.5, -97));
-
-    menu->addChild(btn);
-
-    CCSprite* spr = CCSprite::createWithSpriteFrameName("GJ_optionsBtn_001.png");
-    spr->setScale(0.65f);
-
-    btn = CCMenuItemSpriteExtra::create(
-        spr,
-        this,
-        menu_selector(RenderSettingsLayer::open)
-    );
-    btn->setPosition(ccp(-129.5, -97));
-    menu->addChild(btn);
-
-
-    codecInput = CCTextInputNode::create(150, 30, "Codec", "chatFont.fnt");
-    codecInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
-    codecInput->ignoreAnchorPointForPosition(true);
-    codecInput->setPosition(ccp(-70.5, -62));
-    codecInput->setMouseEnabled(true);
-    codecInput->setTouchEnabled(true);
-    codecInput->setContentSize({ 79, 20 });
-    codecInput->setScale(0.75);
-    codecInput->setString(mod->getSavedValue<std::string>("render_codec").c_str());
-    codecInput->setDelegate(this);
-    codecInput->setAllowedChars("0123456789abcdefghijklmnopqrstuvwxyz-_.\"\\/");
-    codecInput->setMaxLabelWidth(74.f);
-    menu->addChild(codecInput);
-
-    fpsInput = CCTextInputNode::create(150, 30, "FPS", "chatFont.fnt");
-    fpsInput->m_textField->setAnchorPoint({ 0.5f, 0.5f });
-    fpsInput->ignoreAnchorPointForPosition(true);
-    fpsInput->setPosition(ccp(-133, -59));
-    fpsInput->setMaxLabelScale(0.7f);
-    fpsInput->setMouseEnabled(true);
-    fpsInput->setTouchEnabled(true);
-    fpsInput->setContentSize({ 32, 20 });
-    fpsInput->setAllowedChars("0123456789");
-    fpsInput->setString(mod->getSavedValue<std::string>("render_fps").c_str());
-    fpsInput->setDelegate(this);
-    menu->addChild(fpsInput);
-
-    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
-    bg->setScale(0.375f);
-    bg->setColor({ 0,0,0 });
-    bg->setOpacity(75);
-    bg->setPosition(ccp(-103.5, -21));
-    bg->setAnchorPoint({ 0, 1 });
-    bg->setContentSize({ 162, 55 });
-    bg->setZOrder(29);
-    menu->addChild(bg);
-
-    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
-    bg->setScale(0.375f);
-    bg->setColor({ 0,0,0 });
-    bg->setOpacity(75);
-    bg->setPosition(ccp(-188, -21));
-    bg->setAnchorPoint({ 0, 1 });
-    bg->setContentSize({ 162, 55 });
-    bg->setZOrder(29);
-    menu->addChild(bg);
-
-    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
-    bg->setScale(0.375f);
-    bg->setColor({ 0,0,0 });
-    bg->setOpacity(75);
-    bg->setPosition(ccp(-201.5, -49));
-    bg->setAnchorPoint({ 0, 1 });
-    bg->setContentSize({ 82, 55 });
-    bg->setZOrder(29);
-    menu->addChild(bg);
-
-    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
-    bg->setScale(0.375f);
-    bg->setColor({ 0,0,0 });
-    bg->setOpacity(75);
-    bg->setPosition(ccp(-148.5, -49));
-    bg->setAnchorPoint({ 0, 1 });
-    bg->setContentSize({ 82, 55 });
-    bg->setZOrder(29);
-    menu->addChild(bg);
-
-    bg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
-    bg->setScale(0.375f);
-    bg->setColor({ 0,0,0 });
-    bg->setOpacity(75);
-    bg->setPosition(ccp(-92, -49));
-    bg->setAnchorPoint({ 0, 1 });
-    bg->setContentSize({ 167, 55 });
-    bg->setZOrder(29);
-    menu->addChild(bg);
-
-    ButtonSprite* spriteOn2 = ButtonSprite::create("Stop");
-    spriteOn2->setScale(0.74f);
-    ButtonSprite* spriteOff2 = ButtonSprite::create("Start");
-    spriteOff2->setScale(0.74f);
-
-    renderToggle = CCMenuItemToggler::create(spriteOff2, spriteOn2, this, menu_selector(RecordLayer::toggleRender));
-    renderToggle->toggle(g.renderer.recording || g.renderer.recordingAudio);
-
-    renderToggle->setPosition(ccp(-65.5, -100));
-    menu->addChild(renderToggle);
 
     spr = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
     spr->setScale(0.65f);
@@ -1446,16 +1180,6 @@ bool RecordLayer::setup() {
         menu_selector(RecordLayer::macroInfo)
     );
     btn->setPosition(ccp(-36, 107));
-    menu->addChild(btn);
-
-    spr = CCSprite::createWithSpriteFrameName("GJ_trashBtn_001.png");
-    spr->setScale(0.5f);
-    btn = CCMenuItemSpriteExtra::create(
-        spr,
-        this,
-        menu_selector(RecordLayer::clear22Percentage)
-    );
-    btn->setPosition(ccp(-20, 107));
     menu->addChild(btn);
 
     if (g.currentPage < 0 || static_cast<size_t>(g.currentPage) >= kSettingsCategories.size())
