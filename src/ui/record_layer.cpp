@@ -669,8 +669,7 @@ void RecordLayer::openAutosavesFolder(CCObject*) {
 
 RecordLayer* RecordLayer::create() {
     auto* ret = new RecordLayer();
-    std::string texture = Utils::getTexture();
-    if (ret->initAnchored(455.f, 271.f, texture.c_str())) {
+    if (ret->initAnchored(455.f, 271.f)) {
         ret->autorelease();
         return ret;
     }

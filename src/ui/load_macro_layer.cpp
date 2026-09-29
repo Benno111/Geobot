@@ -187,8 +187,7 @@ void LoadMacroLayer::onSelectAll(CCObject* obj) {
 
 LoadMacroLayer* LoadMacroLayer::create(geode::Popup* layer, geode::Popup* layer2, bool autosaves) {
 	LoadMacroLayer* ret = new LoadMacroLayer();
-	std::string texture = Utils::getTexture();
-	if (ret->initAnchored(385, 291, layer, layer2, autosaves, texture.c_str())) {
+	if (ret->initAnchored(385, 291, layer, layer2, autosaves)) {
 		ret->autorelease();
 		return ret;
 	}
