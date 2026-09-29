@@ -225,7 +225,7 @@ bool LoadMacroLayer::setup(geode::Popup* layer, geode::Popup* layer2, bool autos
 	setTitle(isMerge ? "Merge Macro" : "Load Macro");
 	m_title->setPositionY(m_title->getPositionY() + 5);
 	m_closeBtn->getNormalImage()->setScale(0.6f);
-	adjustForLoadingScreen();
+	//adjustForLoadingScreen(); //fixes bugs
 
 	if (!isMerge) {
 		CCSprite* icon = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
