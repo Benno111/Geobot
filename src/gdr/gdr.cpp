@@ -1,4 +1,4 @@
-#include <Geode/Geode.hpp>
+#include <Geode/utils/string.hpp>
 
 #include "gdr.hpp"
 
