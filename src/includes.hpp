@@ -37,7 +37,7 @@
 
 using namespace geode::prelude;
 
-#define WINDOW_BG "GJ_square01.png"
+#define WINDOW_BG "GJ_button_01.png"
 
 inline void detachInputNodeSafe(CCTextInputNode* input) {
     if (!input) return;
