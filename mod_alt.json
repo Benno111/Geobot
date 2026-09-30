@@ -31,7 +31,153 @@
             "version": ">=1.2.0"
         }
     },
-    "settings": {},
+    "settings": {
+        "general-title": {
+            "type": "title",
+            "name": "General"
+        },
+        "menu_show_button": {
+            "type": "bool",
+            "name": "Show Pause Button",
+            "description": "Show the geobot button in pause and end menus.",
+            "default": true,
+            "platforms": ["win"]
+        },
+        "menu_pause_on_open": {
+            "type": "bool",
+            "name": "Pause on Open",
+            "description": "Pause the level when opening the geobot menu.",
+            "default": false
+        },
+        "menu_show_cursor": {
+            "type": "bool",
+            "name": "Show Cursor on Open",
+            "description": "Show the cursor when opening the geobot menu without pausing.",
+            "default": true,
+            "platforms": ["win"]
+        },
+        "background_color": {
+            "type": "color",
+            "name": "Window Color",
+            "description": "Tint geobot popup windows.",
+            "default": "#ffffff"
+        },
+        "restore_page": {
+            "type": "bool",
+            "name": "Restore Page",
+            "description": "Keep the last selected geobot menu page.",
+            "default": true
+        },
+        "macro-title": {
+            "type": "title",
+            "name": "Macro"
+        },
+        "macro_accuracy": {
+            "type": "string",
+            "name": "Accuracy",
+            "description": "Choose the macro correction mode.",
+            "default": "Frame Fixes",
+            "one-of": ["Vanilla", "Input Fixes", "Frame Fixes"]
+        },
+        "frame_offset": {
+            "type": "int",
+            "name": "Frame Offset",
+            "description": "Apply an input frame offset during playback.",
+            "default": 0,
+            "min": -100,
+            "max": 100,
+            "control": {
+                "slider": false,
+                "input": true
+            }
+        },
+        "frame_fixes_limit": {
+            "type": "int",
+            "name": "Frame Fix Limit",
+            "description": "Maximum number of frame fixes to keep.",
+            "default": 240,
+            "min": 1,
+            "control": {
+                "slider": false,
+                "input": true
+            }
+        },
+        "lock_delta": {
+            "type": "bool",
+            "name": "Lock Delta",
+            "default": false
+        },
+        "auto_stop_playing": {
+            "type": "bool",
+            "name": "Auto Stop Playing",
+            "description": "Stop macro playback automatically at the end of the macro.",
+            "default": false
+        },
+        "macro_tps_enabled": {
+            "type": "bool",
+            "name": "TPS Bypass",
+            "default": false
+        },
+        "macro_tps": {
+            "type": "float",
+            "name": "TPS",
+            "description": "Ticks per second used when TPS bypass is enabled.",
+            "default": 240,
+            "min": 0,
+            "max": 999999,
+            "control": {
+                "slider": false,
+                "input": true
+            }
+        },
+        "macro_always_practice_fixes": {
+            "type": "bool",
+            "name": "Always Practice Fixes",
+            "description": "Allow practice fixes outside recording.",
+            "default": false
+        },
+        "macro_ignore_inputs": {
+            "type": "bool",
+            "name": "Ignore Inputs",
+            "description": "Ignore manual inputs while macro handling is active.",
+            "default": false
+        },
+        "macro_hide_playing_label": {
+            "type": "bool",
+            "name": "Hide Playing Label",
+            "default": false
+        },
+        "macro_hide_recording_label": {
+            "type": "bool",
+            "name": "Hide Recording Label",
+            "default": false
+        },
+        "folders-title": {
+            "type": "title",
+            "name": "Folders"
+        },
+        "macros_folder": {
+            "type": "folder",
+            "name": "Macros Folder",
+            "description": "Folder used to load and save macros.",
+            "default": "{gd_dir}/macros"
+        },
+        "autosaves_folder": {
+            "type": "folder",
+            "name": "Autosaves Folder",
+            "description": "Folder used for automatic macro saves.",
+            "default": "{mod_save_dir}/autosaves"
+        },
+        "clickbot-title": {
+            "type": "title",
+            "name": "Clickbot"
+        },
+        "clickbot_enabled": {
+            "type": "bool",
+            "name": "Enable Clickbot",
+            "default": false
+        }
+    },
     "resources": {
         "sprites": [
             "resources/GJ_commentSide2_001_White.png",

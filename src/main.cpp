@@ -270,7 +270,7 @@ class $modify(PlayLayer) {
         }
 
         if (!m_levelSettings->m_platformerMode ||
-            (!g.mod->getSavedValue<bool>("macro_always_practice_fixes") && g.state != state::recording))
+            (!g.mod->getSettingValue<bool>("macro_always_practice_fixes") && g.state != state::recording))
             return;
 
         g.ignoreRecordAction = true;

@@ -377,9 +377,9 @@ $execute{
     g.mod->setSavedValue("autosave_interval", std::to_string(10));
     g.mod->setSavedValue("autosave_checkpoint_enabled", true);
     g.mod->setSavedValue("autosave_levelend_enabled", true);
-    g.mod->setSavedValue("auto_stop_playing", false);
-    g.mod->setSavedValue("macro_tps", 240.f);
-    g.mod->setSavedValue("macro_tps_enabled", false);
+    g.mod->setSettingValue("auto_stop_playing", false);
+    g.mod->setSettingValue("macro_tps", 240.0);
+    g.mod->setSettingValue("macro_tps_enabled", false);
 
 
 
@@ -388,16 +388,16 @@ $execute{
 
 
   if (!g.mod->setSavedValue("defaults_set_16", true)) {
-    g.mod->setSavedValue("macro_accuracy", std::string("Frame Fixes"));
-    g.mod->setSavedValue("frame_offset", 0);
-    g.mod->setSavedValue("frame_fixes_limit", 240);
-    g.mod->setSavedValue("lock_delta", false);
-    g.mod->setSavedValue("auto_stop_playing", false);
+    g.mod->setSettingValue("macro_accuracy", std::string("Frame Fixes"));
+    g.mod->setSettingValue("frame_offset", static_cast<int64_t>(0));
+    g.mod->setSettingValue("frame_fixes_limit", static_cast<int64_t>(240));
+    g.mod->setSettingValue("lock_delta", false);
+    g.mod->setSettingValue("auto_stop_playing", false);
   }
 
   // Hotfix: restore historical playback behavior (do not auto-stop by default).
   if (!g.mod->setSavedValue("defaults_set_17", true))
-    g.mod->setSavedValue("auto_stop_playing", false);
+    g.mod->setSettingValue("auto_stop_playing", false);
 
   if (!g.mod->hasSavedValue("developer_mode_enabled"))
     g.mod->setSavedValue("developer_mode_enabled", false);
@@ -431,13 +431,41 @@ $execute{
 
   // Migrate legacy saved keys to current setting IDs.
   if (!g.mod->hasSavedValue("auto_stop_playing") && g.mod->hasSavedValue("macro_auto_stop_playing"))
-    g.mod->setSavedValue("auto_stop_playing", g.mod->getSavedValue<bool>("macro_auto_stop_playing"));
+    g.mod->setSettingValue("auto_stop_playing", g.mod->getSavedValue<bool>("macro_auto_stop_playing"));
+
+  if (!g.mod->setSavedValue("mod_json_settings_migrated_1", true)) {
+    auto migrateBoolSetting = [&](std::string const& key) {
+      if (g.mod->hasSavedValue(key))
+        g.mod->setSettingValue(key, g.mod->getSavedValue<bool>(key));
+    };
+
+    migrateBoolSetting("menu_show_button");
+    migrateBoolSetting("menu_pause_on_open");
+    migrateBoolSetting("menu_show_cursor");
+    migrateBoolSetting("lock_delta");
+    migrateBoolSetting("auto_stop_playing");
+    migrateBoolSetting("macro_tps_enabled");
+    migrateBoolSetting("macro_always_practice_fixes");
+    migrateBoolSetting("macro_ignore_inputs");
+    migrateBoolSetting("macro_hide_playing_label");
+    migrateBoolSetting("macro_hide_recording_label");
+    migrateBoolSetting("clickbot_enabled");
+
+    if (g.mod->hasSavedValue("macro_accuracy"))
+      g.mod->setSettingValue("macro_accuracy", g.mod->getSavedValue<std::string>("macro_accuracy"));
+    if (g.mod->hasSavedValue("macro_tps"))
+      g.mod->setSettingValue("macro_tps", g.mod->getSavedValue<double>("macro_tps"));
+    if (g.mod->hasSavedValue("frame_offset"))
+      g.mod->setSettingValue("frame_offset", static_cast<int64_t>(getSavedInt64Safe(g.mod, "frame_offset", 0)));
+    if (g.mod->hasSavedValue("frame_fixes_limit"))
+      g.mod->setSettingValue("frame_fixes_limit", static_cast<int64_t>(getSavedInt64Safe(g.mod, "frame_fixes_limit", 240)));
+  }
 
   // Geobot is intentionally a focused macro/click bot. Keep retired utility
   // features off even when an older installation left their values enabled.
   g.frameLabel = g.mod->getSavedValue<bool>("macro_show_frame_label");
-  g.tpsEnabled = g.mod->getSavedValue<bool>("macro_tps_enabled");
-  g.tps = g.mod->getSavedValue<double>("macro_tps");
+  g.tpsEnabled = g.mod->getSettingValue<bool>("macro_tps_enabled");
+  g.tps = static_cast<float>(g.mod->getSettingValue<double>("macro_tps"));
   // Autosaving is part of recording/editor playback now. Normalize legacy
   // values so upgraded installs keep a working autosave mode without the
   // retired settings screen.
@@ -459,14 +487,14 @@ $execute{
   g.autosaveInterval = static_cast<int>(autosaveMins * 60);
 
 
-  g.frameOffset = static_cast<int>(getSavedInt64Safe(g.mod, "frame_offset", 0));
-  g.frameFixesLimit = static_cast<int>(getSavedInt64Safe(g.mod, "frame_fixes_limit", 240));
-  g.lockDelta = g.mod->getSavedValue<bool>("lock_delta");
-  g.stopPlaying = g.mod->getSavedValue<bool>("auto_stop_playing");
+  g.frameOffset = static_cast<int>(g.mod->getSettingValue<int64_t>("frame_offset"));
+  g.frameFixesLimit = static_cast<int>(g.mod->getSettingValue<int64_t>("frame_fixes_limit"));
+  g.lockDelta = g.mod->getSettingValue<bool>("lock_delta");
+  g.stopPlaying = g.mod->getSettingValue<bool>("auto_stop_playing");
 
-  if (g.mod->getSavedValue<std::string>("macro_accuracy") == "Frame Fixes")
+  if (g.mod->getSettingValue<std::string>("macro_accuracy") == "Frame Fixes")
     g.frameFixes = true;
-  else if (g.mod->getSavedValue<std::string>("macro_accuracy") == "Input Fixes")
+  else if (g.mod->getSettingValue<std::string>("macro_accuracy") == "Input Fixes")
     g.inputFixes = true;
 
   std::string defaultAuthor = "N/A";

@@ -136,7 +136,7 @@ const std::vector<std::string> kAccuracyModes = {
 };
 
 std::string getSavedAccuracyMode(Mod* mod) {
-    std::string value = mod->getSavedValue<std::string>("macro_accuracy");
+    std::string value = mod->getSettingValue<std::string>("macro_accuracy");
     for (auto const& mode : kAccuracyModes) {
         if (value == mode)
             return value;
@@ -288,7 +288,7 @@ void addgeobotPauseButton(cocos2d::CCLayer* layer) {
     if (Global::isBuildExpired()) return;
 
 #ifdef GEODE_IS_WINDOWS
-    if (!Mod::get()->getSavedValue<bool>("menu_show_button")) return;
+    if (!Mod::get()->getSettingValue<bool>("menu_show_button")) return;
 #endif
 
     CCSprite* sprite = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
@@ -429,12 +429,12 @@ RecordLayer* RecordLayer::openMenu(bool instant) {
     if (g.layer)
         static_cast<RecordLayer*>(g.layer)->onClose(nullptr);
 
-    if (pl && g.mod->getSavedValue<bool>("menu_pause_on_open")) {
+    if (pl && g.mod->getSettingValue<bool>("menu_pause_on_open")) {
         if (!pl->m_isPaused)
             pl->pauseGame(false);
     }
 #ifdef GEODE_IS_WINDOWS
-    else if (pl && g.mod->getSavedValue<bool>("menu_show_cursor")) {
+    else if (pl && g.mod->getSettingValue<bool>("menu_show_cursor")) {
         cursor = cocos2d::CCEGLView::sharedOpenGLView()->getShouldHideCursor();
         cocos2d::CCEGLView::sharedOpenGLView()->showCursor(true);
     }
@@ -569,7 +569,7 @@ void RecordLayer::textChanged(CCTextInputNode* node) {
     if (tpsInput && node == tpsInput) {
         float value = geode::utils::numFromString<float>(tpsInput->getString()).unwrapOr(0.f);
         if (std::string_view(tpsInput->getString()) != "" && value < 999999 && value >= 0.f) {
-            mod->setSavedValue("macro_tps", value);
+            mod->setSettingValue("macro_tps", static_cast<double>(value));
             Global::get().tps = value;
             Global::get().leftOver = 0.f;
         }
@@ -584,7 +584,7 @@ void RecordLayer::textChanged(CCTextInputNode* node) {
         int parsed = value.unwrap();
         if (parsed < -100) parsed = -100;
         if (parsed > 100) parsed = 100;
-        mod->setSavedValue("frame_offset", parsed);
+        mod->setSettingValue("frame_offset", static_cast<int64_t>(parsed));
         Global::get().frameOffset = parsed;
         warningLabel->setString(("WARNING: Currently recording / playing macros with a frame offset of " + std::to_string(parsed)).c_str());
         warningLabel->setVisible(parsed != 0);
@@ -598,7 +598,7 @@ void RecordLayer::textChanged(CCTextInputNode* node) {
             return;
         }
         int parsed = std::max(1, value.unwrap());
-        mod->setSavedValue("frame_fixes_limit", parsed);
+        mod->setSettingValue("frame_fixes_limit", static_cast<int64_t>(parsed));
         Global::get().frameFixesLimit = parsed;
     }
 
@@ -610,7 +610,7 @@ void RecordLayer::toggleSetting(CCObject* obj) {
     std::string id = toggle->getID();
     bool value = !toggle->isToggled();
     auto& g = Global::get();
-    g.mod->setSavedValue(id, value);
+    g.mod->setSettingValue(id, value);
 
     if (id == "clickbot_enabled") {
         g.clickbotEnabled = value;
@@ -993,7 +993,7 @@ void RecordLayer::onCycleAccuracy(CCObject*) {
 
     index = (index + 1) % kAccuracyModes.size();
     std::string next = kAccuracyModes[index];
-    mod->setSavedValue("macro_accuracy", next);
+    mod->setSettingValue("macro_accuracy", next);
     applyAccuracyMode(next);
 
     if (settingsMenu)
@@ -1103,7 +1103,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
         CCMenuItemToggler* toggle = CCMenuItemToggler::create(spriteOff, spriteOn, this, menu_selector(RecordLayer::toggleSetting));
         toggle->setPosition(ccp(toggleX, yPos));
         toggle->setScale(toggleScale);
-        bool toggled = mod->getSavedValue<bool>(sett.id);
+        bool toggled = mod->getSettingValue<bool>(sett.id);
         toggle->toggle(toggled);
         toggle->setID(sett.id.c_str());
         toggle->setEnabled(!sett.disabled);
@@ -1183,7 +1183,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
         tpsInput->setTouchEnabled(true);
         tpsInput->setContentSize({ 32, 20 });
         tpsInput->setAllowedChars("0123456789.");
-        tpsInput->setString(Utils::getSimplifiedString(fmt::format("{:.3f}", Mod::get()->getSavedValue<double>("macro_tps"))).c_str());
+        tpsInput->setString(Utils::getSimplifiedString(fmt::format("{:.3f}", Mod::get()->getSettingValue<double>("macro_tps"))).c_str());
         tpsInput->setMaxLabelWidth(30.f);
         tpsInput->setDelegate(this);
         tpsInput->setMaxLabelLength(9);
@@ -1367,7 +1367,7 @@ void RecordLayer::updateTPS() {
     auto& g = Global::get();
 
     tpsToggle->toggle(g.tpsEnabled);
-    tpsInput->setString(Utils::getSimplifiedString(fmt::format("{:.3f}", Mod::get()->getSavedValue<double>("macro_tps"))).c_str());
+    tpsInput->setString(Utils::getSimplifiedString(fmt::format("{:.3f}", Mod::get()->getSettingValue<double>("macro_tps"))).c_str());
 
     if (g.state == state::none || g.macro.inputs.empty()) {
         if (CCMenuItemSpriteExtra* btn = tpsToggle->getChildByType<CCMenuItemSpriteExtra>(0))
