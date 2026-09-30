@@ -211,6 +211,7 @@ bool LoadMacroLayer::setup(geode::Popup* layer, geode::Popup* layer2, bool autos
 	#endif
 
 	menu = CCMenu::create();
+	menu->setPosition(m_mainLayer->getContentSize() / 2.f);
 	menu->setZOrder(110);
 	m_mainLayer->addChild(menu);
 
@@ -633,12 +634,11 @@ void LoadMacroLayer::rebuildListFromLoaded(bool refresh, float prevScroll) {
 	allMacros.clear();
 	selectedMacros.clear();
 
-	cocos2d::ccColor3B color = Mod::get()->getSettingValue<cocos2d::ccColor3B>("background_color");
-	cocos2d::CCPoint popupCenter = m_mainLayer->getPosition() + (m_mainLayer->getContentSize() / 2.f);
+	cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
 
 	CCNode* listLayer = CCNode::create();
 	listLayer->setContentSize({ kMacroListWidth, kMacroListHeight });
-	listLayer->setPosition(popupCenter - (listLayer->getContentSize() / 2.f));
+	listLayer->setPosition((winSize / 2.f) - (listLayer->getContentSize() / 2.f));
 	listLayer->setZOrder(1);
 	listLayer->setID("list-layer");
 	m_buttonMenu->addChild(listLayer);
@@ -660,13 +660,13 @@ void LoadMacroLayer::rebuildListFromLoaded(bool refresh, float prevScroll) {
 	listBackground->setScale(0.7f);
 	listBackground->setColor({ 0,0,0 });
 	listBackground->setOpacity(75);
-	listBackground->setPosition(popupCenter);
+	listBackground->setPosition(winSize / 2.f);
 	listBackground->setContentSize({ 461.1f, 255.1f });
 	listBackground->setID("background");
 	m_buttonMenu->addChild(listBackground);
 
 	macroScrollbar = Scrollbar::create(macroScroll);
-	macroScrollbar->setPosition({ popupCenter.x + (listLayer->getScaledContentSize().width / 2) + 4, popupCenter.y });
+	macroScrollbar->setPosition({ (winSize.width / 2.f) + (listLayer->getScaledContentSize().width / 2.f) + 4.f, winSize.height / 2.f });
 	macroScrollbar->setID("scrollbar");
 	m_buttonMenu->addChild(macroScrollbar);
 

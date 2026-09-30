@@ -14,6 +14,11 @@
 #include <ctime>
 
 namespace {
+constexpr cocos2d::CCSize kSettingsScrollSize { 210.f, 150.f };
+constexpr cocos2d::CCPoint kSettingsScrollPosition { 0.f, -72.f };
+constexpr float kSettingsCenterX = 105.f;
+constexpr float kSettingsScrollbarX = 214.f;
+
 bool parseU64Safe(std::string const& raw, unsigned long long& out) {
 	if (raw.empty()) return false;
 	auto begin = raw.data();
@@ -815,18 +820,10 @@ bool RecordLayer::setup() {
 
     bool macroMenuRewrite = isMacroMenuRewriteEnabled();
 
-    if (macroMenuRewrite) {
-        lbl = CCLabelBMFont::create("Settings", "goldFont.fnt");
-        lbl->setPosition(ccp(159.f, 111.f));
-        lbl->setScale(0.56f);
-        menu->addChild(lbl);
-    }
-    else {
-        lbl = CCLabelBMFont::create("Settings", "goldFont.fnt");
-        lbl->setPosition(ccp(130, 111));
-        lbl->setScale(0.56f);
-        menu->addChild(lbl);
-    }
+    lbl = CCLabelBMFont::create("Settings", "goldFont.fnt");
+    lbl->setPosition(ccp(kSettingsCenterX, 109.f));
+    lbl->setScale(0.56f);
+    menu->addChild(lbl);
 
     if (macroMenuRewrite) {
         CCScale9Sprite* settingsBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
@@ -847,30 +844,20 @@ bool RecordLayer::setup() {
         settingsBg->setContentSize({ 243.f, 181.f });
         menu->addChild(settingsBg);
     }
-    else {
-        CCScale9Sprite* settingsBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
-        settingsBg->setScale(0.7f);
-        settingsBg->setColor({ 0,0,0 });
-        settingsBg->setOpacity(90);
-        settingsBg->setPosition({ -20.f, -85.f });
-        settingsBg->setAnchorPoint({ 0.f, 0.f });
-        settingsBg->setContentSize({ 301.f, 181.f });
-        menu->addChild(settingsBg);
-    }
 
     settingsSectionLabel = CCLabelBMFont::create("", "goldFont.fnt");
-    settingsSectionLabel->setPosition(macroMenuRewrite ? CCPoint { 159.5f, 95.f } : CCPoint { 130.f, 95.f });
+    settingsSectionLabel->setPosition(macroMenuRewrite ? CCPoint { 159.5f, 95.f } : CCPoint { kSettingsCenterX, 92.f });
     settingsSectionLabel->setScale(0.42f);
     menu->addChild(settingsSectionLabel);
 
-    settingsScroll = geode::ScrollLayer::create(macroMenuRewrite ? cocos2d::CCSize { 243.f, 150.f } : cocos2d::CCSize { 301.f, 150.f });
-    settingsScroll->setPosition(macroMenuRewrite ? CCPoint { 38.f, -72.f } : CCPoint { -20.f, -72.f });
+    settingsScroll = geode::ScrollLayer::create(macroMenuRewrite ? cocos2d::CCSize { 243.f, 150.f } : kSettingsScrollSize);
+    settingsScroll->setPosition(macroMenuRewrite ? CCPoint { 38.f, -72.f } : kSettingsScrollPosition);
     settingsScroll->setTouchEnabled(true);
     settingsScroll->enableScrollWheel(true);
     menu->addChild(settingsScroll);
 
     settingsScrollbar = geode::Scrollbar::create(settingsScroll);
-    settingsScrollbar->setPosition(macroMenuRewrite ? CCPoint { 274.f, 0.f } : CCPoint { 274.f, 0.f });
+    settingsScrollbar->setPosition(macroMenuRewrite ? CCPoint { 274.f, 0.f } : CCPoint { kSettingsScrollbarX, 0.f });
     menu->addChild(settingsScrollbar);
 
     settingsCategoryButtons.clear();
@@ -1324,7 +1311,7 @@ void RecordLayer::loadSettingsList() {
 
     if (settingsSectionLabel) {
         settingsSectionLabel->setString(category.title.c_str());
-        settingsSectionLabel->limitLabelWidth(macroMenuRewrite ? 190.f : 120.f, 0.42f, 0.1f);
+        settingsSectionLabel->limitLabelWidth(macroMenuRewrite ? 190.f : 160.f, 0.42f, 0.1f);
         settingsSectionLabel->updateLabel();
     }
 
