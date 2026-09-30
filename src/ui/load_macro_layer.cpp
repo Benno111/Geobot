@@ -629,6 +629,8 @@ void LoadMacroLayer::onExit() {
 }
 
 void LoadMacroLayer::rebuildListFromLoaded(bool refresh, float prevScroll) {
+	cocos2d::CCSize winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
+
 	clearListNodes();
 	allMacros.clear();
 	selectedMacros.clear();
@@ -637,7 +639,7 @@ void LoadMacroLayer::rebuildListFromLoaded(bool refresh, float prevScroll) {
 
 	CCNode* listLayer = CCNode::create();
 	listLayer->setContentSize({ kMacroListWidth, kMacroListHeight });
-	listLayer->setPosition({ -kMacroListWidth / 2.f, -kMacroListHeight / 2.f + 1.f });
+	listLayer->setPosition((winSize / 2) - (listLayer->getContentSize() / 2) + ccp(0, 1));
 	listLayer->setZOrder(1);
 	listLayer->setID("list-layer");
 	m_buttonMenu->addChild(listLayer);
@@ -659,13 +661,13 @@ void LoadMacroLayer::rebuildListFromLoaded(bool refresh, float prevScroll) {
 	listBackground->setScale(0.7f);
 	listBackground->setColor({ 0,0,0 });
 	listBackground->setOpacity(75);
-	listBackground->setPosition({ -0.11f, -10.5f });
+	listBackground->setPosition(winSize / 2 + ccp(-0.11f, -10.5f));
 	listBackground->setContentSize({ 461.1f, 255.1f });
 	listBackground->setID("background");
 	m_buttonMenu->addChild(listBackground);
 
 	macroScrollbar = Scrollbar::create(macroScroll);
-	macroScrollbar->setPosition({ listLayer->getScaledContentSize().width / 2.f + 4.f, 0.f });
+	macroScrollbar->setPosition({ (winSize.width / 2) + (listLayer->getScaledContentSize().width / 2) + 4, winSize.height / 2 });
 	macroScrollbar->setID("scrollbar");
 	m_buttonMenu->addChild(macroScrollbar);
 

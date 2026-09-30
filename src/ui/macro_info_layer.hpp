@@ -8,7 +8,7 @@ public:
 
     static MacroInfoLayer* create() {
         MacroInfoLayer* ret = new MacroInfoLayer();
-        if (ret->initAnchored(417, 268, WINDOW_BG, CCRectZero)) {
+        if (ret->initAnchored(417, 268, POPUP_BG, CCRectZero)) {
             ret->autorelease();
             return ret;
         }
