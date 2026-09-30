@@ -1,6 +1,21 @@
 #pragma once
 
-#include <Geode/Geode.hpp>
+#include <Geode/Loader.hpp>
+#include <Geode/UI.hpp>
+#include <Geode/Utils.hpp>
+#include <Geode/modify/Modify.hpp>
+#include <Geode/binding/CCTextInputNode.hpp>
+#include <Geode/binding/CheckpointObject.hpp>
+#include <Geode/binding/FLAlertLayer.hpp>
+#include <Geode/binding/GameObject.hpp>
+#include <Geode/binding/GameManager.hpp>
+#include <Geode/binding/GJAccountManager.hpp>
+#include <Geode/binding/GJBaseGameLayer.hpp>
+#include <Geode/binding/GJGameLevel.hpp>
+#include <Geode/binding/MoreOptionsLayer.hpp>
+#include <Geode/binding/PauseLayer.hpp>
+#include <Geode/binding/PlayLayer.hpp>
+#include <Geode/binding/PlayerObject.hpp>
 // #include <Geode/loader/SettingEvent.hpp>
 
 #include <string>
