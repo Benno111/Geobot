@@ -83,9 +83,13 @@ bool isMacroMenuRewriteEnabled() {
     return false;
 }
 
-void addRewardDisabledWatermark(CCLayer* layer) {
+bool shouldShowAutoSafeModeNotice() {
     auto& g = Global::get();
-    if (!layer || !g.botUsedInLevelSession || !g.mod->getSavedValue<bool>("macro_auto_safe_mode"))
+    return g.botUsedInLevelSession && g.mod->getSavedValue<bool>("macro_auto_safe_mode");
+}
+
+void addRewardDisabledWatermark(CCLayer* layer) {
+    if (!layer || !shouldShowAutoSafeModeNotice())
         return;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
@@ -343,6 +347,19 @@ void stopMacroOnEndscreen() {
         recordLayer->updateTPS();
     }
 }
+
+void addAutoSafeModeEndscreenLabel(EndLevelLayer* layer) {
+    if (!layer || !shouldShowAutoSafeModeNotice())
+        return;
+
+    auto* label = CCLabelBMFont::create("Auto-safe-mode", "goldFont.fnt");
+    label->setPosition({3.5f, 10.f});
+    label->setOpacity(155);
+    label->setID("safe-mode-label"_spr);
+    label->setScale(0.55f);
+    label->setAnchorPoint({0.f, 0.5f});
+    layer->addChild(label);
+}
 }
 
 class $modify(PauseLayer) {
@@ -365,6 +382,14 @@ class $modify(EndLevelLayer) {
         EndLevelLayer::customSetup();
         stopMacroOnEndscreen();
         addgeobotPauseButton(this);
+        addAutoSafeModeEndscreenLabel(this);
+    }
+
+    void onHideLayer(CCObject* obj) {
+        EndLevelLayer::onHideLayer(obj);
+
+        if (CCNode* label = getChildByID("safe-mode-label"_spr))
+            label->setVisible(!label->isVisible());
     }
 };
 
