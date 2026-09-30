@@ -377,9 +377,6 @@ $execute{
     g.mod->setSavedValue("autosave_interval", std::to_string(10));
     g.mod->setSavedValue("autosave_checkpoint_enabled", true);
     g.mod->setSavedValue("autosave_levelend_enabled", true);
-    g.mod->setSavedValue("macro_auto_safe_mode", true);
-
-
     g.mod->setSavedValue("auto_stop_playing", false);
     g.mod->setSavedValue("macro_tps", 240.f);
     g.mod->setSavedValue("macro_tps_enabled", false);
@@ -449,8 +446,6 @@ $execute{
   g.mod->setSavedValue("autosave_levelend_enabled", true);
   g.mod->setSavedValue("macro_auto_save", true);
 
-  if (!g.mod->hasSavedValue("macro_auto_safe_mode"))
-    g.mod->setSavedValue("macro_auto_safe_mode", true);
   g.autosaveIntervalEnabled = g.mod->getSavedValue<bool>("autosave_interval_enabled");
   g.autosaveEnabled = g.mod->getSavedValue<bool>("macro_auto_save");
 

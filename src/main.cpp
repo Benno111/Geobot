@@ -16,8 +16,11 @@ namespace {
 constexpr int kRespawnMovementClearFrames = 5;
 
 bool shouldBlockRewards() {
-    auto& g = Global::get();
-    return g.botUsedInLevelSession && g.mod->getSavedValue<bool>("macro_auto_safe_mode");
+    return Global::get().botUsedInLevelSession;
+}
+
+void triggerRewardBlocker() {
+    Global::get().botUsedInLevelSession = true;
 }
 
 bool isEditorPlaytestCompat(PlayLayer* pl) {
@@ -157,7 +160,8 @@ class $modify(PlayLayer) {
         auto now = std::chrono::system_clock::now();
         g.currentSession = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
         g.lastAutoSaveFrame = 0;
-        g.botUsedInLevelSession = g.state != state::none;
+        if (g.state != state::none)
+            triggerRewardBlocker();
 
         return true;
     }
@@ -184,7 +188,7 @@ class $modify(PlayLayer) {
         auto& g = Global::get();
         if (g.state == state::playing || g.state == state::recording) {
             g.macroUsedInAttempt = true;
-            g.botUsedInLevelSession = true;
+            triggerRewardBlocker();
         }
 
         PlayLayer::destroyPlayer(player, object);
@@ -430,7 +434,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
         if (pl && !m_levelEndAnimationStarted && (g.state == state::playing || g.state == state::recording))
             g.macroUsedInAttempt = true;
         if (pl && (g.state == state::playing || g.state == state::recording))
-            g.botUsedInLevelSession = true;
+            triggerRewardBlocker();
 
         g.previousFrame = frame;
 
