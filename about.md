@@ -1,3 +1,6 @@
+# Update upcomming "2.0.0"
+a mayjor update commes out in oct 01,2026
+
 # geobot
 <cl>geobot</c> is a focused macro and click bot designed to be easy to use, mainly for <cg>showcases</c>.
 
@@ -20,4 +23,3 @@
 
 # Thanks
 * Zilko for creating the backend.
-* CatXus and Aadam_yes for testing early Android versions.
