@@ -484,8 +484,6 @@ void RecordLayer::toggleRecording(CCObject*) {
         g.currentFrameFix = 0;
 
         PlayLayer* pl = PlayLayer::get();
-        if (pl)
-            pl->m_isTestMode = true;
         // Restarting from the beginning clears Geometry Dash's practice
         // checkpoint stack. When recording is started mid-practice, keep the
         // existing checkpoints and continue from the current practice state
@@ -530,8 +528,6 @@ void RecordLayer::togglePlaying(CCObject*) {
         g.macro.geobotMacro = g.macro.botInfo.name == "geobot";
         
         PlayLayer* pl = PlayLayer::get();
-        if (pl)
-            pl->m_isTestMode = true;
 
         if (pl) {
             if (!pl->m_isPaused && !pl->m_levelEndAnimationStarted)
