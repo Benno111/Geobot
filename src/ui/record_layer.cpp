@@ -938,16 +938,6 @@ bool RecordLayer::setup() {
     btn->setPosition(ccp(-50, 34));
     menu->addChild(btn);
 
-#ifdef GEODE_IS_WINDOWS
-    btnSprite = ButtonSprite::create("Keybinds");
-#else
-    btnSprite = ButtonSprite::create("Buttons");
-#endif
-    btnSprite->setScale(0.54f);
-    btn = CCMenuItemSpriteExtra::create(btnSprite, this, menu_selector(RecordLayer::openKeybinds));
-    btn->setPosition(ccp(-116, -32));
-    menu->addChild(btn);
-
     spr = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
     spr->setScale(0.65f);
     btn = CCMenuItemSpriteExtra::create(

@@ -12,6 +12,7 @@
 struct MacroListEntry {
         std::filesystem::path path;
         std::string name;
+        std::string searchName;
         std::time_t date = 0;
 };
 
@@ -121,6 +122,7 @@ public:
         void rebuildListFromLoaded(bool refresh = false, float prevScroll = 0.f);
         void appendLoadedListEntries();
         void updateDynamicListLayout(float prevScroll = 0.f, bool restoreScroll = false);
+        void updateListCulling(float dt = 0.f);
         void showLoadingScreen();
         void hideLoadingScreen();
         void onExit() override;

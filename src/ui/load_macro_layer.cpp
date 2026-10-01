@@ -3,6 +3,7 @@
 
 #include <Geode/modify/CCMenu.hpp>
 #include <sstream>
+#include <unordered_set>
 #ifdef GEODE_IS_WINDOWS
 #include <Windows.h>
 #endif
@@ -14,6 +15,8 @@ namespace {
 	constexpr float kMacroRowHeight = 35.f;
 	constexpr float kMacroListWidth = 323.f;
 	constexpr float kMacroListHeight = 180.f;
+	constexpr float kMacroListOffsetX = -100.f;
+	constexpr float kMacroListOffsetY = -20.f;
 	constexpr char const* FAVORITE_MACROS_KEY = "favorite_macros";
 
 	bool isMacroFile(std::filesystem::path const& path) {
@@ -33,15 +36,46 @@ namespace {
 		return path.lexically_normal().generic_string();
 	}
 
-	bool favoriteListContains(std::string const& favoritesRaw, std::filesystem::path const& path) {
-		std::istringstream favorites(favoritesRaw);
+	std::unordered_set<std::string> parseFavoriteIDs(std::string const& favoritesRaw) {
+		std::unordered_set<std::string> favorites;
+		std::istringstream favoriteStream(favoritesRaw);
 		std::string favorite;
-		std::string id = macroPathID(path);
-		while (std::getline(favorites, favorite)) {
-			if (favorite == id)
-				return true;
+		while (std::getline(favoriteStream, favorite)) {
+			if (!favorite.empty())
+				favorites.insert(favorite);
 		}
-		return false;
+		return favorites;
+	}
+
+	std::vector<MacroListEntry> buildMacroIndex(std::filesystem::path const& folder) {
+		std::vector<MacroListEntry> entries;
+		std::error_code ec;
+		std::filesystem::directory_iterator it(folder, ec);
+		std::filesystem::directory_iterator end;
+		while (!ec && it != end) {
+			auto const& dirEntry = *it;
+			if (!dirEntry.is_regular_file(ec)) {
+				ec.clear();
+				it.increment(ec);
+				continue;
+			}
+
+			std::filesystem::path macroPath = dirEntry.path();
+			if (isMacroFile(macroPath)) {
+				MacroListEntry info;
+				info.path = macroPath;
+				info.name = macroDisplayName(macroPath);
+				info.searchName = Utils::toLower(info.name);
+#ifdef GEODE_IS_WINDOWS
+				info.date = Utils::getFileCreationTime(macroPath);
+#endif
+				entries.push_back(std::move(info));
+			}
+
+			it.increment(ec);
+		}
+
+		return entries;
 	}
 }
 
@@ -482,6 +516,7 @@ void LoadMacroLayer::clearListNodes() {
 
 	if (CCNode* bg = m_buttonMenu->getChildByID("background"))
 		bg->removeFromParentAndCleanup(true);
+	unschedule(schedule_selector(LoadMacroLayer::updateListCulling));
 
 	macroScroll = nullptr;
 	macroScrollbar = nullptr;
@@ -516,23 +551,11 @@ void LoadMacroLayer::startBackgroundListLoad(bool refresh, float prevScroll) {
 
 	retain();
 	std::thread([this, cancel, generation, folder, searchSnapshot, favoritesOnlySnapshot, invertSortSnapshot, favoritesSnapshot] {
-		std::vector<std::filesystem::path> paths;
-		std::error_code ec;
-		std::filesystem::directory_iterator it(folder, ec);
-		std::filesystem::directory_iterator end;
-		while (!ec && it != end) {
-			if (cancel->load())
-				break;
-			auto const& entry = *it;
-			if (!entry.is_regular_file(ec))
-				ec.clear();
-			else
-				paths.push_back(entry.path());
-			it.increment(ec);
-		}
+		std::vector<MacroListEntry> macroIndex = buildMacroIndex(folder);
+		std::unordered_set<std::string> favoriteIDs = parseFavoriteIDs(favoritesSnapshot);
 
 		if (invertSortSnapshot)
-			std::reverse(paths.begin(), paths.end());
+			std::reverse(macroIndex.begin(), macroIndex.end());
 
 		std::vector<MacroListEntry> batch;
 		batch.reserve(kMacroListBatchSize);
@@ -553,25 +576,15 @@ void LoadMacroLayer::startBackgroundListLoad(bool refresh, float prevScroll) {
 			});
 		};
 
-		for (auto const& macroPath : paths) {
+		for (auto& macro : macroIndex) {
 			if (cancel->load())
 				break;
-			if (!isMacroFile(macroPath))
+			if (!searchSnapshot.empty() && macro.searchName.find(searchSnapshot) == std::string::npos)
+				continue;
+			if (favoritesOnlySnapshot && !favoriteIDs.contains(macroPathID(macro.path)))
 				continue;
 
-			std::string name = macroDisplayName(macroPath);
-			if (!searchSnapshot.empty() && Utils::toLower(name).find(searchSnapshot) == std::string::npos)
-				continue;
-			if (favoritesOnlySnapshot && !favoriteListContains(favoritesSnapshot, macroPath))
-				continue;
-
-			MacroListEntry info;
-			info.path = macroPath;
-			info.name = name;
-#ifdef GEODE_IS_WINDOWS
-			info.date = Utils::getFileCreationTime(macroPath);
-#endif
-			batch.push_back(std::move(info));
+			batch.push_back(std::move(macro));
 
 			if (batch.size() >= kMacroListBatchSize)
 				flushBatch();
@@ -638,7 +651,7 @@ void LoadMacroLayer::rebuildListFromLoaded(bool refresh, float prevScroll) {
 
 	CCNode* listLayer = CCNode::create();
 	listLayer->setContentSize({ kMacroListWidth, kMacroListHeight });
-	listLayer->setPosition((winSize / 2.f) - (listLayer->getContentSize() / 2.f));
+	listLayer->setPosition((winSize / 2.f) - (listLayer->getContentSize() / 2.f) + ccp(kMacroListOffsetX, kMacroListOffsetY));
 	listLayer->setZOrder(1);
 	listLayer->setID("list-layer");
 	m_buttonMenu->addChild(listLayer);
@@ -655,18 +668,22 @@ void LoadMacroLayer::rebuildListFromLoaded(bool refresh, float prevScroll) {
 	macroListMenu->setContentSize({ kMacroListWidth, kMacroListHeight });
 	macroListMenu->setTouchPriority(menu ? menu->getTouchPriority() - 1 : -129);
 	macroScroll->m_contentLayer->addChild(macroListMenu);
+	schedule(schedule_selector(LoadMacroLayer::updateListCulling));
 
 	CCScale9Sprite* listBackground = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
 	listBackground->setScale(0.7f);
 	listBackground->setColor({ 0,0,0 });
 	listBackground->setOpacity(75);
-	listBackground->setPosition(winSize / 2.f);
+	listBackground->setPosition((winSize / 2.f) + ccp(kMacroListOffsetX, kMacroListOffsetY));
 	listBackground->setContentSize({ 461.1f, 255.1f });
 	listBackground->setID("background");
 	m_buttonMenu->addChild(listBackground);
 
 	macroScrollbar = Scrollbar::create(macroScroll);
-	macroScrollbar->setPosition({ (winSize.width / 2.f) + (listLayer->getScaledContentSize().width / 2.f) + 4.f, winSize.height / 2.f });
+	macroScrollbar->setPosition({
+		(winSize.width / 2.f) + (listLayer->getScaledContentSize().width / 2.f) + 4.f + kMacroListOffsetX,
+		(winSize.height / 2.f) + kMacroListOffsetY
+	});
 	macroScrollbar->setID("scrollbar");
 	m_buttonMenu->addChild(macroScrollbar);
 
@@ -741,6 +758,32 @@ void LoadMacroLayer::updateDynamicListLayout(float prevScroll, bool restoreScrol
 		macroScroll->m_contentLayer->setPositionY(prevScroll);
 	else if (previousContentHeight > 0.f)
 		macroScroll->m_contentLayer->setPositionY(previousScroll - (contentHeight - previousContentHeight));
+
+	updateListCulling();
+}
+
+void LoadMacroLayer::updateListCulling(float) {
+	if (!macroScroll || !macroListMenu)
+		return;
+
+	CCPoint viewBottomLeft = macroScroll->convertToWorldSpace({ 0.f, 0.f });
+	float viewBottom = viewBottomLeft.y;
+	float viewTop = viewBottom + macroScroll->getContentSize().height;
+
+	for (size_t i = 0; i < allMacros.size(); i++) {
+		MacroCell* cell = allMacros[i];
+		if (!cell)
+			continue;
+
+		CCPoint rowBottomLeft = macroListMenu->convertToWorldSpace(cell->getPosition());
+		bool visible = rowBottomLeft.y < viewTop && rowBottomLeft.y + kMacroRowHeight > viewBottom;
+		cell->setVisible(visible);
+		if (cell->menu)
+			cell->menu->setEnabled(visible);
+
+		if (auto* rowBg = typeinfo_cast<CCLayerColor*>(macroListMenu->getChildByID(fmt::format("macro-row-bg-{}", i).c_str())))
+			rowBg->setVisible(visible);
+	}
 }
 
 MacroCell* MacroCell::create(std::filesystem::path path, std::string name, std::time_t date, geode::Popup* menuLayer, geode::Popup* mergeLayer, CCLayer* loadLayer) {
