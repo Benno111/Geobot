@@ -14,6 +14,11 @@
 #include <ctime>
 
 namespace {
+constexpr cocos2d::CCSize kSettingsScrollSize { 210.f, 150.f };
+constexpr cocos2d::CCPoint kSettingsScrollPosition { 0.f, -72.f };
+constexpr float kSettingsCenterX = 105.f;
+constexpr float kSettingsScrollbarX = 214.f;
+
 bool parseU64Safe(std::string const& raw, unsigned long long& out) {
 	if (raw.empty()) return false;
 	auto begin = raw.data();
@@ -136,7 +141,7 @@ const std::vector<std::string> kAccuracyModes = {
 };
 
 std::string getSavedAccuracyMode(Mod* mod) {
-    std::string value = mod->getSavedValue<std::string>("macro_accuracy");
+    std::string value = mod->getSettingValue<std::string>("macro_accuracy");
     for (auto const& mode : kAccuracyModes) {
         if (value == mode)
             return value;
@@ -288,7 +293,7 @@ void addgeobotPauseButton(cocos2d::CCLayer* layer) {
     if (Global::isBuildExpired()) return;
 
 #ifdef GEODE_IS_WINDOWS
-    if (!Mod::get()->getSavedValue<bool>("menu_show_button")) return;
+    if (!Mod::get()->getSettingValue<bool>("menu_show_button")) return;
 #endif
 
     CCSprite* sprite = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
@@ -429,12 +434,12 @@ RecordLayer* RecordLayer::openMenu(bool instant) {
     if (g.layer)
         static_cast<RecordLayer*>(g.layer)->onClose(nullptr);
 
-    if (pl && g.mod->getSavedValue<bool>("menu_pause_on_open")) {
+    if (pl && g.mod->getSettingValue<bool>("menu_pause_on_open")) {
         if (!pl->m_isPaused)
             pl->pauseGame(false);
     }
 #ifdef GEODE_IS_WINDOWS
-    else if (pl && g.mod->getSavedValue<bool>("menu_show_cursor")) {
+    else if (pl && g.mod->getSettingValue<bool>("menu_show_cursor")) {
         cursor = cocos2d::CCEGLView::sharedOpenGLView()->getShouldHideCursor();
         cocos2d::CCEGLView::sharedOpenGLView()->showCursor(true);
     }
@@ -484,6 +489,8 @@ void RecordLayer::toggleRecording(CCObject*) {
         g.currentFrameFix = 0;
 
         PlayLayer* pl = PlayLayer::get();
+        if (pl)
+            pl->m_isTestMode = true;
         // Restarting from the beginning clears Geometry Dash's practice
         // checkpoint stack. When recording is started mid-practice, keep the
         // existing checkpoints and continue from the current practice state
@@ -528,6 +535,8 @@ void RecordLayer::togglePlaying(CCObject*) {
         g.macro.geobotMacro = g.macro.botInfo.name == "geobot";
         
         PlayLayer* pl = PlayLayer::get();
+        if (pl)
+            pl->m_isTestMode = true;
 
         if (pl) {
             if (!pl->m_isPaused && !pl->m_levelEndAnimationStarted)
@@ -565,7 +574,7 @@ void RecordLayer::textChanged(CCTextInputNode* node) {
     if (tpsInput && node == tpsInput) {
         float value = geode::utils::numFromString<float>(tpsInput->getString()).unwrapOr(0.f);
         if (std::string_view(tpsInput->getString()) != "" && value < 999999 && value >= 0.f) {
-            mod->setSavedValue("macro_tps", value);
+            mod->setSettingValue("macro_tps", static_cast<double>(value));
             Global::get().tps = value;
             Global::get().leftOver = 0.f;
         }
@@ -580,7 +589,7 @@ void RecordLayer::textChanged(CCTextInputNode* node) {
         int parsed = value.unwrap();
         if (parsed < -100) parsed = -100;
         if (parsed > 100) parsed = 100;
-        mod->setSavedValue("frame_offset", parsed);
+        mod->setSettingValue("frame_offset", static_cast<int64_t>(parsed));
         Global::get().frameOffset = parsed;
         warningLabel->setString(("WARNING: Currently recording / playing macros with a frame offset of " + std::to_string(parsed)).c_str());
         warningLabel->setVisible(parsed != 0);
@@ -594,7 +603,7 @@ void RecordLayer::textChanged(CCTextInputNode* node) {
             return;
         }
         int parsed = std::max(1, value.unwrap());
-        mod->setSavedValue("frame_fixes_limit", parsed);
+        mod->setSettingValue("frame_fixes_limit", static_cast<int64_t>(parsed));
         Global::get().frameFixesLimit = parsed;
     }
 
@@ -606,7 +615,7 @@ void RecordLayer::toggleSetting(CCObject* obj) {
     std::string id = toggle->getID();
     bool value = !toggle->isToggled();
     auto& g = Global::get();
-    g.mod->setSavedValue(id, value);
+    g.mod->setSettingValue(id, value);
 
     if (id == "clickbot_enabled") {
         g.clickbotEnabled = value;
@@ -811,18 +820,10 @@ bool RecordLayer::setup() {
 
     bool macroMenuRewrite = isMacroMenuRewriteEnabled();
 
-    if (macroMenuRewrite) {
-        lbl = CCLabelBMFont::create("Settings", "goldFont.fnt");
-        lbl->setPosition(ccp(159.f, 111.f));
-        lbl->setScale(0.56f);
-        menu->addChild(lbl);
-    }
-    else {
-        lbl = CCLabelBMFont::create("Settings", "goldFont.fnt");
-        lbl->setPosition(ccp(130, 111));
-        lbl->setScale(0.56f);
-        menu->addChild(lbl);
-    }
+    lbl = CCLabelBMFont::create("Settings", "goldFont.fnt");
+    lbl->setPosition(ccp(kSettingsCenterX, 109.f));
+    lbl->setScale(0.56f);
+    menu->addChild(lbl);
 
     if (macroMenuRewrite) {
         CCScale9Sprite* settingsBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
@@ -843,30 +844,20 @@ bool RecordLayer::setup() {
         settingsBg->setContentSize({ 243.f, 181.f });
         menu->addChild(settingsBg);
     }
-    else {
-        CCScale9Sprite* settingsBg = CCScale9Sprite::create(WINDOW_BG, { 0, 0, 80, 80 });
-        settingsBg->setScale(0.7f);
-        settingsBg->setColor({ 0,0,0 });
-        settingsBg->setOpacity(90);
-        settingsBg->setPosition({ -20.f, -85.f });
-        settingsBg->setAnchorPoint({ 0.f, 0.f });
-        settingsBg->setContentSize({ 301.f, 181.f });
-        menu->addChild(settingsBg);
-    }
 
     settingsSectionLabel = CCLabelBMFont::create("", "goldFont.fnt");
-    settingsSectionLabel->setPosition(macroMenuRewrite ? CCPoint { 159.5f, 95.f } : CCPoint { 130.f, 95.f });
+    settingsSectionLabel->setPosition(macroMenuRewrite ? CCPoint { 159.5f, 95.f } : CCPoint { kSettingsCenterX, 92.f });
     settingsSectionLabel->setScale(0.42f);
     menu->addChild(settingsSectionLabel);
 
-    settingsScroll = geode::ScrollLayer::create(macroMenuRewrite ? cocos2d::CCSize { 243.f, 150.f } : cocos2d::CCSize { 301.f, 150.f });
-    settingsScroll->setPosition(macroMenuRewrite ? CCPoint { 38.f, -72.f } : CCPoint { -20.f, -72.f });
+    settingsScroll = geode::ScrollLayer::create(macroMenuRewrite ? cocos2d::CCSize { 243.f, 150.f } : kSettingsScrollSize);
+    settingsScroll->setPosition(macroMenuRewrite ? CCPoint { 38.f, -72.f } : kSettingsScrollPosition);
     settingsScroll->setTouchEnabled(true);
     settingsScroll->enableScrollWheel(true);
     menu->addChild(settingsScroll);
 
     settingsScrollbar = geode::Scrollbar::create(settingsScroll);
-    settingsScrollbar->setPosition(macroMenuRewrite ? CCPoint { 274.f, 0.f } : CCPoint { 274.f, 0.f });
+    settingsScrollbar->setPosition(macroMenuRewrite ? CCPoint { 274.f, 0.f } : CCPoint { kSettingsScrollbarX, 0.f });
     menu->addChild(settingsScrollbar);
 
     settingsCategoryButtons.clear();
@@ -947,16 +938,6 @@ bool RecordLayer::setup() {
     btn->setPosition(ccp(-50, 34));
     menu->addChild(btn);
 
-#ifdef GEODE_IS_WINDOWS
-    btnSprite = ButtonSprite::create("Keybinds");
-#else
-    btnSprite = ButtonSprite::create("Buttons");
-#endif
-    btnSprite->setScale(0.54f);
-    btn = CCMenuItemSpriteExtra::create(btnSprite, this, menu_selector(RecordLayer::openKeybinds));
-    btn->setPosition(ccp(-116, -32));
-    menu->addChild(btn);
-
     spr = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
     spr->setScale(0.65f);
     btn = CCMenuItemSpriteExtra::create(
@@ -989,7 +970,7 @@ void RecordLayer::onCycleAccuracy(CCObject*) {
 
     index = (index + 1) % kAccuracyModes.size();
     std::string next = kAccuracyModes[index];
-    mod->setSavedValue("macro_accuracy", next);
+    mod->setSettingValue("macro_accuracy", next);
     applyAccuracyMode(next);
 
     if (settingsMenu)
@@ -1099,7 +1080,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
         CCMenuItemToggler* toggle = CCMenuItemToggler::create(spriteOff, spriteOn, this, menu_selector(RecordLayer::toggleSetting));
         toggle->setPosition(ccp(toggleX, yPos));
         toggle->setScale(toggleScale);
-        bool toggled = mod->getSavedValue<bool>(sett.id);
+        bool toggled = mod->getSettingValue<bool>(sett.id);
         toggle->toggle(toggled);
         toggle->setID(sett.id.c_str());
         toggle->setEnabled(!sett.disabled);
@@ -1179,7 +1160,7 @@ void RecordLayer::loadSetting(RecordSetting sett, float yPos, CCMenu* targetMenu
         tpsInput->setTouchEnabled(true);
         tpsInput->setContentSize({ 32, 20 });
         tpsInput->setAllowedChars("0123456789.");
-        tpsInput->setString(Utils::getSimplifiedString(fmt::format("{:.3f}", Mod::get()->getSavedValue<double>("macro_tps"))).c_str());
+        tpsInput->setString(Utils::getSimplifiedString(fmt::format("{:.3f}", Mod::get()->getSettingValue<double>("macro_tps"))).c_str());
         tpsInput->setMaxLabelWidth(30.f);
         tpsInput->setDelegate(this);
         tpsInput->setMaxLabelLength(9);
@@ -1320,7 +1301,7 @@ void RecordLayer::loadSettingsList() {
 
     if (settingsSectionLabel) {
         settingsSectionLabel->setString(category.title.c_str());
-        settingsSectionLabel->limitLabelWidth(macroMenuRewrite ? 190.f : 120.f, 0.42f, 0.1f);
+        settingsSectionLabel->limitLabelWidth(macroMenuRewrite ? 190.f : 160.f, 0.42f, 0.1f);
         settingsSectionLabel->updateLabel();
     }
 
@@ -1363,7 +1344,7 @@ void RecordLayer::updateTPS() {
     auto& g = Global::get();
 
     tpsToggle->toggle(g.tpsEnabled);
-    tpsInput->setString(Utils::getSimplifiedString(fmt::format("{:.3f}", Mod::get()->getSavedValue<double>("macro_tps"))).c_str());
+    tpsInput->setString(Utils::getSimplifiedString(fmt::format("{:.3f}", Mod::get()->getSettingValue<double>("macro_tps"))).c_str());
 
     if (g.state == state::none || g.macro.inputs.empty()) {
         if (CCMenuItemSpriteExtra* btn = tpsToggle->getChildByType<CCMenuItemSpriteExtra>(0))
