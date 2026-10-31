@@ -29,7 +29,7 @@ void Clickbot::ensureInitialized() {
         g.mod->setSavedValue("clickbot_pitch", 1.f);
     }
 
-    g.clickbotEnabled = g.mod->getSavedValue<bool>("clickbot_enabled");
+    g.clickbotEnabled = g.mod->getSettingValue<bool>("clickbot_enabled");
     g.clickbotOnlyPlaying = g.mod->getSavedValue<bool>("clickbot_playing_only");
     g.clickbotOnlyHolding = g.mod->getSavedValue<bool>("clickbot_holding_only");
 }

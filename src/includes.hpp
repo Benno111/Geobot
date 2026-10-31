@@ -38,6 +38,7 @@
 
 using namespace geode::prelude;
 
+#define POPUP_BG "GJ_button_01.png"
 #define WINDOW_BG "GJ_square01.png"
 
 inline void detachInputNodeSafe(CCTextInputNode* input) {
@@ -92,7 +93,7 @@ public:
         float width,
         float height,
         SetupArgs... args,
-        char const* bg = WINDOW_BG,
+        char const* bg = POPUP_BG,
         cocos2d::CCRect bgRect = {}
     ) {
         if (!this->init(width, height, bg, bgRect)) return false;
