@@ -7,6 +7,9 @@
 #include <Geode/modify/EditorPauseLayer.hpp>
 #include <Geode/modify/EndLevelLayer.hpp>
 #include <Geode/binding/LevelEditorLayer.hpp>
+#ifdef GEODE_IS_WINDOWS
+#include <Geode/binding/KeybindingsLayer.hpp>
+#endif
 #include <Geode/utils/web.hpp>
 #include <array>
 #include <charconv>
@@ -640,7 +643,7 @@ void RecordLayer::showKeybindsWarning() {
 void RecordLayer::openKeybinds(CCObject*) {
 #ifdef GEODE_IS_WINDOWS
 
-    MoreOptionsLayer::create()->onKeybindings(nullptr);
+    KeybindingsLayer::create(nullptr)->show();
     CCScene* scene = CCDirector::get()->getRunningScene();
 
     FLAlertLayer* layer = typeinfo_cast<FLAlertLayer*>(scene->getChildren()->lastObject());
