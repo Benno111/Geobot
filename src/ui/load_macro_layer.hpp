@@ -53,7 +53,7 @@ public:
         }
 };
 
-class LoadMacroLayer : public xdb::Popup<geode::Popup*, geode::Popup*, bool>, public TextInputDelegate {
+class LoadMacroLayer : public xdb::Popup<geode::Popup*, geode::Popup*, bool> {
 public:
 
 	geode::Popup* menuLayer = nullptr;
@@ -103,7 +103,7 @@ public:
 	static void open(geode::Popup* layer, geode::Popup* layer2, bool autosaves = false);
 
 	void openFolder(CCObject*) {
-		file::openFolder(Global::getFolderSettingPath(isAutosaves ? "autosaves_folder" : "macros_folder"));
+		file::openFolder(asp::fs::Path::fromStdPath(Global::getFolderSettingPath(isAutosaves ? "autosaves_folder" : "macros_folder")));
 	}
 
 	void textChanged(CCTextInputNode* p) override;

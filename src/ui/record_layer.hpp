@@ -28,7 +28,7 @@ struct RecordSetting {
 	bool disabled = false;
 };
 
-class RecordLayer : public xdb::Popup<>, public TextInputDelegate {
+class RecordLayer : public xdb::Popup<> {
 public:
 	CCMenuItemToggler* recording = nullptr;
 	CCMenuItemToggler* playing = nullptr;

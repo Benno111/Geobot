@@ -123,7 +123,7 @@ bool Global::hasIncompatibleMods() {
   #ifdef GEODE_IS_WINDOWS
 
   if (Mod* mod = Loader::get()->getLoadedMod("tobyadd.gdh")) {
-    std::filesystem::path configPath = mod->getSaveDir() / "config.json";
+    std::filesystem::path configPath = mod->getSaveDir().toStdPath().unwrap() / "config.json";
 	  using namespace nlohmann;
 
     if (std::filesystem::exists(configPath)) {
@@ -142,7 +142,7 @@ bool Global::hasIncompatibleMods() {
   #else
 
   if (Mod* mod = Loader::get()->getLoadedMod("tobyadd.gdh_mobile")) {
-    std::filesystem::path configPath = mod->getSaveDir() / "config.json";
+    std::filesystem::path configPath = mod->getSaveDir().toStdPath().unwrap() / "config.json";
 	  using namespace nlohmann;
     
     if (std::filesystem::exists(configPath)) {
@@ -302,16 +302,16 @@ std::filesystem::path Global::getFolderSettingPath(std::string const& settingID,
   auto& g = Global::get();
   auto fallback = [&]() {
     if (settingID == "macros_folder")
-      return geode::dirs::getGameDir() / "macros";
+      return geode::dirs::getGameDir().toStdPath().unwrap() / "macros";
     if (settingID == "autosaves_folder")
-      return g.mod->getSaveDir() / "autosaves";
-    return g.mod->getSaveDir() / settingID;
+      return g.mod->getSaveDir().toStdPath().unwrap() / "autosaves";
+    return g.mod->getSaveDir().toStdPath().unwrap() / settingID;
   };
 
-  auto path = g.mod->getSettingValue<std::filesystem::path>(settingID);
+  auto path = g.mod->getSettingValue<asp::fs::Path>(settingID).toStdPath().unwrap();
   if (path.empty()) {
     path = fallback();
-    g.mod->setSettingValue<std::filesystem::path>(settingID, path);
+    g.mod->setSettingValue<asp::fs::Path>(settingID, asp::fs::Path::fromStdPath(path));
   }
 
   std::error_code ec;
@@ -319,7 +319,7 @@ std::filesystem::path Global::getFolderSettingPath(std::string const& settingID,
 
   if (!validDir) {
     path = fallback();
-    g.mod->setSettingValue<std::filesystem::path>(settingID, path);
+    g.mod->setSettingValue<asp::fs::Path>(settingID, asp::fs::Path::fromStdPath(path));
   }
 
   if (createIfMissing && !std::filesystem::exists(path, ec)) {
@@ -330,7 +330,7 @@ std::filesystem::path Global::getFolderSettingPath(std::string const& settingID,
       std::filesystem::create_directories(fb, ec);
       if (!ec) {
         path = fb;
-        g.mod->setSettingValue<std::filesystem::path>(settingID, path);
+        g.mod->setSettingValue<asp::fs::Path>(settingID, asp::fs::Path::fromStdPath(path));
       }
     }
   }
@@ -349,14 +349,14 @@ $execute{
 
 
   if (!g.mod->setSavedValue("defaults_set_12", true)) {
-    g.mod->setSettingValue<std::filesystem::path>("macros_folder", Global::getFolderSettingPath("macros_folder"));
-    g.mod->setSettingValue<std::filesystem::path>("autosaves_folder", g.mod->getSaveDir() / "autosaves");
+    g.mod->setSettingValue<asp::fs::Path>("macros_folder", asp::fs::Path::fromStdPath(Global::getFolderSettingPath("macros_folder")));
+    g.mod->setSettingValue<asp::fs::Path>("autosaves_folder", g.mod->getSaveDir() / "autosaves");
   }
 
   if (!g.mod->setSavedValue("defaults_set_18", true)) {
-    std::filesystem::path currentSaveDir = g.mod->getSaveDir();
-    std::filesystem::path currentMacros = g.mod->getSettingValue<std::filesystem::path>("macros_folder");
-    std::filesystem::path gameMacros = geode::dirs::getGameDir() / "macros";
+    std::filesystem::path currentSaveDir = g.mod->getSaveDir().toStdPath().unwrap();
+    std::filesystem::path currentMacros = g.mod->getSettingValue<asp::fs::Path>("macros_folder").toStdPath().unwrap();
+    std::filesystem::path gameMacros = geode::dirs::getGameDir().toStdPath().unwrap() / "macros";
     std::filesystem::path parent = currentSaveDir.parent_path();
 
     if (!parent.empty()) {
@@ -365,7 +365,7 @@ $execute{
       std::filesystem::path zilkoLegacy = parent / "zilko.xdbot" / "macros";
 
       if (currentMacros.empty() || currentMacros == geobotDefault || currentMacros == bennoLegacy || currentMacros == zilkoLegacy)
-        g.mod->setSettingValue<std::filesystem::path>("macros_folder", gameMacros);
+        g.mod->setSettingValue<asp::fs::Path>("macros_folder", asp::fs::Path::fromStdPath(gameMacros));
     }
   }
 

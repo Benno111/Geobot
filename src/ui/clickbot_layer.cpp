@@ -414,7 +414,7 @@ void ClickSettingsLayer::onRestore(CCObject*) {
 
 	settings.disabled = false;
 	
-	std::filesystem::path path = Mod::get()->getResourcesDir() / fmt::format("default_{}.mp3", button);
+	std::filesystem::path path = Mod::get()->getResourcesDir().toStdPath().unwrap() / fmt::format("default_{}.mp3", button);
 
 	filenameLabel->setString(path.filename().string().c_str());
 

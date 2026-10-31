@@ -197,15 +197,15 @@ if (MSVC)
 endif()
 
 if (WIN32)
-    # bindings 2.2081 misses <sys/timeb.h> in a couple of inline files that use _ftime64_s.
+    # Some bindings revisions miss <sys/timeb.h> in inline files that use _ftime64_s.
     # Re-apply this fix on configure so Codegen updates don't reintroduce build breaks.
     # When GEODE_BINDINGS_REPO_PATH is set (by geode-sdk/build-geode-mod when bindings-ref is
     # specified), the bindings are already cloned there before CMake runs.  Fall back to the CPM
     # download location for local development builds.
     if (DEFINED ENV{GEODE_BINDINGS_REPO_PATH})
-        set(_bindings_inline_dir "$ENV{GEODE_BINDINGS_REPO_PATH}/bindings/2.2081/inline")
+        set(_bindings_inline_dir "$ENV{GEODE_BINDINGS_REPO_PATH}/bindings/${GEODE_GD_VERSION}/inline")
     else()
-        set(_bindings_inline_dir "${CMAKE_CURRENT_BINARY_DIR}/_deps/bindings-src/bindings/2.2081/inline")
+        set(_bindings_inline_dir "${CMAKE_CURRENT_BINARY_DIR}/_deps/bindings-src/bindings/${GEODE_GD_VERSION}/inline")
     endif()
     foreach(_inline_file DialogLayer.cpp GameStatsManager.cpp)
         set(_inline_path "${_bindings_inline_dir}/${_inline_file}")
@@ -229,9 +229,12 @@ endif()
 if (TARGET GeodeBindings)
     # MSVC 19.42 can ICE in Geode Event.hpp under Unity builds and also emit
     # a large amount of duplicate object-name warnings in this target.
-    set_target_properties(GeodeBindings PROPERTIES UNITY_BUILD OFF)
     if (MSVC)
+        set_target_properties(GeodeBindings PROPERTIES UNITY_BUILD OFF)
+        # Standalone binding sources can include CCApplication before the SDK
+        # constructor macros. Unity builds get this header from GeneratedSource.
         target_compile_options(GeodeBindings PRIVATE
+            /FIGeode/DefaultInclude.hpp
             /FS
             $<$<CONFIG:Release>:/Od /Ob0>
             $<$<CONFIG:RelWithDebInfo>:/Od /Ob0>

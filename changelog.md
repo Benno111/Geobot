@@ -1,5 +1,6 @@
 # Geobot Changelog
 # 2.0.0
+* Target Geometry Dash 2.2091 with the Geode nightly SDK.
 * Trim the mod to a macrobot
 * removed the "auto save mode" toggle
 

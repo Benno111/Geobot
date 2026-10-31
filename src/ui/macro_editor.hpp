@@ -11,7 +11,7 @@ struct InputText {
     std::string action;
 };
 
-class MacroEditLayer : public xdb::Popup<>, public TextInputDelegate {
+class MacroEditLayer : public xdb::Popup<> {
 
 private:
     

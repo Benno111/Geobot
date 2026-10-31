@@ -681,13 +681,13 @@ void RecordLayer::openMacrosFolder(CCObject*) {
             if (btn2)
                 geode::openSettingsPopup(mod, false);
             else
-                file::openFolder(Global::getFolderSettingPath("macros_folder"));
+                file::openFolder(asp::fs::Path::fromStdPath(Global::getFolderSettingPath("macros_folder")));
         }
     );
 }
 
 void RecordLayer::openAutosavesFolder(CCObject*) {
-    file::openFolder(Global::getFolderSettingPath("autosaves_folder"));
+    file::openFolder(asp::fs::Path::fromStdPath(Global::getFolderSettingPath("autosaves_folder")));
 }
 
 RecordLayer* RecordLayer::create() {

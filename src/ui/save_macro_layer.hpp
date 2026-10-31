@@ -79,7 +79,7 @@ public:
         std::filesystem::path path = Global::getFolderSettingPath("macros_folder");
 
         if (!std::filesystem::exists(path)) {
-            if (!utils::file::createDirectoryAll(path).isOk())
+            if (!utils::file::createDirectoryAll(asp::fs::Path::fromStdPath(path)).isOk())
                 return FLAlertLayer::create("Error", ("There was an error getting the folder \"" + path.string() + "\". ID: 10").c_str(), "Ok")->show();
         }
 

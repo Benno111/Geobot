@@ -3,6 +3,7 @@
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/CheckpointObject.hpp>
 #include <Geode/modify/PlayLayer.hpp>
+#include <Geode/binding/GameToolbox.hpp>
 
 namespace {
 constexpr int kRespawnMovementClearFrames = 5;
@@ -63,7 +64,7 @@ class $modify(CheckpointObject) {
       p1Data,
       p2Data,
       #ifdef GEODE_IS_WINDOWS
-      *(uintptr_t*)((char*)geode::base::get() + seedAddr),
+      GameToolbox::getfast_srand(),
       #else
       0,
       #endif

@@ -28,6 +28,7 @@
 #include <vector>
 #include <utility>
 #include <filesystem>
+#include <asp/fs/std.hpp>
 #include <deque>
 #include <limits>
 #include <charconv>
@@ -99,8 +100,6 @@ public:
     }
 };
 }
-
-const int seedAddr = 0x6a4e20;
 
 const int indexButton[6] = { 1, 2, 3, 1, 2, 3 };
 

@@ -139,8 +139,8 @@ class $modify(PlayLayer) {
         int delayedLevelRestart = -1;
     };
 
-    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
-        if (!PlayLayer::init(level, useReplay, dontCreateObjects))
+    bool init(GJGameLevel* level, bool dontCreateObjects) {
+        if (!PlayLayer::init(level, dontCreateObjects))
             return false;
 
         auto& g = Global::get();
@@ -289,14 +289,16 @@ class $modify(GJGameLevel) {
 };
 
 class $modify(GameStatsManager) {
-    void awardCurrencyForLevel(GJGameLevel* level) {
-        if (!shouldBlockRewards())
-            GameStatsManager::awardCurrencyForLevel(level);
+    int awardCurrencyForLevel(GJGameLevel* level) {
+        if (shouldBlockRewards())
+            return 0;
+        return GameStatsManager::awardCurrencyForLevel(level);
     }
 
-    void awardDiamondsForLevel(GJGameLevel* level) {
-        if (!shouldBlockRewards())
-            GameStatsManager::awardDiamondsForLevel(level);
+    int awardDiamondsForLevel(GJGameLevel* level) {
+        if (shouldBlockRewards())
+            return 0;
+        return GameStatsManager::awardDiamondsForLevel(level);
     }
 
     bool awardSecretKey() {

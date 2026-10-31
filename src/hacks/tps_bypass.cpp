@@ -71,7 +71,7 @@ class $modify(GJBaseGameLayer) {
         
     }
 
-    float getModifiedDelta(float dt) {
+    double getModifiedDelta(float dt) {
         auto& g = Global::get();
         bool shouldBypass = (g.tpsEnabled && Global::getTPS() != 240.f) ||
                             (g.lockDelta && g.state != state::none);

@@ -16,7 +16,7 @@ void Clickbot::ensureInitialized() {
 
     if (!g.mod->hasSavedValue("clickbot_defaults4")) {
         g.mod->setSavedValue("clickbot_defaults4", true);
-        std::filesystem::path dir = g.mod->getResourcesDir();
+        std::filesystem::path dir = g.mod->getResourcesDir().toStdPath().unwrap();
         ClickSetting setts;
 
         for (const auto& str : buttonNames) {
