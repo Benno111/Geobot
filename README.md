@@ -10,8 +10,9 @@ Use the [Geode nightly SDK](https://github.com/geode-sdk/geode/releases/tag/nigh
 its nightly binaries for your target platform. Stable SDKs targeting 2.2081 are
 not compatible with this branch.
 
-GitHub Actions builds Windows, Android32, Android64, and iOS using the nightly
-SDK. For a local Android64 build, install Android NDK r29 and run:
+GitHub Actions builds Windows, Android32, and Android64 using the nightly SDK.
+iOS support is pending the missing 2.2091 hook addresses in the official bindings.
+For a local Android64 build, install Android NDK r29 and run:
 
 ```sh
 cmake -S . -B build-android64 -G Ninja \

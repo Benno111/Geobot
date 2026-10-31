@@ -1,6 +1,7 @@
 # Geobot Changelog
 # 2.0.0
 * Target Geometry Dash 2.2091 with the Geode nightly SDK.
+* Temporarily suspend iOS builds until the official 2.2091 bindings provide the required hook addresses.
 * Trim the mod to a macrobot
 * removed the "auto save mode" toggle
 
