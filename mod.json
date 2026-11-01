@@ -5,7 +5,7 @@
         "android": "2.2081",
         "ios": "2.2081"
     },
-    "version": "2.0.0",
+    "version": "2.0.1",
     "id": "benno111.geobot",
     "name": "geobot",
     "developer": "Benno111",
@@ -13,8 +13,6 @@
     "repository": "https://github.com/Benno111/geobot",
     "links": {
         "source": "https://github.com/Benno111/geobot",
-        "homepage": "https://github.com/Benno111/geobot",
-        "community": "https://discord.gg/w6yvdzVzBd"
     },
     "issues": {
         "info": "Report bugs and feature requests on the GitHub issue tracker.",
@@ -197,7 +195,6 @@
         ]
     },
     "tags": [
-        "gameplay",
         "cheat"
     ]
 }
