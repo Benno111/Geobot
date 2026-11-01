@@ -226,6 +226,11 @@ if (WIN32)
     endforeach()
 endif()
 if (TARGET GeodeBindings)
+    if (GEODE_TARGET_PLATFORM STREQUAL "iOS")
+        # GeneratedSource.cpp defines FMOD wrappers before any class headers
+        # include FMOD's declarations. Make them available from the start.
+        target_compile_options(GeodeBindings PRIVATE "SHELL:-include Geode/fmod/fmod.hpp")
+    endif()
     # MSVC 19.42 can ICE in Geode Event.hpp under Unity builds and also emit
     # a large amount of duplicate object-name warnings in this target.
     if (MSVC)
