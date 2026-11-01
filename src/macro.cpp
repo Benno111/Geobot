@@ -306,7 +306,7 @@ Macro Macro::XDtoGDR(std::filesystem::path path) {
         }
 
         try {
-            int frame = static_cast<int>(round(std::stoi(action[0]) * fpsMultiplier));
+            int frame = static_cast<int>(round(static_cast<double>(std::stoi(action[0])) * static_cast<double>(fpsMultiplier)));
             int button = std::stoi(action[2]);
             bool hold = action[1] == "1";
             bool player2 = action[3] == "1";
