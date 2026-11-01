@@ -292,7 +292,7 @@ CCMenu* findSettingsMenu(CCLayer* layer) {
     return nullptr;
 }
 
-void addgeobotPauseButton(cocos2d::CCLayer* layer) {
+void addgeobotPauseButton(cocos2d::CCLayer* layer, bool usePauseMenuLayout = false) {
     if (Global::isBuildExpired()) return;
 
 #ifdef GEODE_IS_WINDOWS
@@ -308,6 +308,16 @@ void addgeobotPauseButton(cocos2d::CCLayer* layer) {
         menu_selector(GeobotPauseButtonHandler::onPress)
     );
     btn->setID("geobot-button"_spr);
+
+    // Geometry Dash 2.2091 keeps pause controls inside PauseLayer::m_layer.
+    // Node IDs places the options button in this menu and owns its layout.
+    if (usePauseMenuLayout) {
+        if (auto* menu = typeinfo_cast<CCMenu*>(findNodeByIDRecursive(layer, "right-button-menu"))) {
+            menu->addChild(btn);
+            menu->updateLayout();
+            return;
+        }
+    }
 
     if (auto settingsBtn = findNodeByIDRecursive(layer, "settings-button")) {
         if (auto settingsMenu = typeinfo_cast<CCMenu*>(settingsBtn->getParent())) {
@@ -371,7 +381,7 @@ void addAutoSafeModeEndscreenLabel(EndLevelLayer* layer) {
 class $modify(PauseLayer) {
     void customSetup() {
         PauseLayer::customSetup();
-        addgeobotPauseButton(this);
+        addgeobotPauseButton(m_layer ? m_layer : this, true);
         addRewardDisabledWatermark(this);
     }
 };
