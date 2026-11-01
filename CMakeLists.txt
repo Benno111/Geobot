@@ -88,25 +88,24 @@ if (MSVC)
     endif()
 endif()
 
-if (WIN32)
-    # Recent Windows bindings can pull in a Geode SDK cocos header with both
-    # non-virtual and virtual init() declarations. Clang rejects that duplicate
-    # member declaration while building GeodeBindings, so normalize the vendored
-    # header before the SDK targets are added.
-    set(_geode_file_utils_win32_h "$ENV{GEODE_SDK}/loader/include/Geode/cocos/platform/win32/CCFileUtilsWin32.h")
-    if (EXISTS "${_geode_file_utils_win32_h}")
-        file(READ "${_geode_file_utils_win32_h}" _geode_file_utils_win32_content)
-        set(_geode_file_utils_win32_original "${_geode_file_utils_win32_content}")
-        string(REPLACE
-            "    bool init();\n"
-            ""
-            _geode_file_utils_win32_content
-            "${_geode_file_utils_win32_content}"
-        )
-        if (NOT _geode_file_utils_win32_content STREQUAL _geode_file_utils_win32_original)
-            file(WRITE "${_geode_file_utils_win32_h}" "${_geode_file_utils_win32_content}")
-            message(STATUS "Applied Windows compatibility patch to Geode CCFileUtilsWin32.h duplicate init() declaration")
-        endif()
+# Generated bindings can pull in the Windows SDK cocos header on any target,
+# including Android. Its non-virtual and virtual init() declarations conflict.
+# Clang rejects that duplicate
+# member declaration while building GeodeBindings, so normalize the vendored
+# header on every platform before the SDK targets are added.
+set(_geode_file_utils_win32_h "$ENV{GEODE_SDK}/loader/include/Geode/cocos/platform/win32/CCFileUtilsWin32.h")
+if (EXISTS "${_geode_file_utils_win32_h}")
+    file(READ "${_geode_file_utils_win32_h}" _geode_file_utils_win32_content)
+    set(_geode_file_utils_win32_original "${_geode_file_utils_win32_content}")
+    string(REPLACE
+        "    bool init();\n"
+        ""
+        _geode_file_utils_win32_content
+        "${_geode_file_utils_win32_content}"
+    )
+    if (NOT _geode_file_utils_win32_content STREQUAL _geode_file_utils_win32_original)
+        file(WRITE "${_geode_file_utils_win32_h}" "${_geode_file_utils_win32_content}")
+        message(STATUS "Applied Windows compatibility patch to Geode CCFileUtilsWin32.h duplicate init() declaration")
     endif()
 endif()
 
