@@ -228,8 +228,8 @@ endif()
 if (TARGET GeodeBindings)
     # MSVC 19.42 can ICE in Geode Event.hpp under Unity builds and also emit
     # a large amount of duplicate object-name warnings in this target.
-    set_target_properties(GeodeBindings PROPERTIES UNITY_BUILD OFF)
     if (MSVC)
+        set_target_properties(GeodeBindings PROPERTIES UNITY_BUILD OFF)
         target_compile_options(GeodeBindings PRIVATE
             /FS
             $<$<CONFIG:Release>:/Od /Ob0>
