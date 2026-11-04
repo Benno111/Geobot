@@ -258,7 +258,7 @@ bool LoadMacroLayer::setup(geode::Popup* layer, geode::Popup* layer2, bool autos
 
 	setTitle(isMerge ? "Merge Macro" : "Load Macro");
 	m_title->setPositionY(m_title->getPositionY() + 5);
-	m_closeBtn->getNormalImage()->setScale(0.6f);
+	m_closeBtn->getDisplayNode()->setScale(0.6f);
 	//adjustForLoadingScreen(); //fixes bugs
 
 	if (!isMerge) {

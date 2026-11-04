@@ -730,7 +730,7 @@ bool RecordLayer::setup() {
     Utils::setBackgroundColor(m_bgSprite);
     
     adjustForLoadingScreen(false);
-    m_closeBtn->getNormalImage()->setScale(0.575f);
+    m_closeBtn->getDisplayNode()->setScale(0.575f);
 
     menu = CCMenu::create();
     m_mainLayer->addChild(menu);
