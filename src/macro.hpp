@@ -91,8 +91,8 @@ struct PlayerData {
     std::unordered_map<int, GJPointDouble> m_rotateObjectsRelated;
     std::unordered_map<int, GameObject*> m_maybeRotatedObjectsMap;
     std::unordered_set<int> m_touchedRings;
-    std::unordered_set<int> m_ringRelatedSet;
-    std::map<int, bool> m_jumpPadRelated;
+    std::unordered_set<int> m_usedRings;
+    std::map<int, bool> m_touchedForceIds;
     std::map<int, bool> m_holdingButtons;
 #endif
     std::vector<float> m_playerFollowFloats;

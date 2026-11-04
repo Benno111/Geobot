@@ -8,8 +8,8 @@ PlayerData PlayerPracticeFixes::saveData(PlayerObject* player) {
     data.m_rotateObjectsRelated.insert(player->m_rotateObjectsRelated.begin(), player->m_rotateObjectsRelated.end());
     data.m_maybeRotatedObjectsMap.insert(player->m_potentialSlopeMap.begin(), player->m_potentialSlopeMap.end());
     data.m_touchedRings.insert(player->m_touchedRings.begin(), player->m_touchedRings.end());
-    data.m_ringRelatedSet.insert(player->m_ringRelatedSet.begin(), player->m_ringRelatedSet.end());
-    data.m_jumpPadRelated.insert(player->m_jumpPadRelated.begin(), player->m_jumpPadRelated.end());
+    data.m_usedRings.insert(player->m_usedRings.begin(), player->m_usedRings.end());
+    data.m_touchedForceIds.insert(player->m_touchedForceIds.begin(), player->m_touchedForceIds.end());
     data.m_holdingButtons.insert(player->m_holdingButtons.begin(), player->m_holdingButtons.end());
 
     for (const auto& el : player->m_playerFollowFloats)
@@ -17,7 +17,7 @@ PlayerData PlayerPracticeFixes::saveData(PlayerObject* player) {
 
     #else
 
-    // data.m_jumpPadRelated = player->m_jumpPadRelated;
+    // data.m_touchedForceIds = player->m_touchedForceIds;
     // data.m_holdingButtons = player->m_holdingButtons;
 
     #endif
@@ -274,8 +274,8 @@ void PlayerPracticeFixes::applyData(PlayerObject* player, PlayerData data, bool 
     player->m_rotateObjectsRelated = data.m_rotateObjectsRelated;
     player->m_potentialSlopeMap = data.m_maybeRotatedObjectsMap;
     player->m_touchedRings = data.m_touchedRings;
-    player->m_ringRelatedSet = data.m_ringRelatedSet;
-    player->m_jumpPadRelated = data.m_jumpPadRelated;
+    player->m_usedRings = data.m_usedRings;
+    player->m_touchedForceIds = data.m_touchedForceIds;
     player->m_holdingButtons = data.m_holdingButtons;
 
     player->m_playerFollowFloats.clear();
@@ -285,7 +285,7 @@ void PlayerPracticeFixes::applyData(PlayerObject* player, PlayerData data, bool 
 
     #else
 
-    // player->m_jumpPadRelated = data.m_jumpPadRelated;
+    // player->m_touchedForceIds = data.m_touchedForceIds;
     // player->m_holdingButtons = data.m_holdingButtons;
 
     #endif
