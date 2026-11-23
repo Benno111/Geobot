@@ -114,7 +114,7 @@ void LoadMacroLayer::open(geode::Popup* layer, geode::Popup* layer2, bool autosa
 	layerReal->show();
 }
 
-void LoadMacroLayer::textChanged(CCTextInputNode* node) {
+void LoadMacroLayer::textChanged(TextInput* node) {
 	search = Utils::toLower(node->getString());
 	if (search != "") {
 		searchOff->setVisible(true);
@@ -275,7 +275,7 @@ bool LoadMacroLayer::setup(geode::Popup* layer, geode::Popup* layer2, bool autos
 
 		searchInput = TextInput::create(235, "Search Macro", "bigFont.fnt");
 		searchInput->setPositionY(100);
-		searchInput->setDelegate(this);
+		searchInput->setCallback([this](std::string const&) { textChanged(searchInput); });
 		menu->addChild(searchInput);
 
 		CCSprite* emptyBtn = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");

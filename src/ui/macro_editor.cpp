@@ -218,9 +218,9 @@ bool MacroEditLayer::setup() {
     menu->addChild(lbl);
 
     pageInput = TextInput::create(36, "0");
-    pageInput->getInputNode()->setAllowedChars("0123456789");
-    pageInput->getInputNode()->setMaxLabelLength(5);
-    pageInput->getInputNode()->setDelegate(this);
+    pageInput->setFilter("0123456789");
+    pageInput->setMaxCharCount(5);
+    pageInput->setCallback([this](std::string const&) { textChanged(pageInput); });
     pageInput->setPosition({23.5, 91});
     pageInput->setScale(0.55f);
     menu->addChild(pageInput);
@@ -243,9 +243,9 @@ bool MacroEditLayer::setup() {
     frameInput = TextInput::create(70, "236");
     frameInput->setPosition({xPos + 91, yPos});
     frameInput->setScale(0.625f);
-    frameInput->getInputNode()->setAllowedChars("0123456789");
-    frameInput->getInputNode()->setMaxLabelLength(8);
-    frameInput->getInputNode()->setDelegate(this);
+    frameInput->setFilter("0123456789");
+    frameInput->setMaxCharCount(8);
+    frameInput->setCallback([this](std::string const&) { textChanged(frameInput); });
     selectedInputMenu->addChild(frameInput);
 
     spr = CCSprite::createWithSpriteFrameName("edit_leftBtn_001.png");
@@ -514,14 +514,14 @@ InputText MacroEditLayer::getInputText(input input) {
     return ret;
 }
 
-void MacroEditLayer::textChanged(CCTextInputNode* input) {
+void MacroEditLayer::textChanged(TextInput* input) {
     if (!input || !editLayer) return;
 
     std::string text = input->getString();
 
     if (text == "") return;
 
-    if (input == editLayer->pageInput->getInputNode()) {
+    if (input == editLayer->pageInput) {
         int page = std::stoi(text);
 
         if (page <= 0) return;
@@ -532,7 +532,7 @@ void MacroEditLayer::textChanged(CCTextInputNode* input) {
         return;
     }
 
-    if (input == editLayer->frameInput->getInputNode()) {
+    if (input == editLayer->frameInput) {
         int frame = std::stoi(text);
 
         editLayer->changeSelectedInputFrame(frame, false);

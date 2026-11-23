@@ -107,7 +107,7 @@ public:
 		file::openFolder(asp::fs::Path::fromStdPath(Global::getFolderSettingPath(isAutosaves ? "autosaves_folder" : "macros_folder")));
 	}
 
-	void textChanged(CCTextInputNode* p) override;
+	void textChanged(TextInput* p);
 
 	void clearSearch(CCObject*);
 

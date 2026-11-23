@@ -57,7 +57,7 @@ inline void detachActiveInputsRecursive(CCNode* root) {
         detachInputNodeSafe(input);
 
     if (auto* input = typeinfo_cast<TextInput*>(root))
-        detachInputNodeSafe(input->getInputNode());
+        input->unfocus();
 
     if (CCArray* children = root->getChildren()) {
         for (int i = 0; i < children->count(); ++i) {
