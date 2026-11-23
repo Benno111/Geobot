@@ -9,6 +9,25 @@
 #endif
 
 namespace {
+#ifdef GEODE_IS_WINDOWS
+	// Keep C++ temporaries in a separate frame from the SEH guard.
+	void importMacroInto(Macro& output, std::vector<std::uint8_t> const& data) {
+		output = Macro::importData(data);
+	}
+
+	bool importMacroWithSEH(Macro& output, std::vector<std::uint8_t> const& data) {
+		__try {
+			importMacroInto(output, data);
+			return true;
+		}
+		// Let C++ exceptions reach the caller's catch block and unwind normally.
+		__except (GetExceptionCode() == 0xE06D7363u
+			? EXCEPTION_CONTINUE_SEARCH : EXCEPTION_EXECUTE_HANDLER) {
+			return false;
+		}
+	}
+#endif
+
 	CCSprite* createFavoriteSprite(bool active);
 
 	constexpr size_t kMacroListBatchSize = 12;
@@ -954,26 +973,22 @@ void MacroCell::handleLoad() {
 		}
 		f.close();
 
-#ifdef GEODE_IS_WINDOWS
-		// Catch hard parser faults on malformed data in the load path itself.
-		__try {
-			newMacro = Macro::importData(macroData);
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER) {
-			if (!isMerge)
-				return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 455", "Ok")->show();
-			return;
-		}
-#else
 		try {
+#ifdef GEODE_IS_WINDOWS
+			if (!importMacroWithSEH(newMacro, macroData)) {
+				if (!isMerge)
+					return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 455", "Ok")->show();
+				return;
+			}
+#else
 			newMacro = Macro::importData(macroData);
+#endif
 		}
 		catch (...) {
 			if (!isMerge)
 				return FLAlertLayer::create("Error", "There was an error loading this macro. ID: 454", "Ok")->show();
 			return;
 		}
-#endif
 	}
 
 	if (isMerge) {
