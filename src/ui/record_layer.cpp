@@ -864,7 +864,7 @@ bool RecordLayer::setup() {
     menu->addChild(settingsSectionLabel);
 
     settingsScroll = geode::ScrollLayer::create(macroMenuRewrite ? cocos2d::CCSize { 243.f, 150.f } : kSettingsScrollSize);
-    settingsScroll->setPosition(macroMenuRewrite ? CCPoint { 38.f, -72.f } : kSettingsScrollPosition);
+    settingsScroll->setPosition((macroMenuRewrite ? CCPoint { 38.f, -72.f } : kSettingsScrollPosition) + CCPoint { 102.f, 75.f });
     settingsScroll->setTouchEnabled(true);
     settingsScroll->enableScrollWheel(true);
     menu->addChild(settingsScroll);

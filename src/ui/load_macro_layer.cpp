@@ -676,7 +676,7 @@ void LoadMacroLayer::rebuildListFromLoaded(bool refresh, float prevScroll) {
 	m_buttonMenu->addChild(listLayer);
 
 	macroScroll = geode::ScrollLayer::create({ kMacroListWidth, kMacroListHeight });
-	macroScroll->setPosition({ 0.f, 0.f });
+	macroScroll->setPosition(CCPoint { 0.f, 0.f } + CCPoint { 102.f, 75.f });
 	macroScroll->setTouchEnabled(true);
 	macroScroll->enableScrollWheel(true);
 	listLayer->addChild(macroScroll);
